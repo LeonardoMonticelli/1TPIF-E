@@ -5,14 +5,14 @@ function start(){
     $('div').append(p);
     $('p').html('This is a paragraph');
 
-    b = $('<button></button>');
-    $('body').append(b);
-
-
-    c = $('<button></button>');
-    $('body').append(c);
-    $('button:nth-child(2)').html('remove me');
-    $('button:nth-child(2)').on('click',remove);
+    button1 = $('<button>add paragraph</button>');
+    button1.on("click",insert)
+    button2 = $('<button>remove paragraph</button>');
+    button1.on("click",remove)
+    $('body').append(button1);
+    $('body').append(button2);
+    $('button:nth-child(1)').on('click',click1);
+    $('button:nth-child(2)').on('click',click2);
 }
 
 function insert(){
