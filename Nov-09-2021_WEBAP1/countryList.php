@@ -7,7 +7,7 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
-    <script src='main.js'></script>
+    <script src='loadCities.js'></script>
 </head>
 <body>
     <?php
@@ -27,17 +27,18 @@
     
         $stmt->execute();
         $res=$stmt->get_result();
-        print("This is a list of all known cities");
+        // print("This is a list of all known cities");
         print("<br>");
-        print("<select>");
+        print("<select id='Country'>");
         while($row = $res->fetch_assoc()){
             ?>
-            <option value="<?php $row["CountryID"] ?>"><?= $row["CountryName"]?></option>
+            <option value="<?= $row["CountryID"] ?>"><?= $row["CountryName"]?></option>
             <?php
         }
         print("</select>");
     
         $stmt->close();
     ?>
+    <div id="cities"></div>
 </body>
 </html>

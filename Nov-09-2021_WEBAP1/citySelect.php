@@ -1,6 +1,5 @@
 <?php
 
-
 if(isset($_GET["Country"])){
         
     $servername="localhost";
@@ -16,12 +15,13 @@ if(isset($_GET["Country"])){
     }
 
     $stmt = $conn->prepare("SELECT * from cities where Country=?");
-    $mycountry = $_GET["Country"];
+    $myCountry = $_GET["Country"];
+
     $stmt->bind_param("i",$myCountry);
 
     $stmt->execute();
     $res=$stmt->get_result();
-    print("This is a list of all known cities");
+    // print("This is a list of all known cities");
     print("<br>");
     print("<select>");
     while($row = $res->fetch_assoc()){
