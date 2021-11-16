@@ -5,5 +5,6 @@ function start(){
 }
 
 function inputHasChanged(){
-    alert("you will be pressented with some suggestions");
+    // alert("you will be pressented with some suggestions");
+    $("#suggestions").load("suggestWord.php");
 }
