@@ -1,5 +1,5 @@
 use words;
-INSERT INTO EnglishWords (Word)VALUES('123456'),
+INSERT INTO EnglishWords (Word) VALUES('123456'),
 ('12345'),
 ('123456789'),
 ('password'),

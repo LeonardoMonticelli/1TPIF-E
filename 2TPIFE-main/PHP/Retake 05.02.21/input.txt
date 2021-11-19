@@ -1,0 +1,8 @@
+13, redBox, 4, 5, 2
+10, redBox, 4, 5, 2
+20, blueBox, 2, 0, 1
+22, blueBox, 2, 0, 1
+5, wrongThing
+10, yellowBox, 1,2,3
+
+6, redBox, 0,0,1

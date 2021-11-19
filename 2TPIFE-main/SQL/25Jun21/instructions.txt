@@ -1,0 +1,5 @@
+display three buttons
+
+click pigs button refresh page and button disapear, same goes with all other 
+
+find out if the user made them dissapear in some order

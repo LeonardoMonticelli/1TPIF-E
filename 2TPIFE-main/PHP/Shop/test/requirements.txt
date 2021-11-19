@@ -1,0 +1,20 @@
+create a form in html/php with one button, one select with three options:
+DISPLAY
+    red boxes
+    blue boxes  
+    yellow boxes
+
+ADD
+    to the form one more input box
+
+WHEN    
+    we submit the form, we need to keep the selecter colour as the current selection.
+
+WHEN
+    the form is submited (sending the user to the same page), you have to 
+    store the value that the user submited in the input box into a SESSION
+    variable and DISPLAY a number of boxes equal to the given input with the 
+    colour of the user's choice.
+
+We also need to display a full histor of the number of boxes that the user has "previously" 
+displayed in the page.

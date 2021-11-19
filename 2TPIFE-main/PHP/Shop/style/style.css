@@ -1,0 +1,46 @@
+body {
+    background-color: #d5f9de;
+}
+
+/*Top part of the website*/
+
+#bigsqua {
+    background-color: #a3b6d4;
+}
+
+.prod {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: absolute;
+    background-color: #949ac0;
+}
+
+.box{
+    display:inline-block;
+    text-align: center;
+    width: 33%;
+    height: 100%;
+    margin: 0.1%;
+}
+
+.bellow {
+    display: flex;
+    flex-direction: column;
+    background-color:#98a0d6;
+}
+
+.tag {
+    font-family: Verdana;
+    text-align: center;
+    font-size: 16px;
+}
+
+.name {
+    font-size: 48px;
+}
+
+.product_image {
+    width: 150px;
+    height: 150px;
+}

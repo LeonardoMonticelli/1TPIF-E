@@ -1,0 +1,21 @@
+v/*
+
+Inside this php script you are requested to do two things:
+
+1. Read all the numbers from the file named data.txt -> sum them and print them out 
+
+in html.
+
+
+
+2. Add one input + button in a form to this page. When the button is pressed,
+
+and the page reloaded, read the number from the input, search it inside the
+
+data.txt file and print out how many times did you find it (COUNT the occurrences of
+
+the given number).
+
+
+
+*/ 

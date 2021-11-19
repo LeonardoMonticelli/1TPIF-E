@@ -1,0 +1,13 @@
+Session exercise to be solved:
+
+Create one php script that will add numbers to a sum
+that you store in a session variable.
+ 
+You need to create a form with one input and a button -> add
+ 
+You need to continuously ADD the number that the user 
+has entered to a value that is PERSISTENT (in the server's memory).
+ 
+You also need to display the value of the sum that the server has added so far.
+ 
+If, the user has JUST landed on the webpage, initialize your sum with 0.

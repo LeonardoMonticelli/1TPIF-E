@@ -1,0 +1,58 @@
+--1
+create table copy_d_cds as select * from d_cds
+--2
+INSERT INTO copy_d_cds(cd_number,title,producer,year)
+VALUES(97,'Celebrate the Day','R & B Inc.','2003');
+
+INSERT INTO copy_d_cds(cd_number,title,producer,year)
+VALUES(98,'Holiday Tunes for All Ages','Tunes are Us','2004');
+
+INSERT INTO copy_d_cds(cd_number,title,producer,year)
+VALUES(99,'Party Music','Old Town Records','2004');
+
+INSERT INTO copy_d_cds(cd_number,title,producer,year)
+VALUES(100,'Best of Rock and Roll','Old Town Records','2004');
+--3
+create table copy_d_songs as select * from d_songs
+--4
+INSERT INTO copy_d_songs VALUES(52,'Surfing Summer',NULL,NULL,12);
+
+INSERT INTO copy_d_songs VALUES(53,'Victory Victory','5 min',NULL,12);
+--5
+create table copy_d_clients as select * from d_clients;
+--6
+INSERT INTO copy_d_clients(client_number,first_name,last_name,phone,email) VALUES(6655,'Ayako','Dahish',3608859030,'dahisha@harbor.net');
+
+INSERT INTO copy_d_clients(client_number,first_name,last_name,phone,email) VALUES(6689,'Nick','Neuville',3608859030,'nnicky@charter.net');
+--7
+create table copy_d_events as select * from d_events;
+--8
+INSERT INTO copy_d_events(id,name,event_date,description,cost,venue_id,package_code,theme_code,client_number) VALUES(110,'Ayako Anniversary',TO_DATE('07-Jul-2004','dd-Mon-yyyy'),'Party for 50, sixties dress, decorations',0,245,79,240,6655);
+
+INSERT INTO copy_d_events(id,name,event_date,description,cost,venue_id,package_code,theme_code,client_number) VALUES(115,'Neuville Sports Banquet',TO_DATE('09-Sep-2004','dd-Mon-yyyy'),'Barbecue at residence, college alumni, 100 people',0,315,87,340,6689);
+--9
+create table copy_employees as select employee_id, first_name, last_name from employees where job_id='SA_REP';
+--10
+create table copy_f_food_items as select * from f_food_items;
+--11
+UPDATE copy_f_food_items  SET price = 3.75
+WHERE LOWER(description) = 'strawberry shake';
+
+UPDATE copy_f_food_items  SET price = 1.20
+WHERE LOWER(description) = 'fries';
+--12
+create table copy_f_orders as select * from f_orders;
+--13
+INSERT INTO copy_f_orders(order_number,order_date,order_total,cust_id,staff_id) VALUES(5680,TO_DATE('June 12, 2004','fmMonth dd, yyyy'),159.78,145,9);
+
+INSERT INTO copy_f_orders(order_number,order_date,order_total,cust_id,staff_id) VALUES(5691,TO_DATE('09-23-2004','mm-dd-yyyy'),145.98,225,12);
+
+INSERT INTO copy_f_orders(order_number,order_date,order_total,cust_id,staff_id) VALUES(5701,TO_DATE('July 4, 2004','fmMonth dd, yyyy'),229.31,230,12);
+--14
+create table copy_f_customers as select * from f_customers;
+--15
+INSERT INTO copy_f_customers(id,first_name,last_name,address,city,state,zip,phone_number) VALUES(145,'Katie','Hernandez','92 Chico Way','Los Angeles','CA',98008,'8586667641');
+
+INSERT INTO copy_f_customers(id,first_name,last_name,address,city,state,zip,phone_number) VALUES(225,'Daniel','Spode','1923 Silverado','Denver','CO',80219,'7193343523');
+
+INSERT INTO copy_f_customers(id,first_name,last_name,address,city,state,zip,phone_number) VALUES(230,'Adam','Zurn','5 Admiral Way','Seattle','WA',0,'4258879009');

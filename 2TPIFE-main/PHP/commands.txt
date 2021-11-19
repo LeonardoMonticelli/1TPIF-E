@@ -1,0 +1,15 @@
+arrays [$_SESSION, $_GET, $_POST]
+for 
+foreach
+while
+if
+else
+include_once
+isset
+fopen
+fgets
+explode
+trim
+array_push
+array_sum
+function()

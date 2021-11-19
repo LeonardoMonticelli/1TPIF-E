@@ -1,0 +1,6 @@
+Dacia.jpg, 10000, 20, greenBack, 18
+Mercedes.jpg, 50000, 10, yellowBack, 9
+Ford.jpg, 20000, 50, blueBack, 9
+Ferrari.jpg, 100000, 5, blueBack, 3
+Renault.jpg, 24000, 40, yellowBack, 40
+Audi.jpg, 44000, 15, greenBack, 12
