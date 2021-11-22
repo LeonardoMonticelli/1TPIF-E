@@ -30,7 +30,7 @@
             die("Connection failed: " . $conn->connect_error);
         }
 
-        if($_GET["choiceOfPrice"]==0){
+        if($_GET["choiceOfPrice"]){
             $sqlSelect = $conn->prepare("SELECT * from Cars where CarPrice<?");
             $sqlSelect->bind_param("i", $_GET["givenPrice"]);
         } elseif($_GET["choiceOfPrice"]==1){
