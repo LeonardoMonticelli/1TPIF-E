@@ -17,7 +17,12 @@
     </style>
 </head>
 <body>
-    Type in a max price:<input type="text" id="maxPrice"><button>Filter</button>
+    Type in a 
+    <select name="" id="choiceOfPrice">
+        <option value="0">Max</option>
+        <option value="1">Min</option>
+    </select>
+     price: <input type="text" id="givenPrice"><button>Filter</button>
     <table>
 
     </table>

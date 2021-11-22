@@ -30,11 +30,13 @@
             die("Connection failed: " . $conn->connect_error);
         }
 
-        if(isset($_GET["maxPrice"])){
-            $sqlSelect = $conn->prepare("SELECT * from Cars where");
-        }
-        else{
-            $sqlSelect = $conn->prepare("SELECT * from Cars");
+        if($_GET["choiceOfPrice"]==0){
+            $sqlSelect = $conn->prepare("SELECT * from Cars where CarPrice<?");
+            $sqlSelect->bind_param("i", $_GET["givenPrice"]);
+        } elseif($_GET["choiceOfPrice"]==1){
+            // $sqlSelect = $conn->prepare("SELECT * from Cars");
+            $sqlSelect = $conn->prepare("SELECT * from Cars where CarPrice>?");
+            $sqlSelect->bind_param("i", $_GET["givenPrice"]);
         }
         // no bind - display all
 

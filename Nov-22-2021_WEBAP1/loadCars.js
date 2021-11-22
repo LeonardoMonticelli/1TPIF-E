@@ -8,5 +8,5 @@ function start(){
 
 function buttonClicked(){
     // alert("you have set the maximum price to "+$("#maxPrice").val());
-    $("table").load("carList.php");
+    $("table").load("carList.php?givenPrice="+$("#givenPrice").val());
 }
