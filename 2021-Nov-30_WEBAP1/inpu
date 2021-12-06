@@ -1,0 +1,18 @@
+        if(isset($_GET["birds"])){
+            switch ($_GET["birds"]){
+                case "duck":
+                    for($i=0; $i < $_GET["duck"]; $i++){
+                        ?>
+                            <img src="duck.jpg">
+                        <?php
+                    }
+                    break;
+                case "chicken":
+                    for($i=0; $i < $_GET["chicken"]; $i++){
+                        ?>
+                            <img src="chicken.jpg">
+                        <?php
+                    }
+                    break;
+            }
+        }

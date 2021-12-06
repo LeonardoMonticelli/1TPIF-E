@@ -1,13 +1,18 @@
 $(start);
 
 function start(){
-    $("#giveDucks").on("click",callDucks);
+    $("#giveBirds").on("click",callDucks);
 }
 
 function callDucks() { 
     // alert("The ducks come from the trucks");
-    let myInputVal = $("#duck").val();
+    let myInputVal = $("#numberOfBirds").val();
     let newDiv =$("<div></div>");
-    $("#output").load(`dataProvider.php?duck=${myInputVal}`);
-    $("#birds").append(newDiv);
+    if($("#birds").val()=="duck"){
+        newDiv.load(`dataProvider.php?duck=${myInputVal}`);
+    } else if ($("#birds").val()=="chicken"){
+        newDiv.load(`dataProvider.php?chicken=${myInputVal}`);
+    }
+    // $("#output").load(`dataProvider.php?chicken=${myInputVal}`);
+    $("#output").append(newDiv);
 }
