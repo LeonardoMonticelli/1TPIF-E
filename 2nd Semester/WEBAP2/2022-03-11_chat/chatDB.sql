@@ -1,9 +1,9 @@
--- drop database chat;
+drop database chat;
 create database chat;
 use chat;
 
 create table users(
-    userID int not null auto-increment,
+    userID int not null auto_increment,
     userName varchar(20),
     primary key (userID)
 );
