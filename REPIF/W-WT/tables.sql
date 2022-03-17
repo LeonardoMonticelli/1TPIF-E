@@ -11,19 +11,19 @@ CREATE TABLE `Script` (
 
 CREATE TABLE `SmartBox` (
   HostName varchar(16),
-  Description varchar(50),
-  Location varchar(50),
+  `Description` varchar(50),
+  `Location` varchar(50),
   PRIMARY KEY (HostName)
 );
 
-CREATE TABLE `User` (
+CREATE TABLE `Users` (
   UserNo INT NOT NULL AUTO_INCREMENT,
-  Name varchar(50),
+  UserName varchar(50),
   FirstName varchar(50),
   LastName varchar(50),
   Technician BOOL,
   Email varchar(50),
-  Passwd varchar(50),
+  `Password` varchar(200),
   PRIMARY KEY (UserNo)
 );
 
@@ -51,7 +51,7 @@ CREATE TABLE `Event` (
   HostName varchar(16),
   PinNo INT,
   EventCode CHAR(1),
-  Description varchar(50),
+  `Description` varchar(50),
   PRIMARY KEY (EventID),
   FOREIGN KEY (HostName) REFERENCES Pin (HostName),
   FOREIGN KEY (PinNo) REFERENCES Pin (PinNo),
@@ -65,7 +65,7 @@ CREATE TABLE switch_execute(
   EventCode VARCHAR(1),
   GroupNo INT,
   TargetFunctionCode VARCHAR(1) NOT NULL,
-  Description VARCHAR(50),
+  `Description` VARCHAR(50),
   SequenceNo INT,
   WaitingDuration INT,
   PRIMARY KEY (ExecID),
@@ -97,5 +97,15 @@ CREATE TABLE manage(
    UserNo INT,
    PRIMARY KEY(HostName),
    FOREIGN KEY(HostName) REFERENCES SmartBox(HostName),
-   FOREIGN KEY(UserNo) REFERENCES User(UserNo)
+   FOREIGN KEY(UserNo) REFERENCES Users(UserNo)
+);
+
+INSERT INTO Users (UserNo, UserName, FirstName, LastName, Technician, Email, `Password`) VALUES (
+    1,
+    "monle399",
+    "Leonardo",
+    "Monticelli",
+    TRUE,
+    "monle399@school.lu",
+    "$2y$10$qQZq4AtwobsBjI60lxTRIu39jCdN3rkYS3MaVIgu1HYSWDwdoj3Oy"
 );
