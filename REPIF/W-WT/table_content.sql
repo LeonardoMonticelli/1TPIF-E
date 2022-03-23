@@ -1,6 +1,7 @@
-INSERT INTO Script (ScriptName, `Path`, `Description`) VALUES (
+INSERT INTO `Script` (ScriptName, `Path`, `Content`) VALUES (
     "TestScript",
-    "/tmp/test.sh",
+    "/script/test.sh", 
+    -- change the path so when saving the script, the name matches the one put on to save
     "A test script from the Example Dataset"
 );
 
@@ -10,19 +11,19 @@ INSERT INTO SmartBox (HostName, `Description`, `Location`) VALUES (
     "Virtual"
 );
 
-INSERT INTO Users (UserNo, `Name`, FirstName, Technician, Email, Passwd) VALUES (
+INSERT INTO Users (UserNo, UserName, FirstName, LastName, Technician, Email, `Password`) VALUES (
     1,
-    "Monticelli",
+    "monle399",
     "Leonardo",
+    "Monticelli",
     TRUE,
     "monle399@school.lu",
-    "to_be_invalidated"
+    "$2y$10$MrrHYVQY08WE3pKYSrZoDevCpqYh/B/WKZgy6MbO.H.V4Vk06bRRy"
 );
 
-INSERT INTO Groups (GroupNo, GroupName, `Description`, HostName) VALUES (
+INSERT INTO `Group` (GroupNo, GroupName, HostName) VALUES (
     1,
     "Test Group",
-    "Example group from Example Dataset",
     "1.monle399.local"
 );
 
@@ -33,7 +34,7 @@ INSERT INTO Pin (HostName, PinNo, Input, Designation) VALUES (
     "Example Designation from Example Dataset"
 );
 
-INSERT INTO Events (HostName, PinNo, EventCode, `Description`) VALUES (
+INSERT INTO `Event` (HostName, PinNo, EventCode, `Description`) VALUES (
     "1.monle399.local",
     1,
     "a",

@@ -5,7 +5,7 @@ use WT;
 CREATE TABLE `Script` (
   `ScriptName` varchar(50),
   `Path` varchar(50),
-  `Description` varchar(50),
+  `Content` varchar(500),
   PRIMARY KEY (ScriptName)
 );
 
@@ -98,14 +98,4 @@ CREATE TABLE manage(
    PRIMARY KEY(HostName),
    FOREIGN KEY(HostName) REFERENCES SmartBox(HostName),
    FOREIGN KEY(UserNo) REFERENCES Users(UserNo)
-);
-
-INSERT INTO Users (UserNo, UserName, FirstName, LastName, Technician, Email, `Password`) VALUES (
-    1,
-    "monle399",
-    "Leonardo",
-    "Monticelli",
-    TRUE,
-    "monle399@school.lu",
-    "$2y$10$qQZq4AtwobsBjI60lxTRIu39jCdN3rkYS3MaVIgu1HYSWDwdoj3Oy"
 );

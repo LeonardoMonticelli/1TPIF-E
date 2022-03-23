@@ -6,14 +6,14 @@
                 if($pageLink == $explodedLink[$sizeExpLinkArray-1])
                 {
                     ?>
-                    <a class="activeLink" href="<?=$pageLink?>">
+                    <a class="activeLink Link" href="<?=$pageLink?>">
                         <?=$pageText?>
                     </a>
                     <?php
                 }
                 else {  
                     ?>
-                    <a class="inactiveLink" href="<?=$pageLink?>">
+                    <a class="inactiveLink Link" href="<?=$pageLink?>">
                     <?=$pageText?>
                     </a>
                     <?php

@@ -1,25 +1,16 @@
-<?php //connect to the DB
-    $dbHost="localhost";
-    $dbUser="root";
-    $dbPassword="";
-    $dbName="WT";
-
-    $conn= new mysqli($dbHost, $dbUser, $dbPassword, $dbName);
-
-    if($conn->connect_error){
-        die("Connection failed: ".$conn->connect_error);
-    }
-?>
-
 <?php //head
-    $pageTitle ="home";
+    $pageTitle ="Home";
     include_once "htmlHead.php";
+    include_once "connectToDB.php";
+    include_once "sessionCheck.php";
 ?>
 
 <body>
     <?php //insert php
-        include_once "sessionCheck.php";
-        if($_SESSION["isUserLoggedIn"]==true){
+        if($_SESSION["isUserLoggedIn"]==false){
+            header("Location: /index.php");
+            exit;
+        } else {
             include_once "navigationBar.php";
         }
     ?>
@@ -39,7 +30,7 @@
     <?php
         if(isset($_POST["username"],$_POST["password"])){
 
-            $sql = $conn->prepare("select * from users where UserName=?");
+            $sql = $connection->prepare("select * from users where UserName=?");
             if(!$sql){
                 die("Error in the sql");
             }
