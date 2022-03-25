@@ -21,6 +21,7 @@
 //create: use a form to fill in
 
 //select: select a sb from a scrollabe list
+
 //update: select a smartbox to modify
 
 //delete: button that deletes the smartbox from the database
