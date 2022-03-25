@@ -47,11 +47,12 @@
                         print "Your username is not in our database";
                     } else {
                         $row = $result->fetch_assoc();
+                        var_dump($row);
                         if(password_verify($_POST["password"],$row["Password"])){
                             print "You are now logged in";
                             $_SESSION["isUserLoggedIn"] = true;
                             $_SESSION["currentUser"] = htmlentities($_POST["username"]);
-                            header("Location: index.php"); // to reload the page after logging in
+                            header("Location: index.php");
                         } else {
                             print "The data you provided does not match with the one in our servers.";
                         }
@@ -62,9 +63,6 @@
             else{
                     echo "Welcome " .$_SESSION['currentUser'];
                     ?>
-                        <form method="post">
-                            <input type="submit" name="logout" value="Logout">
-                        </form>
                     <?php
             }
         ?>

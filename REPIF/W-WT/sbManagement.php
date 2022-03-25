@@ -14,7 +14,7 @@
             include_once "navigationBar.php";
         }
     ?>
-    <div class="scrollable">
+    <div class="">
         
     </div>
 </body>
@@ -32,8 +32,9 @@
 
 //assign smartboxes to users
 
-//define inputs and outputs
+//PINS define inputs and outputs
 
 //save the configurations
 
 ?>
+</html>

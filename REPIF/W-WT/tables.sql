@@ -2,100 +2,93 @@ drop database WT;
 create database WT;
 use WT;
 
-CREATE TABLE `Script` (
-  `ScriptName` varchar(50),
-  `Path` varchar(50),
-  `Content` varchar(500),
-  PRIMARY KEY (ScriptName)
+CREATE TABLE Script(
+   ScriptName VARCHAR(50) NOT NULL,
+   `Path` VARCHAR(50) NOT NULL,
+   `Description` VARCHAR(500) NOT NULL,
+   PRIMARY KEY(ScriptName)
 );
 
-CREATE TABLE `SmartBox` (
-  HostName varchar(16),
-  `Description` varchar(50),
-  `Location` varchar(50),
-  PRIMARY KEY (HostName)
+CREATE TABLE SmartBox(
+   `HostName` VARCHAR(50) NOT NULL,
+   `Description` VARCHAR(50) NOT NULL,
+   `Location` VARCHAR(50) NOT NULL,
+   PRIMARY KEY(HostName)
 );
 
-CREATE TABLE `Users` (
-  UserNo INT NOT NULL AUTO_INCREMENT,
-  UserName varchar(50),
-  FirstName varchar(50),
-  LastName varchar(50),
-  Technician BOOL,
-  Email varchar(50),
-  `Password` varchar(200),
-  PRIMARY KEY (UserNo)
+CREATE TABLE Users(
+   UserNo INT not null AUTO_INCREMENT,
+   UserName VARCHAR(50) NOT NULL,
+   FullName VARCHAR(50) NOT NULL,
+   Technician BOOLEAN,
+   Email VARCHAR(50) NOT NULL ,
+   `Password` VARCHAR(255) NOT NULL,
+   HostName VARCHAR(50),
+   PRIMARY KEY(UserNo),
+   FOREIGN KEY(HostName) REFERENCES SmartBox(HostName) ON DELETE CASCADE
 );
 
-CREATE TABLE `Group` (
-  GroupNo INT NOT NULL AUTO_INCREMENT,
-  GroupName varchar(20),
-  HostName VARCHAR(16) NOT NULL,
-  PRIMARY KEY (GroupNo),
-  FOREIGN KEY (HostName) REFERENCES SmartBox (HostName)
+CREATE TABLE `Groups`(
+   GroupNo INT not null AUTO_INCREMENT,
+   GroupName VARCHAR(20) NOT NULL,
+   `Description` VARCHAR(50) NOT NULL,
+   HostName VARCHAR(50),
+   PRIMARY KEY(GroupNo),
+   FOREIGN KEY(HostName) REFERENCES SmartBox(HostName) ON DELETE CASCADE
 );
 
-CREATE TABLE `Pin` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `HostName` varchar(16) NOT NULL,
-  `PinNo` INT,
-  `Input` INT,
-  `Designation` varchar(50),
-  PRIMARY KEY (id),
-  FOREIGN KEY (HostName) REFERENCES SmartBox (HostName),
-  CONSTRAINT PIN_PINNO_UQ UNIQUE (PinNo)
+CREATE TABLE Pin(
+   PinNo INT not null AUTO_INCREMENT,
+   HostName VARCHAR(50),
+   Input INT NOT NULL,
+   Designation VARCHAR(50) NOT NULL,
+   PRIMARY KEY(PinNo),
+   FOREIGN KEY(HostName) REFERENCES SmartBox(HostName) ON DELETE CASCADE
 );
 
-CREATE TABLE `Event` (
-  EventID INT NOT NULL AUTO_INCREMENT,
-  HostName varchar(16),
-  PinNo INT,
-  EventCode CHAR(1),
-  `Description` varchar(50),
-  PRIMARY KEY (EventID),
-  FOREIGN KEY (HostName) REFERENCES Pin (HostName),
-  FOREIGN KEY (PinNo) REFERENCES Pin (PinNo),
-  CONSTRAINT EVENT_EVENTCODE_UQ UNIQUE (EventCode)
+CREATE TABLE `Events`(
+   PinNo INT,
+   HostName VARCHAR(50),
+   EventCode VARCHAR(1) NOT NULL,
+   `Description` VARCHAR(50) NOT NULL,
+   PRIMARY KEY(PinNo),
+   FOREIGN KEY(PinNo) REFERENCES Pin(PinNo) ON DELETE CASCADE,
+   FOREIGN KEY(HostName) REFERENCES SmartBox(HostN ame) ON DELETE CASCADE
 );
 
-CREATE TABLE switch_execute(
-  ExecID INT NOT NULL AUTO_INCREMENT,
-  HostName VARCHAR(16),
-  PinNo INT,
-  EventCode VARCHAR(1),
-  GroupNo INT,
-  TargetFunctionCode VARCHAR(1) NOT NULL,
-  `Description` VARCHAR(50),
-  SequenceNo INT,
-  WaitingDuration INT,
-  PRIMARY KEY (ExecID),
-  FOREIGN KEY (HostName) REFERENCES SmartBox(HostName),
-  FOREIGN KEY (PinNo) REFERENCES Pin(PinNo),
-  FOREIGN KEY (EventCode) REFERENCES `Event`(EventCode)
+CREATE TABLE `Switch_Execute`(
+   ExecId INT NOT NULL AUTO_INCREMENT,
+   HostName VARCHAR(50),
+   PinNo INT,
+   EventCode VARCHAR(1),
+   GroupNo INT,
+   TargetFunctionCode VARCHAR(1) NOT NULL,
+   `Description` VARCHAR(50) NOT NULL,
+   SequenceNo INT NOT NULL,
+   WaitingDuration INT NOT NULL,
+   PRIMARY KEY(ExecId),
+   FOREIGN KEY(HostName) REFERENCES SmartBox(HostName) ON DELETE CASCADE,
+   FOREIGN KEY(PinNo) REFERENCES Pin(PinNo) ON DELETE CASCADE,
+   FOREIGN KEY(EventCode) REFERENCES `Events`(EventCode) ON DELETE CASCADE,
+   FOREIGN KEY(GroupNo) REFERENCES `Groups`(GroupNo) ON DELETE CASCADE
 );
 
-CREATE TABLE `use` (
+CREATE TABLE `Use`(
+   useid INT NOT NULL AUTO_INCREMENT,
    GroupNo INT,
    ScriptName VARCHAR(50),
-   PRIMARY KEY (GroupNo),
-   FOREIGN KEY (GroupNo) REFERENCES `Group`(GroupNo),
-   FOREIGN KEY (ScriptName) REFERENCES Script(ScriptName)
+   PRIMARY KEY(useid),
+   FOREIGN KEY(GroupNo) REFERENCES `Groups`(GroupNo) ON DELETE CASCADE,
+   FOREIGN KEY(ScriptName) REFERENCES Script(ScriptName) ON DELETE CASCADE
 );
 
-CREATE TABLE concern(
+CREATE TABLE Concern(
+   ConcernId INT NOT NULL AUTO_INCREMENT,
    GroupNo INT,
-   HostName VARCHAR(16),
+   HostName VARCHAR(50),
    PinNo INT,
-   PRIMARY KEY(GroupNo),
-   FOREIGN KEY (GroupNo) REFERENCES `Group`(GroupNo),
-   FOREIGN KEY (HostName) REFERENCES SmartBox(HostName),
-   FOREIGN KEY (PinNo) REFERENCES Pin(PinNo)
-);
-
-CREATE TABLE manage(
-   HostName VARCHAR(16),
-   UserNo INT,
-   PRIMARY KEY(HostName),
-   FOREIGN KEY(HostName) REFERENCES SmartBox(HostName),
-   FOREIGN KEY(UserNo) REFERENCES Users(UserNo)
+   PRIMARY KEY(ConcernId),
+   FOREIGN KEY(GroupNo) REFERENCES `Groups`(GroupNo) ON DELETE CASCADE,
+   FOREIGN KEY(HostName) REFERENCES SmartBox(HostName) ON DELETE CASCADE,
+   FOREIGN KEY(PinNo) REFERENCES Pin(PinNo) ON DELETE CASCADE
 );

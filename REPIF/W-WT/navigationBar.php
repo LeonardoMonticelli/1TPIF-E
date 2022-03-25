@@ -1,4 +1,8 @@
-<div class="navigation">
+<?php //head
+    $pageTitle ="SmartBox Management";
+    include_once "sessionCheck.php";
+?>
+<div class="navigation bg-dark p-2">
         <?php
             function addNavLink($pageLink,$pageText){
                 $explodedLink=explode("/",$_SERVER["REQUEST_URI"]);
@@ -6,22 +10,23 @@
                 if($pageLink == $explodedLink[$sizeExpLinkArray-1])
                 {
                     ?>
-                    <a class="activeLink Link" href="<?=$pageLink?>">
+                    <a class="text-decoration-none text-muted p-1" href="<?=$pageLink?>">
                         <?=$pageText?>
                     </a>
                     <?php
                 }
                 else {  
                     ?>
-                    <a class="inactiveLink Link" href="<?=$pageLink?>">
+                    <a class="text-decoration-none text-light p-1" href="<?=$pageLink?>">
                     <?=$pageText?>
                     </a>
                     <?php
                 }
             }
-                $navigationLinks=["index.php"=>"Home","sbManagement.php"=>"SmartBox Management","administration.php"=>"Administration"];
+                $navigationLinks=["index.php"=>"Home","sbManagement.php"=>"SmartBox Management","pins.php"=>"Pin Management","administration.php"=>"Administration", "logout.php"=>"Log Out"];
                 foreach ($navigationLinks as $key => $value) {
                         addNavLink($key,$value);
                 }
         ?>
 </div>
+<br>
