@@ -1,3 +1,5 @@
+use WT;
+
 INSERT INTO `Script` (ScriptName, `Path`, `Content`) VALUES (
     "TestScript",
     "/script/test.sh", 
