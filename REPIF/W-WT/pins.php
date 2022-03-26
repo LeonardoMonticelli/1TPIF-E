@@ -6,7 +6,10 @@
 ?>
     <body>
         <?php
-            if($_SESSION['isUserLoggedIn']==true){
+            if($_SESSION["isUserLoggedIn"]==false){
+                header("Location: index.php");
+                exit;
+            } else {
                 include_once "navigationBar.php";
             }
 
@@ -56,12 +59,12 @@
                     $sqlDelete->bind_param("i", $delval);
                     $sqlDelete->execute();
 
-                    $sqlDelete2 = $connection->prepare("DELETE from Pin where PinNo=?");
-                    if(!$sqlDelete2){
-                        die("Error in sql select statement");
-                    }
-                    $sqlDelete2->bind_param("i", $delval);
-                    $sqlDelete2->execute();
+                    // $sqlDelete2 = $connection->prepare("DELETE from Pin where PinNo=?");
+                    // if(!$sqlDelete2){
+                    //     die("Error in sql select statement");
+                    // }
+                    // $sqlDelete2->bind_param("i", $delval);
+                    // $sqlDelete2->execute();
                 }
             }  else {
                 print "Something went wrong selecting data";

@@ -10,7 +10,7 @@ CREATE TABLE Script(
 );
 
 CREATE TABLE SmartBox(
-   `HostName` VARCHAR(50) NOT NULL,
+   `HostName` VARCHAR(50) NOT NULL unique,
    `Description` VARCHAR(50) NOT NULL,
    `Location` VARCHAR(50) NOT NULL,
    PRIMARY KEY(HostName)
@@ -29,7 +29,7 @@ CREATE TABLE Users(
 );
 
 CREATE TABLE `Groups`(
-   GroupNo INT not null AUTO_INCREMENT,
+   GroupNo INT not null AUTO_INCREMENT unique,
    GroupName VARCHAR(20) NOT NULL,
    `Description` VARCHAR(50) NOT NULL,
    HostName VARCHAR(50),
@@ -38,7 +38,7 @@ CREATE TABLE `Groups`(
 );
 
 CREATE TABLE Pin(
-   PinNo INT not null AUTO_INCREMENT,
+   PinNo INT not null AUTO_INCREMENT unique,
    HostName VARCHAR(50),
    Input INT NOT NULL,
    Designation VARCHAR(50) NOT NULL,
@@ -49,11 +49,11 @@ CREATE TABLE Pin(
 CREATE TABLE `Events`(
    PinNo INT,
    HostName VARCHAR(50),
-   EventCode VARCHAR(1) NOT NULL,
+   EventCode VARCHAR(1) NOT NULL unique,
    `Description` VARCHAR(50) NOT NULL,
    PRIMARY KEY(PinNo),
    FOREIGN KEY(PinNo) REFERENCES Pin(PinNo) ON DELETE CASCADE,
-   FOREIGN KEY(HostName) REFERENCES SmartBox(HostN ame) ON DELETE CASCADE
+   FOREIGN KEY(HostName) REFERENCES SmartBox(HostName) ON DELETE CASCADE
 );
 
 CREATE TABLE `Switch_Execute`(

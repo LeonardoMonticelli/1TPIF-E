@@ -1,3 +1,4 @@
+use WT;
 INSERT INTO SmartBox (HostName, `Description`, `Location`)
 VALUES ('SB_1','ModelA','Building1-apartment3');
 
