@@ -1,4 +1,5 @@
 use WT;
+
 INSERT INTO SmartBox (HostName, `Description`, `Location`)
 VALUES ('SB_1','ModelA','Building1-apartment3');
 
@@ -9,13 +10,13 @@ INSERT INTO SmartBox (HostName, `Description`, `Location`)
 VALUES ('SB_23','ModelB','Building4-petshop');
 
 INSERT INTO Pin (HostName, PinNo, Input, Designation)
-VALUES ('SB_1','7', 1, 'GPIO4'); 
+VALUES ('SB_1',7, 1, 'GPIO4'); 
 
 INSERT INTO Pin (HostName, PinNo, Input, Designation)
-VALUES ('SB_1','11', 1, 'GPIO17');
+VALUES ('SB_2',11, 1, 'GPIO17');
 
 INSERT INTO Pin (HostName, PinNo, Input, Designation)
-VALUES ('SB_7','33', 0, 'GPIO13');
+VALUES ('SB_7',33, 0, 'GPIO13');
 
 INSERT INTO Pin (HostName, PinNo, Input, Designation)
 VALUES ('SB_23','35', 0, 'GPIO19');
@@ -28,19 +29,20 @@ VALUES (3,'ALL','All lamps', 'SB_23');
 
 INSERT INTO Groups (GroupNo, GroupName, `Description`, HostName)
 VALUES (11,'GARAGE','Garage door', 'SB_1');
-INSERT INTO Groups (GroupNo, GroupName, `Description`, HostName)
-VALUES (13,'FLUR','Hallway lamps', 'SB_1');
 
-INSERT INTO Concern (GroupNo, HostName, PinNo)
+INSERT INTO Groups (GroupNo, GroupName, `Description`, HostName)
+VALUES (13,'FLUR','Hallway lamps', 'SB_2');
+
+INSERT INTO SmartBoxAccess (GroupNo, HostName, PinNo)
 VALUES (11,'SB_1', 7); 
 
-INSERT INTO Concern (GroupNo, HostName, PinNo)
-VALUES (13,'SB_1', 11); 
+INSERT INTO SmartBoxAccess (GroupNo, HostName, PinNo)
+VALUES (13,'SB_2', 11); 
 
-INSERT INTO Concern (GroupNo, HostName, PinNo)
+INSERT INTO SmartBoxAccess (GroupNo, HostName, PinNo)
 VALUES (1,'SB_7', 33); 
 
-INSERT INTO Concern (GroupNo, HostName, PinNo)
+INSERT INTO SmartBoxAccess (GroupNo, HostName, PinNo)
 VALUES (3,'SB_23', 35); 
 
 INSERT INTO Script (ScriptName, `Path`, `Description`)
