@@ -13,9 +13,6 @@ INSERT INTO Pin (HostName, PinNo, Input, Designation)
 VALUES ('SB_1',7, 1, 'GPIO4'); 
 
 INSERT INTO Pin (HostName, PinNo, Input, Designation)
-VALUES ('SB_2',11, 1, 'GPIO17');
-
-INSERT INTO Pin (HostName, PinNo, Input, Designation)
 VALUES ('SB_7',33, 0, 'GPIO13');
 
 INSERT INTO Pin (HostName, PinNo, Input, Designation)

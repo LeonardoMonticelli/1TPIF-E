@@ -23,6 +23,20 @@ INSERT INTO `group` (`GroupNo`, `GroupName`, `Description`, `HostName`) VALUES
 (3,    'Group 2',    'g2',    'b1.project.gg'),
 (4,    'group 2',    'testing group',    'b1.project.gg');
 
+DROP TABLE IF EXISTS `pin`;
+CREATE TABLE `pin` (
+  `PinNo` int NOT NULL AUTO_INCREMENT,
+  `HostName` varchar(16) DEFAULT NULL,
+  `Input` int DEFAULT NULL,
+  `Designation` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`PinNo`),
+  KEY `HostName` (`HostName`),
+  CONSTRAINT `pin_ibfk_1` FOREIGN KEY (`HostName`) REFERENCES `smartbox` (`HostName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `pin` (`HostName`, `PinNo`, `Input`, `Designation`)
+VALUES ('SB_1',7, 1, 'GPIO4');
+
 DROP TABLE IF EXISTS `script`;
 CREATE TABLE `script` (
   `ScriptName` varchar(50) NOT NULL,
@@ -49,7 +63,7 @@ CREATE TABLE `smartbox` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `smartbox` (`HostName`, `Description`, `Location`, `UserNo`) VALUES
-('b1.project.gg',    'box 1',    'US',    NULL);
+('SB_1',    'box 1',    'US',    NULL);
 
 DROP TABLE IF EXISTS `smartboxaccess`;
 CREATE TABLE `smartboxaccess` (
@@ -82,15 +96,15 @@ INSERT INTO `use` (`GroupNo`, `ScriptName`) VALUES
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `UserNo` int(11) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(50) DEFAULT NULL,
+  `UserName` varchar(50) DEFAULT NULL,
   `FirstName` varchar(50) DEFAULT NULL,
   `LastName` varchar(50) DEFAULT NULL,
-  `Technician` tinyint(1) DEFAULT NULL,
+  `Technician` BOOLEAN DEFAULT NULL,
   `Email` varchar(50) DEFAULT NULL,
-  `Passwd` varchar(255) DEFAULT NULL,
+  `Password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`UserNo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `user` (`UserNo`, `Name`, `FirstName`, `LastName`, `Technician`, `Email`, `Passwd`) VALUES
-(2,    'user',    'user a',    'user b',    0,    'user@user.user',    '$2y$10$Ml1zpYqXa0xkL2p8k2ikj.PBMFPdWzQdEznG6/bElwBuXqeBUUPpm'),
-(3,    'admin',    'admin',    'admin',    1,    'admin@admin.admin',    '$2y$10$RjKwISE.He6GjhbxCe8LjerfN70K1DijzXHDgcgNUHFxtTTReAEVa');
+INSERT INTO `user` (`UserNo`, `UserName`, `FirstName`, `LastName`, `Technician`, `Email`, `Password`) VALUES
+(2,    'user',    'user a',    'user b',    0,    'user@user.user',    '$2y$10$L.MK2NHnt/dJGQhxJE8uL.fTP22kjLNQ3s53IVVJMYgH4b.Zl7.W6'),
+(3,    'admin',    'admin',    'admin',    1,    'admin@admin.admin',    '$2y$10$L.MK2NHnt/dJGQhxJE8uL.fTP22kjLNQ3s53IVVJMYgH4b.Zl7.W6');

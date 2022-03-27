@@ -15,7 +15,8 @@
         <?php
             if(!$_SESSION['isUserLoggedIn']){?>
 
-                <div class="">
+                <div class="form-group m-3">
+                    <div>Login</div>
                     <form method="post">
 
                         <label>Username</label>
@@ -27,11 +28,11 @@
 
                     </form>
                 </div>
-
+                <a class="m-3" href="signup.php">Don't have an account?</a>
             <?php
                 if(isset($_POST["username"],$_POST["password"])){
 
-                    $sql = $connection->prepare("select * from users where UserName=?");
+                    $sql = $connection->prepare("select * from user where UserName=?");
                     if(!$sql){
                         die("Error in the sql");
                     }

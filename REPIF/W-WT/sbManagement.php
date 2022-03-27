@@ -20,32 +20,40 @@
         if ($result) {
             while ($row = $result->fetch_assoc()) {
     ?>
-            <div class="container">
-                <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
 
-                    <div class="col-md-auto border">
-                        <?= $row["HostName"] ?>
-                    </div>
-                    <div class="col-md-auto border">
-                        <?= $row["Description"] ?>
-                    </div>
-                    <div class="col-md-auto border">
-                        <?= $row["Location"] ?>
-                    </div>
-                    <div class="col-md-auto border">
-                        <form method="POST">
-                            <input type="hidden" name="editSB" value="<?= $row["HostName"] ?>">
-                            <input type="submit" value="Edit">
-                        </form>
-                    </div>
-                    <div class="col-md-auto border">
-                        <form method="POST">
-                            <input type="hidden" name="deleteSB" value="<?= $row["HostName"] ?>">
-                            <input type="submit" value="Remove">
-                        </form>
-                    </div>
-                </div>
-            </div>
+                            <th scope="col">HostName</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Location</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>                  
+                            <tr>
+
+                                <th scope="row"><?= $row["HostName"] ?></th>
+                                <td><?= $row["Description"] ?></td>
+                                <td><?= $row["Location"] ?></td>
+
+                                <td>                                
+                                    <form method="POST">
+                                        <input type="hidden" name="editSB" value="<?= $row["HostName"] ?>">
+                                        <input type="submit" value="Edit">
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="POST">
+                                        <input type="hidden" name="deleteSB" value="<?= $row["HostName"] ?>">
+                                        <input type="submit" value="Remove">
+                                    </form>
+                                </td>
+                            </tr>
+                    </tbody>
+                </table>
     <?php 
             }//while ($row = $result->fetch_assoc())
 
@@ -88,25 +96,46 @@
             print "Something went wrong selecting data";
         }
     ?>
+    <div class="d-flex justify-content-left m-3"> 
+        <form method="post">
+                <div class="form-group">
+                    <label for="">Hostname</label>
+                    <input type="text" class="form-control" name="createHostname" placeholder="SB_0">
+                </div>
+
+            <div class="form-group">
+                <label for="">Description</label>
+                <input type="text" class="form-control" name="createDescription" placeholder="this is box 0">
+            </div>
+
+            <div class="form-group">
+                <label for="">Location</label>
+                <input type="text" class="form-control" name="createLocation" placeholder="Where is the SmartBox located">
+            </div>
+
+            <div class="form-group">
+                <label for="">UserNo </label>
+                <input type="password" class="form-control" name="newUserNumber" placeholder="User number">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create a new SmartBox</button>
+        </form>
+    </div>
 
 </body>
 
 <?php
-//create, update, delete sbs 
+//create, update, delete sbs - in progress
 
-//create: use a form to fill in
+//create: use a form to fill in 
 
-//select: select a sb from a scrollabe list
+//update: select a smartbox to modify -in progress
 
-//update: select a smartbox to modify
-
-//delete: button that deletes the smartbox from the database
+//delete: button that deletes the smartbox from the database - in progress
 
 //assign smartboxes to users
 
-//PINS define inputs and outputs
-
-//save the configurations
+//save the configurations/script
 
 ?>
 </html>
