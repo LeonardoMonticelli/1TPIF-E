@@ -1,4 +1,4 @@
-DROP DATABASE chatroom;
+-- DROP DATABASE chatroom;
 CREATE DATABASE chatroom;
 USE chatroom;
 

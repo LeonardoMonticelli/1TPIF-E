@@ -1,5 +1,5 @@
-drop database chat;
-create database chat;
+DROP DATABASE IF EXISTS chat;
+CREATE DATABASE chat;
 use chat;
 
 create table users(

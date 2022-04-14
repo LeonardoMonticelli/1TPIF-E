@@ -1,19 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Chat Enter</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src='main.js'></script>
+<?php //head
+    $pageTitle ="Welcome to the chatroom";
+    include_once "head.php";
+    include_once "connectToDB.php";
+    include_once "sessionCheck.php";
 
-    <!-- Insert JSON -->
-</head>
+    var_dump($_SESSION["isUserLoggedIn"]);
+
+    if(isset($_POST["username"])){
+        $_SESSION["isUserLoggedIn"] = true;
+    }
+?>
 <body>
+    <a class="text-decoration-none text-light p-1" href="logout.php">Logout</a>
     <h1>Welcome to the chatroom.</h1>
-    <input type="textbox" id="msg">
-    <input id="myUser" type="hidden" value='<?= $_POST["userName"]?>'>
-    <button id="sendMsg">Send</button>
+    <input type="textbox" id="msgContent">
+    <input id="myUser" type="hidden" value='<?= $_POST["username"]?>'>
+    <button id="send">Send</button>
 </body>
 </html>
