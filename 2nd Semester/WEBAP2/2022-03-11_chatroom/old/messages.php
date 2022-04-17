@@ -4,23 +4,21 @@ session_start();
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "php_project";
+$dbname = "chat";
 
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
+$conn= mysqli_connect($servername,$username,$password,$dbname);
 
-// Check connection
 if (!$conn) {
   die("Connection failed: " . mysqli_connect_error());
 }
 
 if(isset($_POST["message"], $_SESSION["username"])) { // Store message in DB
-  date_default_timezone_set('Europe/Berlin');
-  $stmt = $conn->prepare("INSERT INTO messages (username, content, messagetime) VALUES (?, ?, NOW())");
+  date_default_timezone_set('Asia/Calcutta');
+  $stmt = $conn->prepare("INSERT INTO messages (username, msgText, msgTime) VALUES (?, ?, NOW())");
   $stmt->bind_param("ss", $_SESSION["username"], $_POST["message"]);
   $stmt->execute();
 } else { // Select recent messages
-  $sql = "SELECT * FROM messages WHERE messagetime > date_sub(now(), interval 2 second);"; // select every row where messagetime is lower than past 2 seconds
+  $sql = "SELECT * FROM messages WHERE msgTime > date_sub(now(), interval 2 second);"; // select every row where messagetime is lower than past 2 seconds
   $result = mysqli_query($conn, $sql);
   $json_results = [];
   
@@ -32,3 +30,4 @@ if(isset($_POST["message"], $_SESSION["username"])) { // Store message in DB
 
   echo json_encode($json_results);
 }
+?>

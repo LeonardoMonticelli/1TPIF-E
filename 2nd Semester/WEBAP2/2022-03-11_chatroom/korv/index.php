@@ -6,6 +6,8 @@ if(isset($_SESSION["username"])) {
 }
 if(isset($_POST["username"])) {
   $_SESSION["username"] = $_POST["username"];
+  header("Location: chat.php"); // redirect
+  exit(); // ..
 }
 ?>
 <html>

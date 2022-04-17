@@ -3,25 +3,28 @@ session_start();
 
 if(!isset($_SESSION["username"])) {
   header("Location: index.php");
-  exit();
+  exit(); 
 }
 ?>
 
 <html>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" ></script>
-  <style>
-    table, th, td {
-      border: 1px solid black;
-    }
-  </style>
+
+  <a href="logout.php">Logout</a>
+
   <h1>Messages:</h1>
-  <table id="messagetable">
+
+  <table id="chatBox">
+    
     <tr>
       <th>Username</th>
       <th>Message</th>
     </tr>
+
   </table>
+
   <input id="message">
   <button id="sendMessage">Send</button>
-  <script src="chat.js"></script>
+  
+  <script src="script.js"></script>
 </html>

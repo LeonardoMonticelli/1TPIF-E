@@ -1,5 +1,7 @@
 <?php //head
-    $pageTitle ="Please log in";
+
+    $pageTitle ="Log in";
+
     include_once "head.php";
 
     if(isset($_SESSION["username"])) {
@@ -9,7 +11,8 @@
 
     if(isset($_POST["username"])) {
         $_SESSION["username"] = $_POST["username"];
-        $_SESSION["isUserLoggedIn"] == true;
+        header("Location: chatRoom.php");
+        exit();
     }
 ?>
 <body>
@@ -17,9 +20,9 @@
         Please log in to access the chatroom:
     </h1>
 
-    <form method="POST" action="chatRoom.php">
-        Please type-in your username:
-        <input type="" name="username">
+    <form method="POST">
+        <div>Please type-in your username:</div>
+        <input name="username">
         <input type="submit" value="Enter">
     </form>
 </body>

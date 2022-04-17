@@ -1,21 +1,29 @@
 <?php
 session_start();
 if(isset($_SESSION["username"])) {
-  header("Location: chat.php"); // Redirect to chat.php
-  exit(); // ...
+  header("Location: chatroom.php");
+  exit();
 }
 if(isset($_POST["username"])) {
   $_SESSION["username"] = $_POST["username"];
+  header("Location: chatroom.php");
+  exit();
 }
 ?>
 <html>
   <head>
-    <title>PHP Test</title>
+
+    <h1>Login</h1>
+
   </head>
   <body>
+
     <form method="post">
-    <p>Username: </p> <input name="username">
+
+      <div>Username:</div><input name="username">
       <input type="submit">
+
     </form>
+
   </body>
 </html>

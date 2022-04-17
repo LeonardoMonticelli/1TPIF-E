@@ -21,7 +21,7 @@ function checkDatabase() {
    
     for(var i = 0; i < items.length; i++) { // for every message
       var item = items[i]; // message content
-      $('#messagetable > tbody:last-child').append(item); // add content to table
+      $('#chatBox > tbody:last-child').append(item); // add content to table
     }
   });
 }
