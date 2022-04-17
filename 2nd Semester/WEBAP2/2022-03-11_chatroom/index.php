@@ -1,8 +1,16 @@
 <?php //head
-    $pageTitle ="Log in";
+    $pageTitle ="Please log in";
     include_once "head.php";
-    include_once "connectToDB.php";
-    include_once "sessionCheck.php";
+
+    if(isset($_SESSION["username"])) {
+        header("Location: chatRoom.php");
+        exit();
+    }
+
+    if(isset($_POST["username"])) {
+        $_SESSION["username"] = $_POST["username"];
+        $_SESSION["isUserLoggedIn"] == true;
+    }
 ?>
 <body>
     <h1>
