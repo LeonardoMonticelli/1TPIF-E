@@ -15,14 +15,15 @@ if (!$conn) {
 
 if(isset($_POST["message"], $_SESSION["username"])) {
 
-  date_default_timezone_set('Asia/Calcutta');
+  date_default_timezone_set('Europe/Luxembourg');
+
   $stmt = $conn->prepare("INSERT INTO messages (msgUser, msgText, msgTime) VALUES (?, ?, NOW())");
   $stmt->bind_param("ss", $_SESSION["username"], $_POST["message"]);
   $stmt->execute();
 
 } else { 
 
-  $sql = "SELECT * FROM messages WHERE msgTime > date_sub(now(), interval 2 second);"; 
+  $sql = "SELECT * FROM messages;"; 
   $result = mysqli_query($conn, $sql);
   $json_results = [];
   
