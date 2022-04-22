@@ -17,15 +17,22 @@
 
   <head>
 
-    <h1>Login</h1>
+    <h1 class='fw-bold'>Login</h1>
 
   </head>
   <body>
 
     <form method="post">
 
-      <div>Username:</div><input name="username">
-      <input type="submit" value="Log in">
+    <div class="form-group m-3">
+      <form method="post">
+
+          <label>Username</label>
+          <input name="username">
+          <input type="submit" value="Log in">
+
+      </form>
+    </div>
 
     </form>
 

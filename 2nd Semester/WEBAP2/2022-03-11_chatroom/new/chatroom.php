@@ -16,24 +16,31 @@
   }
 ?>
 
-  <form action="" method="post">
-    <button name="logout">Logout</button>
+<style>
+  .chonk { width: 300px;;}
+  table tbody { height:300px; overflow-y:scroll; display:block; }
+  table thead { display:block; }
+</style>
 
+  <form action="" method="post">
+    <button class="btn btn-danger" name="logout">Logout</button>
   </form>
 
-  <h1>Messages:</h1>
+  <h1>Chatroom:</h1>
 
-  <table id="chatBox">
-    
-    <tr>
-      <th>Username</th>
-      <th>Message</th>
-    </tr>
+    <div class="chonk">
+      <table class="table table-borderless table-sm" id="chatBox">
+          <tbody>
+          </tbody>
+      </table>
 
-  </table>
+      <div class="input-group mb-3">
+        <input id="message" type="text" class="form-control" placeholder="Type here!" aria-label="Username" aria-describedby="basic-addon1">
+        <button class="btn btn-outline-secondary" type="button"  id="sendMessage" >Send</button>
+      </div>
+    </div>
 
-  <input id="message">
-  <button id="sendMessage">Send</button>
+  <div>pls scroll after you type I havent figured that one out</div>
   
   <script src="script.js"></script>
 </html>

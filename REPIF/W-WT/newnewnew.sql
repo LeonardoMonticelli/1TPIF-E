@@ -1,9 +1,9 @@
-drop database WT;
+DROP DATABASE IF EXISTS WT;
 create database WT;
 use WT;
 
 SET NAMES utf8;
-SET time_zone = '+00:00';
+SET time_zone = '+02:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 

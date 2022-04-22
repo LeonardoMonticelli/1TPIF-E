@@ -1,8 +1,10 @@
 var lastMessages = [];
 
 $("#sendMessage").on('click', function() {
+
   var content = $("#message").val();
   $.post( "messages.php", { message: content } );
+
 });
 
 function checkDatabase() {
@@ -16,11 +18,12 @@ function checkDatabase() {
         lastMessages.push(JSON.stringify(val));
 
         items.push("<tr>");
-        items.push( "<td>" + val.msgUser + "</td>" ); //msgUser is the same as the one in the table
+        items.push( "<td scope='row' class='fw-bold'>" + val.msgUser + "</td>" ); //msgUser is the same as the one in the table
         items.push( "<td>" + val.msgText + "</td>" );
         items.push("<tr>");
 
       }
+
     });
    
     for(var i = 0; i < items.length; i++) {
