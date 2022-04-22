@@ -1,16 +1,25 @@
 <?php
-session_start();
+  session_start();
 
-if(!isset($_SESSION["username"])) {
-  header("Location: index.php");
-  exit(); 
-}
+  $pageTitle ="Chatroom";
+  include_once "head.php";
+
+  if(!isset($_SESSION["username"])) {
+    header("Location: index.php");
+    exit(); 
+  }
+
+  if(isset($_POST["logout"])){
+    unset($_SESSION["username"]);
+    header("Location:index.php");
+    exit();
+  }
 ?>
 
-<html>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js" ></script>
+  <form action="" method="post">
+    <button name="logout">Logout</button>
 
-  <a href="logout.php">Logout</a>
+  </form>
 
   <h1>Messages:</h1>
 
