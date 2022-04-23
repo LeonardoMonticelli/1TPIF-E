@@ -1,0 +1,1 @@
+SELECT HostName FROM pin;

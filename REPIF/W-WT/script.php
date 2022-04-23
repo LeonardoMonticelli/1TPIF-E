@@ -1,23 +1,14 @@
 <?php //head
     $pageTitle ="Administration";
     include_once "htmlHead.php";
-    include_once "connectToDB.php";
+    include_once "databaseConnect.php";
     include_once "sessionCheck.php";
+    include_once "navigationBar.php";
 ?>
 
 <body>
-    <?php //insert nav bar
-        if($_SESSION["isUserLoggedIn"]==false){
-            header("Location: index.php");
-            exit;
-        } else {
-            include_once "navigationBar.php";
-        }
-    ?>
-  
-<h1>Script</h1>
-
 <?php
+
     $result = $connection->query("SELECT * from script");
 
     if($result){?>
@@ -76,12 +67,77 @@
     </table>
 
     <form method="POST">
-    Add a New Script: <input name="ScriptName" placeholder="Dimmer">
-    <input name="Path" placeholder="/Switch/Dimmer.sh">
-    <input name="Description" placeholder="Dim Lamp">
-    <input type="submit" value="Add">
+        Add a New Script: <input name="ScriptName" placeholder="Dimmer">
+        <input name="Path" placeholder="/Switch/Dimmer.sh">
+        <input name="Description" placeholder="Dim Lamp">
+        <input type="submit" value="Add">
     </form>
 
+    <?php
+        
+        if(isset($_POST["editPin"])){ //edit does not work
+    
+            $editPinVal = intval($_POST["editPin"]);
+            $sqlSelect = $connection->prepare("SELECT HostName, PinNo, Input, Designation FROM pin WHERE PinNo=?");
+            $sqlSelect->bind_param("i", $editPinVal);
+            $sqlSelect->execute();
+            $result = $sqlSelect->get_result();
+            $data = $result->fetch_all(MYSQLI_ASSOC);
+    
+            ?>
+            <form method="post">
+    
+                <div class="form-group mb-3">
+                    <label for="">HostName</label>
+                    <input type="text" class="form-control" name="hostNameEdit" value="<?= $data[0]["HostName"] ?>">
+                </div>
+    
+                <div class="form-group mb-3">
+                    <label for="">PinNo</label>
+                    <input type="text" class="form-control" name="pinNoEdit" value="<?= $data[0]["PinNo"] ?>">
+                </div>
+    
+                <div class="form-group mb-3">
+                    <label for="">Input</label>
+                    <input type="text" class="form-control" name="inputEdit" value="<?= $data[0]["Input"] ?>">
+                </div>
+    
+                <div class="form-group mb-3">
+                    <label for="">Designation</label>
+                    <input type="text" class="form-control" name="designationEdit" value="<?= $data[0]["Designation"] ?>">
+                </div>
+    
+                <button type="submit" class="btn btn-primary">Submit</button>
+    
+            </form>
+            <?php
+    
+            $sqlUpdate = $connection->prepare("UPDATE pin SET HostName=?, PinNo=?, Input=?, Designation=? where PinNo=?");
+    
+            if(!$sqlUpdate){
+                die("Error: the PIN cannot be updated");
+            }
+    
+            $sqlUpdate->bind_param("siisi", $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["inputEdit"], $_POST["designationEdit"], $editPinVal);
+            $sqlUpdate->execute();
+    
+        }
+
+        if(isset($_POST["deleteScript"])) {
+
+            $deletePinVal = intval($_POST["deleteScript"]);
+            $sqlDelete = $connection->prepare("DELETE FROM script where ScriptName=?");
+    
+            if(!$sqlDelete){
+                die("Error: the SCRIPT cannot be deleted");
+            }
+    
+            $sqlDelete->bind_param("i", $deletePinVal);
+            $sqlDelete->execute();
+    
+        }
+
+            ?>
 
 </body>
 

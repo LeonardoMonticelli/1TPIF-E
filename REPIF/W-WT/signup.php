@@ -1,8 +1,7 @@
 <?php //head
-    $pageTitle ="Administration";
+    $pageTitle ="Sign up";
     include_once "htmlHead.php";
-    include_once "connectToDB.php";
-    include_once "sessionCheck.php";
+    include_once "databaseConnect.php";
 ?>
 
 <body>
@@ -14,50 +13,37 @@
     ?>
     <div class="d-flex justify-content-left m-3"> 
         <form method="post">
-                <div class="form-group">
+                <div class="form-group mb-3">
                     <label for="">Username</label>
-                    <input type="text" class="form-control" name="createUsername" placeholder="username">
+                    <input type="text" class="form-control" name="createUsername" placeholder="Username">
                 </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="">First name</label>
-                <input type="text" class="form-control" name="createFirstName" placeholder="first">
+                <input type="text" class="form-control" name="createFirstName" placeholder="First name">
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="">Last name</label>
-                <input type="text" class="form-control" name="createLastName" placeholder="last name">
+                <input type="text" class="form-control" name="createLastName" placeholder="Last name">
             </div>
             
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="">Email</label>
                 <input type="email" class="form-control" name="createEmail" placeholder="Email">
             </div>
 
-            <!-- <div class="form-group">
-                <label for="">Technician</label>
-                    <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Technician?
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" value="1">Yes</a>
-                        <a class="dropdown-item" value="0">No</a>
-                    </div>
-                </div>
-            </div> -->
-
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="">New Password</label>
-                <input type="password" class="form-control" name="newPassword" placeholder="new password">
+                <input type="password" class="form-control" name="newPassword" placeholder="New password">
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="">Repeat Password</label>
-                <input type="password" class="form-control" name="repeatPassword" placeholder="repeat password">
+                <input type="password" class="form-control" name="repeatPassword" placeholder="Repeat password">
             </div>
 
-            <button type="submit" class="btn btn-primary">Change Password</button>
+            <button type="submit" class="btn btn-primary">Create User</button>
         </form>
     </div>
 </body>

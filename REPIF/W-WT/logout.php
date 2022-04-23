@@ -1,6 +1,5 @@
 <?php
-    $pageTitle ="Logging you out";
-    include_once "connectToDB.php";
+    $pageTitle ="Logging out";
     include_once "sessionCheck.php";
 
     if($_SESSION["isUserLoggedIn"] == true){
