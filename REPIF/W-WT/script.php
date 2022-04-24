@@ -1,149 +1,167 @@
 <?php //head
-    $pageTitle ="Administration";
+    $pageTitle ="Script";
     include_once "htmlHead.php";
     include_once "databaseConnect.php";
     include_once "sessionCheck.php";
     include_once "navigationBar.php";
 ?>
+    <body>
+        <?php
 
-<body>
+            $result = $connection->query("SELECT * from scripts");
+ 
+            if ($result) {
+
+                if(isset($_POST["deleteScript"])) { //this has to be at the beggining so the refresh works 
+
+                    $sqlDelete = $connection->prepare("DELETE FROM scripts where ScriptName=?");
+    
+                    if(!$sqlDelete){
+                        die("Error: the scripts cannot be deleted");
+                    }
+    
+                    $sqlDelete->bind_param("s", $_POST["deleteScript"]);
+                    $sqlDelete->execute();
+    
+                    header("refresh: 0");
+    
+                }
+
+                if(!empty($_POST["scriptNameEdit"])&&!empty($_POST["pathEdit"])&&!empty($_POST["descriptionEdit"])){ //update
+
+                    $sqlUpdate = $connection->prepare("UPDATE scripts SET ScriptName=?, `Path`=?, `Description`=? where ScriptName=?");
+        
+                    if(!$sqlUpdate){
+                        die("Error: the scripts cannot be updated");
+                    }
+
+                    $sqlUpdate->bind_param("sss", $_POST["scriptNameEdit"], $_POST["pathEdit"], $_POST["descriptionEdit"], $_POST["scriptNameSearch"]);
+                    $sqlUpdate->execute();
+
+                    header("refresh: 0");
+        
+                }
+                   
+                if(!empty($_POST["scriptNameCreate"])&&!empty($_POST["pathCreate"])&&!empty($_POST["descriptionCreate"])){ //create 
+
+                    $sqlCreate = $connection->prepare("INSERT INTO `scripts` (`ScriptName`, `Path`, `Description`) VALUES (?, ?, ?)");
+
+                    if(!$sqlCreate){
+                        die("Error: the scripts cannot be created");
+                    }
+
+                    $sqlCreate->bind_param("sss",  $_POST["scriptNameCreate"], $_POST["pathCreate"], $_POST["descriptionCreate"]);
+                    $sqlCreate->execute();
+
+                    header("refresh: 0");
+                }
+
+                ?>
+                <table class="table">
+                    <thead>
+                        <tr>
+
+                            <th scope="col">ScriptName</th>
+                            <th scope="col">Path</th>
+                            <th scope="col">Description</th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result->fetch_assoc()) {?>                           
+                            <tr>
+
+                                <th scope="row"><?= $row["ScriptName"] ?></th>
+                                <td><?= $row["Path"] ?></td>
+                                <td><?= $row["Description"] ?></td>
+                                <td>                                
+                                    <form method="POST">
+                                        <input type="hidden" name="editScript" value="<?= $row["ScriptName"] ?>">
+                                        <input type="submit" value="Edit">
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="POST">
+                                        <input type="hidden" name="deleteScript" value="<?= $row["ScriptName"] ?>">
+                                        <input type="submit" value="Delete">
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php }?>
+                    </tbody>
+                </table>
 <?php
+            }  else {
+                print "Something went wrong selecting data";
+            }
+    
+    if(isset($_POST["editScript"])){
 
-    $result = $connection->query("SELECT * from script");
+        $sqlSelect = $connection->prepare("SELECT ScriptName, `Path`, `Description` FROM scripts WHERE ScriptName=?");
+        $sqlSelect->bind_param("s", $_POST["editScript"]);
+        $sqlSelect->execute();
+        $result = $sqlSelect->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
 
-    if($result){?>
-            <table class="table">
-            <thead>
-                <tr>
+        ?>
+        <form method="post" class="mb-3">
 
-                    <th scope="col">HostName</th>
-                    <th scope="col">PinNo</th>
-                    <th scope="col">Input</th>
-                    <th scope="col">Designation</th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
+            <div class="form-group mb-3">
+                <label for="">ScriptName</label>
+                <input type="text" class="form-control" name="scriptNameEdit" value="<?= $data[0]["ScriptName"] ?>">
+                <input type="hidden" class="form-control" name="scriptNameSearch" value="<?= $data[0]["ScriptName"] ?>">
+            </div>
 
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $result->fetch_assoc()) {?>                           
-                    <tr>
+            <div class="form-group mb-3">
+                <label for="">Path</label>
+                <input type="text" class="form-control" name="pathEdit" value="<?= $data[0]["Path"] ?>">
+            </div>
 
-                        <th scope="row"><?= $row["ScriptName"] ?></th>
-                        <td><?= $row["Path"] ?></td>
-                        <td><?= $row["Description"] ?></td>
-                        <td>                                
-                            <form method="POST">
-                                <input type="hidden" name="editScript" value="<?= $row["ScriptName"] ?>">
-                                <input type="submit" value="Edit">
-                            </form>
-                        </td>
-                        <td>
-                            <form method="POST">
-                                <input type="hidden" name="deleteScript" value="<?= $row["ScriptName"] ?>">
-                                <input type="submit" value="Delete">
-                            </form>
-                        </td>
-                    </tr>
-                <?php }?>
-            </tbody>
-        </table>
+            <div class="form-group mb-3">
+                <label for="">Description</label>
+                <input type="text" class="form-control" name="descriptionEdit" value="<?= $data[0]["Description"] ?>">
+            </div>
 
-<?php
-    } else {
-        print "Something went wrong with selecting data";
-    }
+            <button type="submit" class="btn btn-success">Submit</button>
 
-    if(isset($_POST["ScriptName"], $_POST["Path"], $_POST["Description"])){
-        $sqlInsert = $connection->prepare("INSERT INTO Script (ScriptName, Path, Description) values (?,?,?)");
-        $sqlInsert->bind_param("sss", $_POST["ScriptName"], $_POST["Path"], $_POST["Description"]);
-        $resultOfExecute = $sqlInsert->execute();
-        if(!$resultOfExecute){
-            print "Adding a new script, failed";
-        }
-    }
-    ?>
+        </form>
+        <?php
+    }    
+        ?>
 
-    </table>
-
-    <form method="POST">
-        Add a New Script: <input name="ScriptName" placeholder="Dimmer">
-        <input name="Path" placeholder="/Switch/Dimmer.sh">
-        <input name="Description" placeholder="Dim Lamp">
-        <input type="submit" value="Add">
+    <form action="" method="post">  
+        <input type="hidden" name="createScript">
+        <input type="submit" class="btn btn-primary" value="Create scripts path">
     </form>
 
-    <?php
-        
-        if(isset($_POST["editPin"])){ //edit does not work
-    
-            $editPinVal = intval($_POST["editPin"]);
-            $sqlSelect = $connection->prepare("SELECT HostName, PinNo, Input, Designation FROM pin WHERE PinNo=?");
-            $sqlSelect->bind_param("i", $editPinVal);
-            $sqlSelect->execute();
-            $result = $sqlSelect->get_result();
-            $data = $result->fetch_all(MYSQLI_ASSOC);
-    
-            ?>
-            <form method="post">
-    
-                <div class="form-group mb-3">
-                    <label for="">HostName</label>
-                    <input type="text" class="form-control" name="hostNameEdit" value="<?= $data[0]["HostName"] ?>">
-                </div>
-    
-                <div class="form-group mb-3">
-                    <label for="">PinNo</label>
-                    <input type="text" class="form-control" name="pinNoEdit" value="<?= $data[0]["PinNo"] ?>">
-                </div>
-    
-                <div class="form-group mb-3">
-                    <label for="">Input</label>
-                    <input type="text" class="form-control" name="inputEdit" value="<?= $data[0]["Input"] ?>">
-                </div>
-    
-                <div class="form-group mb-3">
-                    <label for="">Designation</label>
-                    <input type="text" class="form-control" name="designationEdit" value="<?= $data[0]["Designation"] ?>">
-                </div>
-    
-                <button type="submit" class="btn btn-primary">Submit</button>
-    
-            </form>
-            <?php
-    
-            $sqlUpdate = $connection->prepare("UPDATE pin SET HostName=?, PinNo=?, Input=?, Designation=? where PinNo=?");
-    
-            if(!$sqlUpdate){
-                die("Error: the PIN cannot be updated");
-            }
-    
-            $sqlUpdate->bind_param("siisi", $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["inputEdit"], $_POST["designationEdit"], $editPinVal);
-            $sqlUpdate->execute();
-    
-        }
-
-        if(isset($_POST["deleteScript"])) {
-
-            $deletePinVal = intval($_POST["deleteScript"]);
-            $sqlDelete = $connection->prepare("DELETE FROM script where ScriptName=?");
-    
-            if(!$sqlDelete){
-                die("Error: the SCRIPT cannot be deleted");
-            }
-    
-            $sqlDelete->bind_param("i", $deletePinVal);
-            $sqlDelete->execute();
-    
-        }
-
-            ?>
-
-</body>
-
-</html>
 <?php
-//create a panel where to put the script, and name the script, and the description will be the content
+    if(isset($_POST["createScript"])){
 
+    ?>
+        <form method="post">
 
-?>
+            <div class="form-group mb-3">
+                <label for="">ScriptName</label>
+                <input type="text" class="form-control" name="scriptNameCreate" placeholder="script0">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">Path</label>
+                <input type="text" class="form-control" name="pathCreate" placeholder="/home/">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">Description</label>
+                <input type="text" class="form-control" name="descriptionCreate" placeholder="describe what the scripts does">
+            </div>
+
+            <button type="submit" class="btn btn-success">Create an users</button>
+
+        </form>
+    <?php
+    }
+    ?>
+    </body>
+</html>

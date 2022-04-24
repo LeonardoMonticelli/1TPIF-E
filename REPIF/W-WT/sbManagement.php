@@ -1,65 +1,72 @@
 <?php //head
-    $pageTitle ="SmartBox Management";
+    $pageTitle ="SmartBox management";
     include_once "htmlHead.php";
     include_once "databaseConnect.php";
     include_once "sessionCheck.php";
     include_once "navigationBar.php";
 ?>
+    <body>
+        <?php
+            if($_SESSION["userIsAdmin"]==0){
 
-<body>
-    <?php
-        $result = $connection->query("SELECT * from smartbox");
+                $sqlStatement = $connection->prepare("SELECT * from smartboxes where UserNo=(select UserNo from users where UserName=?)");
+                $sqlStatement->bind_param("s", $_SESSION["currentUser"]);
+                $sqlStatement->execute();
 
-        if ($result) {
+                $result = $sqlStatement->get_result();
 
-            if(isset($_POST["deleteSB"])) { //this has to be at the beggining so the refresh works 
-
-                $delval = intval($_POST["deleteSB"]);
-                $sqlDelete = $connection->prepare("DELETE FROM smartbox where HostName=?");
-
-                if(!$sqlDelete){
-                    die("Error: the SB cannot be deleted");
-                }
-                
-                $sqlDelete->bind_param("i", $delval);
-
-                $sqlDelete->execute();
-
-                header("refresh: 0");
-
+            }else{
+                $result = $connection->query("SELECT * from smartboxes");
             }
+             
+            if ($result) {
 
-            if(!empty($_POST["hostNameEdit"])&&!empty($_POST["descriptionEdit"])&&!empty($_POST["locationEdit"])&&!empty($_POST["userNoEdit"])){ //update
+                if(isset($_POST["deleteSB"])) { //this has to be at the beggining so the refresh works 
 
-                $sqlUpdate = $connection->prepare("UPDATE smartbox SET HostName=?, PinNo=?, Input=?, Designation=? where HostName=?");
+                    $deleteSbVal = intval($_POST["deleteSB"]);
+                    $sqlDelete = $connection->prepare("DELETE FROM smartboxes where HostName=?");
     
-                if(!$sqlUpdate){
-                    die("Error: the SB cannot be updated");
-                }
-
-                $sqlUpdate->bind_param("sssis", $_POST["hostNameEdit"], $_POST["descriptionEdit"], $_POST["locationEdit"], $_POST["userNoEdit"],  $_POST["hostNameEdit"]);
-                $sqlUpdate->execute();
-
-                header("refresh: 0");
+                    if(!$sqlDelete){
+                        die("Error: the smartboxes cannot be deleted");
+                    }
     
-            }
-
-            if(!empty($_POST["createHostname"])&&!empty($_POST["createDescription"])&&!empty($_POST["createLocation"])&&!empty($_POST["createUserNo"])){ //create
-                print "your mom";
-                $sqlCreate = $connection->prepare("INSERT INTO smartbox(HostName, `Description`, `Location`, UserNo) VALUES (?,?,?,?)");
-                
-                if(!$sqlCreate){
-                    die("Error: the SB cannot be created");
+                    $sqlDelete->bind_param("s", $deleteSbVal);
+                    $sqlDelete->execute();
+    
+                    header("refresh: 0");
+    
                 }
 
-                $sqlCreate->bind_param("sssi", $_POST["createHostname"], $_POST["createDescription"], $_POST["createLocation"], $_POST["createUserNo"]);
-                $sqlCreate->execute();
+                if(!empty($_POST["descriptionEdit"])){ //update
+                    // print "hello"; 
+                    $sqlUpdate = $connection->prepare("UPDATE smartboxes SET `Description`=?, `Location`=?, UserNo=? where HostName=?"); //fine
+        
+                    if(!$sqlUpdate){
+                        die("Error: the smartboxes cannot be updated");
+                    }
+                    
+                    $sqlUpdate->bind_param("ssis", $_POST["descriptionEdit"], $_POST["locationEdit"], $_POST["userNoEdit"], $_POST["hostNameSearch"]);
+                    $sqlUpdate->execute();
 
-                header("refresh: 0");
-    
-            }
+                    header("refresh: 0");
+        
+                }
+ 
+                if(!empty($_POST["hostNameCreate"])&&!empty($_POST["descriptionCreate"])&&!empty($_POST["locationCreate"])&&!empty($_POST["userNoCreate"])){ //create 
 
-            ?>
+                    $sqlCreate = $connection->prepare("INSERT INTO `smartboxes` (`HostName`, `Description`, `Location`, `UserNo`) VALUES (?,    ?,    ?,    ?)");
+
+                    if(!$sqlCreate){
+                        die("Error: the smartboxes cannot be created");
+                    }
+
+                    $sqlCreate->bind_param("sssi", $_POST["hostNameCreate"], $_POST["descriptionCreate"], $_POST["locationCreate"], $_POST["userNoCreate"]);
+                    $sqlCreate->execute();
+
+                    header("refresh: 0");
+                }
+
+                ?>
                 <table class="table">
                     <thead>
                         <tr>
@@ -74,16 +81,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php
-                        while ($row = $result->fetch_assoc()) {
-                        ?>                  
+                        <?php while ($row = $result->fetch_assoc()) {?>                           
                             <tr>
 
                                 <th scope="row"><?= $row["HostName"] ?></th>
                                 <td><?= $row["Description"] ?></td>
                                 <td><?= $row["Location"] ?></td>
                                 <td><?= $row["UserNo"] ?></td>
-
                                 <td>                                
                                     <form method="POST">
                                         <input type="hidden" name="editSB" value="<?= $row["HostName"] ?>">
@@ -93,118 +97,122 @@
                                 <td>
                                     <form method="POST">
                                         <input type="hidden" name="deleteSB" value="<?= $row["HostName"] ?>">
-                                        <input type="submit" value="Remove">
+                                        <input type="submit" value="Delete">
                                     </form>
                                 </td>
                             </tr>
-                        <?php 
-                        }
-                        ?>
+                        <?php }?>
                     </tbody>
                 </table>
+<?php
+            }  else {
+                print "Something went wrong selecting data";
+            }
+    
+    if(isset($_POST["editSB"])){
 
-            <form action="" method="post">
-                <input type="hidden" name="createSB">
-                <input type="submit" class="btn btn-secondary" value="Create a SmartBox"></button>
-            </form>
-
-    <?php
-        } //end of the if ($result) 
-        
-        if(isset($_POST["createSB"])){
-    ?>
-        <div class="d-flex justify-content-left m-3"> 
-            <form method="post">
-                <div class="form-group mb-3">
-                    <label for="">Hostname</label>
-                    <input type="text" class="form-control" name="createHostname" placeholder="SB_0">
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="">Description</label>
-                    <input type="text" class="form-control" name="createDescription" placeholder="this is box 0">
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="">Location</label>
-                    <input type="text" class="form-control" name="createLocation" placeholder="Where is the SmartBox located">
-                </div>
-
-                <div class="form-group mb-3">
-                    <label for="">UserNo</label>
-
-                    <select name="createUserNo" class="form-select">
-                        <?php
-                            $sqlSelect = $connection->prepare("SELECT UserNo FROM smartbox");
-                            $sqlSelect->execute();
-                            $result = $sqlSelect->get_result();
-                            while($row = $result->fetch_assoc()){
-                                ?>
-                                <option <?php if($data[0]["UserNo"]==$row["UserNo"]){print " selected ";}?>value="<?=$row["UserNo"]?>"><?= $row["UserNo"]?></option>
-                                <?php
-                            }
-                        ?>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Create</button>
-            </form>
-        </div>
-        <?php
-        }
-        
-        if(isset($_POST["editSB"])){
-
-            $editSbVal = intval($_POST["editSB"]);
-            $sqlSelect = $connection->prepare("SELECT HostName, `Description`, `Location`, UserNo FROM smartbox WHERE HostName=?"); //UserNo is FK
-            $sqlSelect->bind_param("i", $editSbVal);
-            $sqlSelect->execute();
-            $result = $sqlSelect->get_result();
-            $data = $result->fetch_all(MYSQLI_ASSOC);
+        $sqlSelect = $connection->prepare("SELECT HostName, `Description`, `Location`, UserNo FROM smartboxes WHERE HostName=?");
+        $sqlSelect->bind_param("s", $_POST["editSB"]);
+        $sqlSelect->execute();
+        $result = $sqlSelect->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
 
         ?>
-            <form method="post">
+        <form method="post">
 
-                <div class="form-group mb-3">
+            <fieldset disabled>
+                <div class=" mb-3">
                     <label for="">HostName</label>
-
-                    <select name="hostNameEdit" class="form-select">
-                        <?php
-
-                            $sqlSelect = $connection->prepare("SELECT HostName FROM smartbox");
-                            $sqlSelect->execute();
-                            $result = $sqlSelect->get_result();
-
-                            while($row = $result->fetch_assoc()){
-                                ?>
-                                <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                                <?php
-                            }
-                        
-                        ?>
-                    </select>
+                    <input type="text" id="disabledTextInput" class="form-control" name="hostNameEdit" placeholder="<?= $data[0]["HostName"] ?>">
                 </div>
+            </fieldset>
 
-                <div class="form-group mb-3">
-                    <label for="">Description</label>
-                    <input type="text" class="form-control" name="descriptionEdit" value="<?= $data[0]["Description"] ?>">
-                </div>
+            <input type="hidden" class="form-control" name="hostNameSearch" value="<?= $data[0]["HostName"] ?>">
 
-                <div class="form-group mb-3">
-                    <label for="">Location</label>
-                    <input type="text" class="form-control" name="locationEdit" value="<?= $data[0]["Location"] ?>">
-                </div>
+            <div class="form-group mb-3">
+                <label for="">Description</label>
+                <input type="text" class="form-control" name="descriptionEdit" value="<?= $data[0]["Description"] ?>">
+            </div>
 
-                <div class="form-group mb-3">
-                    <label for="">UserNo</label>
-                    <input type="text" class="form-control" name="userNoEdit" value="<?= $data[0]["UserNo"] ?>">
-                </div>
+            <div class="form-group mb-3">
+                <label for="">Location</label>
+                <input type="text" class="form-control" name="locationEdit" value="<?= $data[0]["Location"] ?>">
+            </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="form-group mb-3">
+                <label for="">UserNo</label>
 
-            </form>
+                <select name="userNoEdit" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT UserNo FROM users");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+                            ?>
+                            <option <?php if($data[0]["UserNo"]==$row["UserNo"]){print " selected ";}?>value="<?=$row["UserNo"]?>"><?= $row["UserNo"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit changes</button>
+
+        </form>
+
         <?php
-        }   
-    ?>
-</body>
+    }    
+?>
+        <form action="" method="post">
+            <input type="hidden" name="createSB">
+            <input type="submit" class="btn btn-primary" value="Create"></input>
+        </form>
+<?php
+    if(isset($_POST["createSB"])){
+
+        ?>
+        <form method="post">
+
+            <div class=" mb-3">
+                <label for="">HostName</label>
+                <input type="text" class="form-control" name="hostNameCreate" placeholder="SB_#">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">Description</label>
+                <input type="text" class="form-control" name="descriptionCreate" placeholder="box #">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">Location</label>
+                <input type="text" class="form-control" name="locationCreate" placeholder="Country">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">UserNo</label>
+
+                <select name="userNoCreate" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT UserNo FROM users");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+                            ?>
+                            <option value="<?=$row["UserNo"]?>"><?= $row["UserNo"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Create a smartboxes</button>
+
+        </form>
+        <?php
+    }
+
+        ?>
+    </body>
 </html>

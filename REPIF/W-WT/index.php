@@ -40,7 +40,7 @@
             <?php
                 if(isset($_POST["username"],$_POST["password"])){
 
-                    $sql = $connection->prepare("select * from user where UserName=?");
+                    $sql = $connection->prepare("select * from users where UserName=?");
 
                     if(!$sql){
                         die("Error in the sql");
@@ -69,6 +69,7 @@
                             print "You are now logged in";
                             $_SESSION["isUserLoggedIn"] = true;
                             $_SESSION["currentUser"] = htmlentities($_POST["username"]);
+                            $_SESSION["userIsAdmin"] = $row["Technician"];
                             header("Location: index.php");
 
                         } else {

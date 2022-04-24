@@ -6,45 +6,56 @@
 
 <body>
     <?php //insert nav bar
-        if($_SESSION["isUserLoggedIn"]==true){
+        if(!empty($_POST["userNameCreate"])&&!empty($_POST["firstNameCreate"])&&!empty($_POST["lastNameCreate"])&&!empty($_POST["emailCreate"])&&!empty($_POST["passwordCreate"])){ //create 
+
+            $password = $_POST['passwordCreate'];
+
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+            $sqlCreate = $connection->prepare("INSERT INTO `users` (`UserName`, `FirstName`, `LastName`, `Email`, `Password`) VALUES (?, ?, ?, ?, ?)");
+
+            if(!$sqlCreate){
+                die("Error: the USER cannot be created");
+            }
+
+            $sqlCreate->bind_param("sssss",  $_POST["userNameCreate"], $_POST["firstNameCreate"], $_POST["lastNameCreate"], $_POST["emailCreate"], $hashedPassword);
+            $sqlCreate->execute();
+
             header("Location: index.php");
             exit;
         }
     ?>
     <div class="d-flex justify-content-left m-3"> 
-        <form method="post">
-                <div class="form-group mb-3">
-                    <label for="">Username</label>
-                    <input type="text" class="form-control" name="createUsername" placeholder="Username">
-                </div>
+    <form method="post">
 
-            <div class="form-group mb-3">
-                <label for="">First name</label>
-                <input type="text" class="form-control" name="createFirstName" placeholder="First name">
-            </div>
+        <div class="form-group mb-3">
+            <label for="">UserName</label>
+            <input type="text" class="form-control" name="userNameCreate" placeholder="username">
+        </div>
 
-            <div class="form-group mb-3">
-                <label for="">Last name</label>
-                <input type="text" class="form-control" name="createLastName" placeholder="Last name">
-            </div>
-            
-            <div class="form-group mb-3">
-                <label for="">Email</label>
-                <input type="email" class="form-control" name="createEmail" placeholder="Email">
-            </div>
+        <div class="form-group mb-3">
+            <label for="">FirstName</label>
+            <input type="text" class="form-control" name="firstNameCreate" placeholder="first name">
+        </div>
 
-            <div class="form-group mb-3">
-                <label for="">New Password</label>
-                <input type="password" class="form-control" name="newPassword" placeholder="New password">
-            </div>
+        <div class="form-group mb-3">
+            <label for="">LastName</label>
+            <input type="text" class="form-control" name="lastNameCreate" placeholder="last name">
+        </div>
 
-            <div class="form-group mb-3">
-                <label for="">Repeat Password</label>
-                <input type="password" class="form-control" name="repeatPassword" placeholder="Repeat password">
-            </div>
+        <div class="form-group mb-3">
+            <label for="">Email</label>
+            <input type="text" class="form-control" name="emailCreate" placeholder="example@example.com">
+        </div>
 
-            <button type="submit" class="btn btn-primary">Create User</button>
-        </form>
+        <div class="form-group mb-3">
+            <label for="">Password</label>
+            <input type="text" class="form-control" name="passwordCreate" placeholder="please type a password">
+        </div>
+
+        <button type="submit" class="btn btn-success">Sign up</button>
+
+    </form>
     </div>
 </body>
 </html>

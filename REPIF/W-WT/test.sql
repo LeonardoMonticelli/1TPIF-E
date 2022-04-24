@@ -1,1 +1,1 @@
-SELECT HostName FROM pin;
+UPDATE smartbox SET HostName="SB_1", `Description`="potato", `Location`="your house", UserNo=1 where HostName="SB_1"
