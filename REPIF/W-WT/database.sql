@@ -146,4 +146,4 @@ CREATE TABLE `switch_execute` (
 INSERT INTO `switch_execute` (`HostName`, `PinNo`, `EventCode`, `GroupNo`, `TargetFunctionCode`, `Description`, `SequenceNo`, `WaitingDuration`) VALUES
   ('SB_1',    11,    'K', 13, 'E', 'Switch on alarm', 2, 5),
   ('SB_3',    33,    'L', 3, 'U', 'Switch light in the bathroom',NULL, NULL),
-  ('SB_1',    7,    'K', 11, 'A', 'Close window', 1, NULL);
+  ('SB_1',    7,    'K', 11, 'A', 'Close a window', 1, NULL);
