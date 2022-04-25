@@ -129,14 +129,16 @@
         </form>
         <?php
     }    
+    if($_SESSION["userIsAdmin"]==1){
         ?>
 
-    <form action="" method="post">  
-        <input type="hidden" name="createScript">
-        <input type="submit" class="btn btn-primary" value="Create scripts path">
-    </form>
+        <form action="" method="post">  
+            <input type="hidden" name="createScript">
+            <input type="submit" class="btn btn-primary" value="Create scripts path">
+        </form>
 
 <?php
+    }
     if(isset($_POST["createScript"])){
 
     ?>

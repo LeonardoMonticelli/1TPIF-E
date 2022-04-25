@@ -28,8 +28,9 @@ CREATE TABLE `smartboxes` (
 );
 
 INSERT INTO `smartboxes` (`HostName`, `Description`, `Location`, `UserNo`) VALUES
-('SB_1',    'box 1',    'US',    2),
-('SB_test',    'box 0',    'US',    1);
+('SB_1',    'Model A',    'Building 1, apartment 3',    2),
+('SB_7',    'Model A',    'Building 7, apartment 2',    1),
+('SB_3',    'Model B',    'Building 4, pet shop',    1);
 
 CREATE TABLE `groups` (
   `GroupNo` int(11) NOT NULL AUTO_INCREMENT,
@@ -42,8 +43,10 @@ CREATE TABLE `groups` (
 );
 
 INSERT INTO `groups` (`GroupNo`, `GroupName`, `Description`, `HostName`) VALUES
-(1,    'group1',    '1st group',    'SB_1'),
-(2,    'group2',    '2nd group',    'SB_1');
+(1,    'CHIEF',    'Lamps in the kitchen',    'SB_7'),
+(3,    'ALL',    'All lamps',    'SB_3'),
+(11,    'GARAGE',    'Garage door',    'SB_1'),
+(13,    'FLUR',    'Hallway lamps',    'SB_1');
 
 CREATE TABLE `pins` (
   `PinNo` int NOT NULL AUTO_INCREMENT,
@@ -56,8 +59,10 @@ CREATE TABLE `pins` (
 );
 
 INSERT INTO `pins` (`HostName`, `PinNo`, `Input`, `Designation`) VALUES 
-('SB_test', 1, 1, 'GPIO1'),
-('SB_1', 7, 1, 'GPIO2');
+('SB_1', 7, 1, 'GPIO4'),
+('SB_1', 11, 1, 'GPIO17'),
+('SB_7', 33, 0, 'GPIO13'),
+('SB_3', 35, 0, 'GPIO19');
 
 CREATE TABLE `scripts` (
   `ScriptName` varchar(50) NOT NULL,
@@ -67,8 +72,9 @@ CREATE TABLE `scripts` (
 );
 
 INSERT INTO `scripts` (`ScriptName`, `Path`, `Description`) VALUES
-('script1',    '/home/script1.sh',    'script 1'),
-('script2',    '/home/script.sh',    'script2');
+('dimmer',    '/switch/dimmer.sh',    'Dim lamp'),
+('bell',    '/sound/bell.sh',    'Play ringtone'),
+('strobo',    '/switch/strobo.sh',    'Make lamp flash quickly');
 
 CREATE TABLE `use` (
   `GroupNo` int(11) DEFAULT NULL,
@@ -80,8 +86,9 @@ CREATE TABLE `use` (
 );
 
 INSERT INTO `use` (`GroupNo`, `ScriptName`) VALUES
-(1,    'script1'),
-(2,    'script2');
+(1,    'dimmer'),
+(3,    'bell'),
+(11,    'strobo');
 
 CREATE TABLE `concern`(
   `GroupNo` int(11) DEFAULT NULL,
@@ -93,6 +100,10 @@ CREATE TABLE `concern`(
   CONSTRAINT `concern_ibfk_2` FOREIGN KEY (`HostName`) REFERENCES `smartboxes` (`HostName`) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT `concern_ibfk_3` FOREIGN KEY (`PinNo`) REFERENCES `pins` (`PinNo`)ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+INSERT INTO `concern` (`GroupNo`, `HostName`, `PinNo`) VALUES
+(11,    'SB_7',    33),
+(3,    'SB_3',    35);
 
 CREATE TABLE `manage`(
   `HostName` VARCHAR(16) DEFAULT NULL,
@@ -112,6 +123,11 @@ CREATE TABLE `events`(
   CONSTRAINT `events_ibfk_2` FOREIGN KEY(`PinNo`) REFERENCES `pins` (`PinNo`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+INSERT INTO `events` (`HostName`, `PinNo`, `EventCode`, `Description`) VALUES
+('SB_1',    7,    'K', 'Press light switch briefly'),
+('SB_3',    11,    'L', 'Long press touch field'),
+('SB_7',    33,    'K', 'Touch field briefly');
+
 CREATE TABLE `switch_execute` (
   `HostName` VARCHAR(16) DEFAULT NULL,
   `PinNo` int DEFAULT NULL,
@@ -119,11 +135,15 @@ CREATE TABLE `switch_execute` (
   `GroupNo` int(11) DEFAULT NULL,
   `TargetFunctionCode` VARCHAR(1) NOT NULL,
   `Description` VARCHAR(50) NOT NULL,
-  `SequenceNo` INT NOT NULL,
-  `WaitingDuration` INT,
+  `SequenceNo` INT DEFAULT NULL,
+  `WaitingDuration` INT DEFAULT NULL,
   CONSTRAINT `se_ibfk_1` FOREIGN KEY(`HostName`) REFERENCES `smartboxes` (`HostName`) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT `se_ibfk_2` FOREIGN KEY(`PinNo`) REFERENCES `pins` (`PinNo`) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT `se_ibfk_3` FOREIGN KEY(`EventCode`) REFERENCES `events` (`EventCode`) ON UPDATE CASCADE ON DELETE CASCADE,  
   CONSTRAINT `se_ibfk_4` FOREIGN KEY(`GroupNo`) REFERENCES `groups` (`GroupNo`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+INSERT INTO `switch_execute` (`HostName`, `PinNo`, `EventCode`, `GroupNo`, `TargetFunctionCode`, `Description`, `SequenceNo`, `WaitingDuration`) VALUES
+  ('SB_1',    11,    'K', 13, 'E', 'Switch on alarm', 2, 5),
+  ('SB_3',    33,    'L', 3, 'U', 'Switch light in the bathroom',NULL, NULL),
+  ('SB_1',    7,    'K', 11, 'A', 'Close window', 1, NULL);

@@ -7,6 +7,7 @@
 ?>
     <body>
         <?php
+        //add a button to add pins to each group (concern) redirect to the concern
             if($_SESSION["userIsAdmin"]==0){
 
                 $sqlStatement = $connection->prepare("SELECT * from groups where HostName=(select HostName from smartboxes where UserNo=(select UserNo from users where UserName=?)");

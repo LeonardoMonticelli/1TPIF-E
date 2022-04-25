@@ -170,14 +170,16 @@
         </form>
         <?php
     }    
+    if($_SESSION["userIsAdmin"]==1){
         ?>
 
-    <form action="" method="post">  
-        <input type="hidden" name="createUser">
-        <input type="submit" class="btn btn-primary" value="Create">
-    </form>
+        <form action="" method="post">  
+            <input type="hidden" name="createUser">
+            <input type="submit" class="btn btn-primary" value="Create">
+        </form>
 
 <?php
+    }
     if(isset($_POST["createUser"])){
 
     ?>
