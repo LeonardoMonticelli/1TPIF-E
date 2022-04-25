@@ -7,10 +7,14 @@
 ?>
     <body>
         <?php
-        //add a button to add pins to each group (concern) redirect to the concern
+        //add a button in general to add pins to each group (concern) redirect to the concern
+            if(isset($_POST["addPins"])){
+                header("location: concern.php");
+            }
+
             if($_SESSION["userIsAdmin"]==0){
 
-                $sqlStatement = $connection->prepare("SELECT * from groups where HostName=(select HostName from smartboxes where UserNo=(select UserNo from users where UserName=?)");
+                $sqlStatement = $connection->prepare("SELECT * from groups where HostName=(select HostName from smartboxes where UserNo=(select UserNo from users where UserName=?))");
                 $sqlStatement->bind_param("s", $_SESSION["currentUser"]);
                 $sqlStatement->execute();
 

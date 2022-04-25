@@ -91,9 +91,11 @@ INSERT INTO `use` (`GroupNo`, `ScriptName`) VALUES
 (11,    'strobo');
 
 CREATE TABLE `concern`(
+  `ConcernId` int NOT NULL AUTO_INCREMENT,
   `GroupNo` int(11) DEFAULT NULL,
   `HostName` VARCHAR(16) DEFAULT NULL,
   `PinNo` int DEFAULT NULL,
+  PRIMARY KEY (`ConcernId`),
   KEY `HostName`(`HostName`),
   KEY `PinNo`(`PinNo`),
   CONSTRAINT `concern_ibfk_1` FOREIGN KEY (`GroupNo`) REFERENCES `groups` (`GroupNo`) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -101,9 +103,9 @@ CREATE TABLE `concern`(
   CONSTRAINT `concern_ibfk_3` FOREIGN KEY (`PinNo`) REFERENCES `pins` (`PinNo`)ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO `concern` (`GroupNo`, `HostName`, `PinNo`) VALUES
-(11,    'SB_7',    33),
-(3,    'SB_3',    35);
+INSERT INTO `concern` (`ConcernId`, `GroupNo`, `HostName`, `PinNo`) VALUES
+(1, 11,    'SB_7',    33),
+(2, 3,    'SB_3',    35);
 
 CREATE TABLE `manage`(
   `HostName` VARCHAR(16) DEFAULT NULL,

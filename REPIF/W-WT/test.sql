@@ -1,1 +1,2 @@
-UPDATE smartbox SET HostName="SB_1", `Description`="potato", `Location`="your house", UserNo=1 where HostName="SB_1"
+use wt;
+SELECT * from groups where HostName=(select HostName from smartboxes where UserNo=(select UserNo from users where UserName='user'))
