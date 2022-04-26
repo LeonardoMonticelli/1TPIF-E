@@ -1,14 +1,23 @@
 <?php //head
-    $pageTitle ="Concern";
+    //must it have only the ones with input=1?
+    $pageTitle ="LED Pins";
     include_once "htmlHead.php";
     include_once "databaseConnect.php";
     include_once "sessionCheck.php";
 ?>
     <body>
-        <div>This is where the Groups and Pins are connected</div>
+        <div class="btn">
+            <form action="" method="post">
+                <input type="hidden" name="goBack">
+                <input type="submit" value="Go back">
+            </form>
+        </div>
+        <div>This is where the Groups and the LED Pins are connected</div>
         <?php
-        //A button to go back
-        // a print that says the changes where made succesfully
+
+            if(isset($_POST["goBack"])){
+                header("location: groups.php");
+            }
 
             $result = $connection->query("SELECT * from concern");
 
@@ -35,10 +44,10 @@
                     $sqlUpdate = $connection->prepare("UPDATE concern SET GroupNo=?, HostName=?, `PinNo`=? where ConcernId=?");
         
                     if(!$sqlUpdate){
-                        die("Error: the users cannot be updated");
+                        die("Error: the CONNECTION cannot be updated");
                     }
 
-                    $sqlUpdate->bind_param("isi", $_POST["groupNoEdit"], $_POST["hostNameEdit"], $_POST["pinNoEdit"]);
+                    $sqlUpdate->bind_param("isii", $_POST["groupNoEdit"], $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["concernIdSearch"]);
                     $sqlUpdate->execute();
 
                     header("refresh: 0");
@@ -47,10 +56,10 @@
                    
                 if(!empty($_POST["groupNoCreate"])&&!empty($_POST["hostNameCreate"])&&!empty($_POST["pinNoCreate"])){ //create 
 
-                    $sqlCreate = $connection->prepare("INSERT INTO `groups` (`GroupNo`, `GroupName`, `Description`, `HostName`) VALUES (?, ?, ?, ?)");
+                    $sqlCreate = $connection->prepare("INSERT INTO `concern` (`GroupNo`, `HostName`, `PinNo`) VALUES (?, ?, ?)");
 
                     if(!$sqlCreate){
-                        die("Error: the users cannot be created");
+                        die("Error: the CONNECTION cannot be created");
                     }
 
                     $sqlCreate->bind_param("isi",  $_POST["groupNoCreate"], $_POST["hostNameCreate"], $_POST["pinNoCreate"]);
@@ -109,7 +118,7 @@
     if(isset($_POST["editConnection"])){
 
         $editConVal = intval($_POST["editConnection"]);
-        $sqlSelect = $connection->prepare("SELECT ConcernId, GroupNo, HostName, PinNo FROM groups WHERE ConcernId=?");
+        $sqlSelect = $connection->prepare("SELECT ConcernId, GroupNo, HostName, PinNo FROM concern WHERE ConcernId=?");
         $sqlSelect->bind_param("i", $editConVal);
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();
@@ -118,25 +127,71 @@
         ?>
         <form method="post" class="mb-3">
 
-            <div class="form-group mb-3">
-                <label for="">ConcernId</label>
-                <input type="text" class="form-control" name="concernIdEdit" value="<?= $data[0]["ConcernId"] ?>">
-                <input type="hidden" class="form-control" name="concernIdSearch" value="<?= $data[0]["ConcernId"] ?>">
-            </div>
+            <fieldset disabled>
+                <div class="form-group mb-3">
+                    <label for="">ConcernId</label>
+                    <input type="text" class="form-control" name="" value="<?= $data[0]["ConcernId"] ?>">
+                </div>
+            </fieldset>
+
+            <input type="hidden" class="form-control" name="concernIdEdit" value="<?= $data[0]["ConcernId"] ?>">
+            <input type="hidden" class="form-control" name="concernIdSearch" value="<?= $data[0]["ConcernId"] ?>">
 
             <div class="form-group mb-3">
-                <label for="">GroupName</label>
-                <input type="text" class="form-control" name="groupNameEdit" value="<?= $data[0]["GroupName"] ?>">
-            </div>
+                <label for="">GroupNo</label>
 
-            <div class="form-group mb-3">
-                <label for="">Description</label>
-                <input type="text" class="form-control" name="descriptionEdit" value="<?= $data[0]["Description"] ?>">
+                <select name="groupNoEdit" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+
+                            ?>
+                            <option <?php if($data[0]["GroupNo"]==$row["GroupNo"]){print " selected ";}?>value="<?=$row["GroupNo"]?>"><?= $row["GroupNo"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
             </div>
 
             <div class="form-group mb-3">
                 <label for="">HostName</label>
-                <input type="text" class="form-control" name="hostNameEdit" value="<?= $data[0]["HostName"] ?>">
+
+                <select name="hostNameEdit" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+
+                            ?>
+                            <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">PinNo</label>
+
+                <select name="pinNoEdit" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT PinNo FROM pins WHERE Input=0");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+
+                            ?>
+                            <option <?php if($data[0]["PinNo"]==$row["PinNo"]){print " selected ";}?>value="<?=$row["PinNo"]?>"><?= $row["PinNo"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
             </div>
 
             <button type="submit" class="btn btn-success">Submit</button>
@@ -154,30 +209,71 @@
 <?php
     if(isset($_POST["createGroup"])){
 
+        $sqlSelect = $connection->prepare("SELECT ConcernId, GroupNo, HostName, PinNo FROM concern");
+
+        $sqlSelect->execute();
+        $result = $sqlSelect->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+
     ?>
         <form method="post">
 
-            <div class="form-group mb-3">
+        <div class="form-group mb-3">
                 <label for="">GroupNo</label>
-                <input type="text" class="form-control" name="groupNoCreate" placeholder="username">
-            </div>
 
-            <div class="form-group mb-3">
-                <label for="">GroupName</label>
-                <input type="text" class="form-control" name="groupNameCreate" placeholder="first name">
-            </div>
+                <select name="groupNoCreate" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
 
-            <div class="form-group mb-3">
-                <label for="">Description</label>
-                <input type="text" class="form-control" name="descriptionCreate" placeholder="last name">
+                        while($row = $result->fetch_assoc()){
+
+                            ?>
+                            <option <?php if($data[0]["GroupNo"]==$row["GroupNo"]){print " selected ";}?>value="<?=$row["GroupNo"]?>"><?= $row["GroupNo"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
             </div>
 
             <div class="form-group mb-3">
                 <label for="">HostName</label>
-                <input type="text" class="form-control" name="descriptionCreate" placeholder="111.111.111">
+
+                <select name="hostNameCreate" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+
+                            ?>
+                            <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
             </div>
 
+            <div class="form-group mb-3">
+                <label for="">PinNo</label>
 
+                <select name="pinNoCreate" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT PinNo FROM pins WHERE Input=0");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+
+                            ?>
+                            <option <?php if($data[0]["PinNo"]==$row["PinNo"]){print " selected ";}?>value="<?=$row["PinNo"]?>"><?= $row["PinNo"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
+            </div>
 
             <button type="submit" class="btn btn-success">Create a group</button>
 

@@ -61,6 +61,7 @@ CREATE TABLE `pins` (
 INSERT INTO `pins` (`HostName`, `PinNo`, `Input`, `Designation`) VALUES 
 ('SB_1', 7, 1, 'GPIO4'),
 ('SB_1', 11, 1, 'GPIO17'),
+('SB_1', 9, 1, 'GPIO15'),
 ('SB_7', 33, 0, 'GPIO13'),
 ('SB_3', 35, 0, 'GPIO19');
 
@@ -130,7 +131,8 @@ INSERT INTO `events` (`HostName`, `PinNo`, `EventCode`, `Description`) VALUES
 ('SB_3',    11,    'L', 'Long press touch field'),
 ('SB_7',    33,    'K', 'Touch field briefly');
 
-CREATE TABLE `switch_execute` (
+CREATE TABLE `switchexecute` (
+  `SwitchExecuteId` int NOT NULL AUTO_INCREMENT,
   `HostName` VARCHAR(16) DEFAULT NULL,
   `PinNo` int DEFAULT NULL,
   `EventCode` VARCHAR(1) NOT NULL,
@@ -145,7 +147,7 @@ CREATE TABLE `switch_execute` (
   CONSTRAINT `se_ibfk_4` FOREIGN KEY(`GroupNo`) REFERENCES `groups` (`GroupNo`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO `switch_execute` (`HostName`, `PinNo`, `EventCode`, `GroupNo`, `TargetFunctionCode`, `Description`, `SequenceNo`, `WaitingDuration`) VALUES
+INSERT INTO `switchexecute` (`HostName`, `PinNo`, `EventCode`, `GroupNo`, `TargetFunctionCode`, `Description`, `SequenceNo`, `WaitingDuration`) VALUES
   ('SB_1',    11,    'K', 13, 'E', 'Switch on alarm', 2, 5),
-  ('SB_3',    33,    'L', 3, 'U', 'Switch light in the bathroom',NULL, NULL),
+  ('SB_1',    9,    'L', 11, 'U', 'Switch light in the bathroom',NULL, NULL),
   ('SB_1',    7,    'K', 11, 'A', 'Close a window', 1, NULL);

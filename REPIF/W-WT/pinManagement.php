@@ -121,7 +121,7 @@
 
                 <select name="hostNameEdit" class="form-select">
                     <?php
-                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartbox");
+                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
                         $sqlSelect->execute();
                         $result = $sqlSelect->get_result();
 
@@ -156,11 +156,15 @@
         <?php
     }    
         ?>
+<div>
 
+</div class="mb-3">
     <form action="" method="post">
         <input type="hidden" name="createPin">
         <input type="submit" class="btn btn-primary" value="Create"></input>
     </form>
+
+
 
     <?php
     if(isset($_POST["createPin"])){

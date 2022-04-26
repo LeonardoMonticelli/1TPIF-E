@@ -7,6 +7,10 @@
 ?>
     <body>
         <?php
+            if(isset($_POST["addPins"])){
+                header("location: switchExecute.php");
+            }
+
             if($_SESSION["userIsAdmin"]==0){
 
                 $sqlStatement = $connection->prepare("SELECT * from smartboxes where UserNo=(select UserNo from users where UserName=?)");
@@ -23,14 +27,13 @@
 
                 if(isset($_POST["deleteSB"])) { //this has to be at the beggining so the refresh works 
 
-                    $deleteSbVal = intval($_POST["deleteSB"]);
                     $sqlDelete = $connection->prepare("DELETE FROM smartboxes where HostName=?");
     
                     if(!$sqlDelete){
                         die("Error: the smartboxes cannot be deleted");
                     }
     
-                    $sqlDelete->bind_param("s", $deleteSbVal);
+                    $sqlDelete->bind_param("s", $_POST["deleteSB"]);
                     $sqlDelete->execute();
     
                     header("refresh: 0");
@@ -38,7 +41,7 @@
                 }
 
                 if(!empty($_POST["descriptionEdit"])){ //update
-                    // print "hello"; 
+
                     $sqlUpdate = $connection->prepare("UPDATE smartboxes SET `Description`=?, `Location`=?, UserNo=? where HostName=?"); //fine
         
                     if(!$sqlUpdate){
@@ -118,7 +121,7 @@
         $data = $result->fetch_all(MYSQLI_ASSOC);
 
         ?>
-        <form method="post">
+        <form method="post" class="mb-3">
 
             <fieldset disabled>
                 <div class=" mb-3">
@@ -157,18 +160,26 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-success">Submit changes</button>
+            <button type="submit" class="btn btn-success  mb-3">Submit changes</button>
 
         </form>
 
         <?php
     }    
+    if($_SESSION["userIsAdmin"]==1){
 ?>
         <form action="" method="post">
             <input type="hidden" name="createSB">
             <input type="submit" class="btn btn-primary" value="Create"></input>
         </form>
+        <div class="mb-3">
+            <form action="" method="post">
+                <input type="hidden" name="addPins">
+                <input type="submit" class="btn btn-primary" value="Add Switch Pins"></input>
+            </form>
+        </div>
 <?php
+    }
     if(isset($_POST["createSB"])){
 
         ?>

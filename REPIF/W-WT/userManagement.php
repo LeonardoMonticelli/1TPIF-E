@@ -134,11 +134,15 @@
         ?>
         <form method="post" class="mb-3">
 
-            <div class="form-group mb-3">
-                <label for="">UserNo</label>
-                <input type="text" class="form-control" name="userNoEdit" value="<?= $data[0]["UserNo"] ?>">
-                <input type="hidden" class="form-control" name="userNoSearch" value="<?= $data[0]["UserNo"] ?>">
-            </div>
+            <fieldset disabled>
+                <div class="form-group mb-3">
+                    <label for="">UserNo</label>
+                    <input type="text" class="form-control" name="" value="<?= $data[0]["UserNo"] ?>">
+                </div>
+            </fieldset>
+
+            <input type="hidden" class="form-control" name="userNoEdit" value="<?= $data[0]["UserNo"] ?>">
+            <input type="hidden" class="form-control" name="userNoSearch" value="<?= $data[0]["UserNo"] ?>">
 
             <div class="form-group mb-3">
                 <label for="">UserName</label>
@@ -157,7 +161,20 @@
 
             <div class="form-group mb-3">
                 <label for="">Techinician</label>
-                <input type="text" class="form-control" name="technicianEdit" value="<?= $data[0]["Technician"] ?>">
+
+                <select name="technicianEdit" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT Technician FROM users");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+                            ?>
+                            <option <?php if($data[0]["Technician"]==$row["Technician"]){print " selected ";}?>value="<?=$row["Technician"]?>"><?= $row["Technician"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
             </div>
 
             <div class="form-group mb-3">

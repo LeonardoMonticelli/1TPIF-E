@@ -156,14 +156,25 @@
         </form>
         <?php
     }    
-        ?>
 
-    <form action="" method="post">  
-        <input type="hidden" name="createGroup">
-        <input type="submit" class="btn btn-primary" value="Create">
-    </form>
+    if($_SESSION["userIsAdmin"]==1){
+        ?>
+        <div class="mb-3">
+            <form action="" method="post">  
+                <input type="hidden" name="createGroup">
+                <input type="submit" class="btn btn-primary" value="Create">
+            </form>
+        </div>
+        <div class="mb-3">
+            <form action="" method="post">
+                <input type="hidden" name="addPins">
+                <input type="submit" class="btn btn-primary" value="Add LED Pins"></input>
+            </form>
+        </div>
 
 <?php
+    }
+
     if(isset($_POST["createGroup"])){
 
     ?>
