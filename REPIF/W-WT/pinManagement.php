@@ -177,7 +177,7 @@
 
                 <select name="hostNameCreate" class="form-select">
                     <?php
-                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartbox");
+                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
                         $sqlSelect->execute();
                         $result = $sqlSelect->get_result();
 

@@ -78,10 +78,14 @@ open write and close
                     <thead>
                         <tr>
 
-                            <th scope="col">ConcernId</th>
-                            <th scope="col">GroupNo</th>
                             <th scope="col">HostName</th>
                             <th scope="col">PinNo</th>
+                            <th scope="col">EventCode</th>
+                            <th scope="col">GroupNo</th>
+                            <th scope="col">TargetFunctionCode</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">WaitingDuration</th>
+                            <th scope="col"></th>
                             <th scope="col"></th>
                             <th scope="col"></th>
 
@@ -93,20 +97,24 @@ open write and close
                         while ($row = $result->fetch_assoc()) {?>                           
                             <tr>
 
-                                <th scope="row"><?= $row["ConcernId"] ?></th>
-                                <td><?= $row["GroupNo"] ?></td>
-                                <td><?= $row["HostName"] ?></td>
+                                <th scope="row"><?= $row["HostName"] ?></th>
                                 <td><?= $row["PinNo"] ?></td>
+                                <td><?= $row["EventCode"] ?></td>
+                                <td><?= $row["GroupNo"] ?></td>
+                                <td><?= $row["TargetFunctionCode"] ?></td>
+                                <td><?= $row["Description"] ?></td>
+                                <td><?= $row["WaitingDuration"] ?></td>
+
                                 <?php if($_SESSION["userIsAdmin"]==1){?>
                                     <td>                                
                                         <form method="POST">
-                                            <input type="hidden" name="editConnection" value="<?= $row["ConcernId"] ?>">
+                                            <input type="hidden" name="editConnection" value="<?= $row["SwitchExecuteId"] ?>">
                                             <input type="submit" value="Edit">
                                         </form>
                                     </td>
                                     <td>
                                         <form method="POST">
-                                            <input type="hidden" name="deleteConnection" value="<?= $row["ConcernId"] ?>">
+                                            <input type="hidden" name="deleteConnection" value="<?= $row["SwitchExecuteId"] ?>">
                                             <input type="submit" value="Delete">
                                         </form>
                                     </td>

@@ -50,7 +50,7 @@
                         die("Error: the users cannot be updated");
                     }
 
-                    $sqlUpdate->bind_param("isss", $_POST["groupNoEdit"], $_POST["groupNameEdit"], $_POST["descriptionEdit"], $_POST["hostNameEdit"], $_POST["userNoSearch"]);
+                    $sqlUpdate->bind_param("isssi", $_POST["groupNoEdit"], $_POST["groupNameEdit"], $_POST["descriptionEdit"], $_POST["hostNameEdit"], $_POST["groupNoSearch"]);
                     $sqlUpdate->execute();
 
                     header("refresh: 0");
@@ -148,7 +148,20 @@
 
             <div class="form-group mb-3">
                 <label for="">HostName</label>
-                <input type="text" class="form-control" name="hostNameEdit" value="<?= $data[0]["HostName"] ?>">
+
+                <select name="hostNameEdit" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+                            ?>
+                            <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
             </div>
 
             <button type="submit" class="btn btn-success">Submit</button>
@@ -182,7 +195,7 @@
 
             <div class="form-group mb-3">
                 <label for="">GroupNo</label>
-                <input type="text" class="form-control" name="groupNoCreate" placeholder="username">
+                <input type="number" class="form-control" name="groupNoCreate" placeholder="username">
             </div>
 
             <div class="form-group mb-3">
@@ -197,10 +210,21 @@
 
             <div class="form-group mb-3">
                 <label for="">HostName</label>
-                <input type="text" class="form-control" name="descriptionCreate" placeholder="111.111.111">
+
+                <select name="hostNameCreate" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+                            ?>
+                            <option value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
             </div>
-
-
 
             <button type="submit" class="btn btn-success">Create a group</button>
 
