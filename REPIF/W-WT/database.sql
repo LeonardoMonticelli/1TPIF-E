@@ -7,7 +7,7 @@ CREATE TABLE `users` (
   `UserName` varchar(50) UNIQUE DEFAULT NULL,
   `FirstName` varchar(50) DEFAULT NULL,
   `LastName` varchar(50) DEFAULT NULL,
-  `Technician` BOOLEAN DEFAULT NULL,
+  `Technician` BOOLEAN DEFAULT 0,
   `Email` varchar(50) DEFAULT NULL,
   `Password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`UserNo`)
@@ -138,6 +138,7 @@ CREATE TABLE `switchexecute` (
   `EventCode` VARCHAR(1) NOT NULL,
   `GroupNo` int(11) DEFAULT NULL,
   `TargetFunctionCode` VARCHAR(1) NOT NULL,
+  PRIMARY KEY(`SwitchExecuteId`),
   `Description` VARCHAR(50) NOT NULL,
   `SequenceNo` INT DEFAULT NULL,
   `WaitingDuration` INT DEFAULT NULL,

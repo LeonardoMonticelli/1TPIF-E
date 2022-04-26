@@ -6,10 +6,10 @@
     include_once "sessionCheck.php";
 ?>
     <body>
-        <div class="btn">
+        <div class="">
             <form action="" method="post">
                 <input type="hidden" name="goBack">
-                <input type="submit" value="Go back">
+                <input type="submit" class="btn btn-secondary mb-3" value="Go back">
             </form>
         </div>
         <div>This is where the Groups and the LED Pins are connected</div>

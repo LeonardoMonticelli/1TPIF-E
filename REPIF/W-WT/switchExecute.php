@@ -1,5 +1,7 @@
 In here I will connect the switches(the pins with input 1) to the smartboxes
 
+open write and close
+
 <?php //head
     $pageTitle ="Switch Pins";
     include_once "htmlHead.php";
@@ -7,10 +9,10 @@ In here I will connect the switches(the pins with input 1) to the smartboxes
     include_once "sessionCheck.php";
 ?>
     <body>
-        <div class="btn">
+        <div class="">
             <form action="" method="post">
                 <input type="hidden" name="goBack">
-                <input type="submit" value="Go back">
+                <input type="submit" class="btn btn-secondary mb-3" value="Go back">
             </form>
         </div>
         <div>This is where the Groups and the LED Pins are connected</div>
@@ -40,30 +42,32 @@ In here I will connect the switches(the pins with input 1) to the smartboxes
     
                 }
 
-                if(!empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])&&!empty($_POST["eventCodeEdit"])&&!empty($_POST["GroupNoEdit"])&&!empty($_POST["targetFunctionCodeEdit"])&&!empty($_POST["descriptionEdit"])&&!empty($_POST["sequenceNoEdit"])&&!empty($_POST["waitingDurationCode"])){ //update
+                $isItEmptyEdit = !empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])&&!empty($_POST["eventCodeEdit"])&&!empty($_POST["groupNoEdit"])&&!empty($_POST["targetFnCodeEdit"])&&!empty($_POST["descriptionEdit"])&&!empty($_POST["sequenceNoEdit"])&&!empty($_POST["waitingDurCodeEdit"]);
+                if($isItEmptyEdit){ //update
                     //monle399
-                    $sqlUpdate = $connection->prepare("UPDATE concern SET GroupNo=?, HostName=?, `PinNo`=? where ConcernId=?");
+                    $sqlUpdate = $connection->prepare("UPDATE switchexecute SET HostName=?, PinNo=?, EventCode=?, GroupNo=?, TargetFunctionCode=?, `Description`=?, SequenceNo=?, WaitingDuration=? where SwitchExecuteId=?");
         
                     if(!$sqlUpdate){
                         die("Error: the CONNECTION cannot be updated");
                     }
 
-                    $sqlUpdate->bind_param("isii", $_POST["groupNoEdit"], $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["concernIdSearch"]);
+                    $sqlUpdate->bind_param("sisissiii", $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["eventCodeEdit"], $_POST["groupNoEdit"],$_POST["targetFnCodeEdit"],$_POST["descriptionEdit"], $_POST["sequenceNoEdit"], $_POST["waitingDurCodeEdit"], $_POST["switchExeSearch"]);
                     $sqlUpdate->execute();
 
                     header("refresh: 0");
         
                 }
-                   
-                if(!empty($_POST["groupNoCreate"])&&!empty($_POST["hostNameCreate"])&&!empty($_POST["pinNoCreate"])){ //create 
+                
+                $isItEmptyCreate = !empty($_POST["hostNameCreate"])&&!empty($_POST["pinNoCreate"])&&!empty($_POST["eventCodeCreate"])&&!empty($_POST["groupNoCreate"])&&!empty($_POST["targetFnCodeCreate"])&&!empty($_POST["descriptionCreate"])&&!empty($_POST["sequenceNoCreate"])&&!empty($_POST["waitingDurCodeCreate"]);
+                if($isItEmptyCreate){ //create 
 
-                    $sqlCreate = $connection->prepare("INSERT INTO `concern` (`GroupNo`, `HostName`, `PinNo`) VALUES (?, ?, ?)");
+                    $sqlCreate = $connection->prepare("INSERT INTO `switchexecute` (`HostName`, `PinNo`, `EventCode`, `GroupNo`, `TargetFunctionCode`, `Description`, `SequenceNo`, `WaitingDuration`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
                     if(!$sqlCreate){
                         die("Error: the CONNECTION cannot be created");
                     }
 
-                    $sqlCreate->bind_param("isi",  $_POST["groupNoCreate"], $_POST["hostNameCreate"], $_POST["pinNoCreate"]);
+                    $sqlCreate->bind_param("sisissiii", $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["eventCodeEdit"], $_POST["groupNoEdit"],$_POST["targetFnCodeEdit"],$_POST["descriptionEdit"], $_POST["sequenceNoEdit"], $_POST["waitingDurCodeEdit"], $_POST["switchExeSearch"]);
                     $sqlCreate->execute();
 
                     header("refresh: 0");
