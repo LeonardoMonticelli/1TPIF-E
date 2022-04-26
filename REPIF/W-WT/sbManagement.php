@@ -167,11 +167,13 @@
         <?php
     }    
     if($_SESSION["userIsAdmin"]==1){
-?>
-        <form action="" method="post">
-            <input type="hidden" name="createSB">
-            <input type="submit" class="btn btn-primary" value="Create"></input>
-        </form>
+?>  
+        <div class="mb-3">
+            <form action="" method="post">
+                <input type="hidden" name="createSB">
+                <input type="submit" class="btn btn-primary" value="Create"></input>
+            </form>
+        </div>
         <div class="mb-3">
             <form action="" method="post">
                 <input type="hidden" name="addPins">

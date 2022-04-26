@@ -40,7 +40,7 @@ In here I will connect the switches(the pins with input 1) to the smartboxes
     
                 }
 
-                if(!empty($_POST["groupNoEdit"])&&!empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])){ //update
+                if(!empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])&&!empty($_POST["eventCodeEdit"])&&!empty($_POST["GroupNoEdit"])&&!empty($_POST["targetFunctionCodeEdit"])&&!empty($_POST["descriptionEdit"])&&!empty($_POST["sequenceNoEdit"])&&!empty($_POST["waitingDurationCode"])){ //update
                     //monle399
                     $sqlUpdate = $connection->prepare("UPDATE concern SET GroupNo=?, HostName=?, `PinNo`=? where ConcernId=?");
         
