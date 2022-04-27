@@ -19,7 +19,7 @@
             }
 
             $sqlSelect = $connection->prepare("SELECT * from switchexecute WHERE HostName=?");
-            $sqlSelect->bind_param("i", $_GET["HostName"]);
+            $sqlSelect->bind_param("s", $_GET["HostName"]);
             $sqlSelect->execute();
             $result = $sqlSelect->get_result();
             

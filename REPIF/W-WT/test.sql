@@ -1,2 +1,3 @@
-use wt;
-UPDATE switchexecute SET HostName='SB_3', PinNo=11, EventCode='K', GroupNo=13, TargetFunctionCode='E', `Description`='Switch on alarm', SequenceNo=2 , WaitingDuration=6 where SwitchExecuteId=1
+use wt2;
+-- select users.UserName, manage.HostName from users, manage where users.UserNo=manage.UserNo and users.UserNo=1;
+SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=1;

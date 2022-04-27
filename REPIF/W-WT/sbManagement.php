@@ -4,11 +4,14 @@
     include_once "databaseConnect.php";
     include_once "sessionCheck.php";
     include_once "navigationBar.php";
+
+    //remove the userno
+    //create a page where I give owenership of a smartbox
 ?>
     <body>
         <?php
             if($_SESSION["userIsAdmin"]==0){
-
+                // SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=1;
                 $sqlStatement = $connection->prepare("SELECT * from smartboxes where UserNo=(select UserNo from users where UserName=?)");
                 $sqlStatement->bind_param("s", $_SESSION["currentUser"]);
                 $sqlStatement->execute();
@@ -117,8 +120,8 @@
                                 </td>
                                 <td>
                                     <div class="mb-3">
-                                        <form action="" method="post">
-                                            <input type="hidden" name="addSwitches">
+                                        <form action="" method="POST">
+                                            <input type="hidden" name="addSwitches" value="<?= $row["HostName"] ?>">
                                             <input type="submit" class="btn btn-primary" value="Add Switches"></input>
                                         </form>
                                     </div>
