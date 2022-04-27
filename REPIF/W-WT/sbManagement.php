@@ -7,10 +7,6 @@
 ?>
     <body>
         <?php
-            if(isset($_POST["addPins"])){
-                header("location: switchExecute.php");
-            }
-
             if($_SESSION["userIsAdmin"]==0){
 
                 $sqlStatement = $connection->prepare("SELECT * from smartboxes where UserNo=(select UserNo from users where UserName=?)");
@@ -24,6 +20,28 @@
             }
              
             if ($result) {
+
+                if(isset($_POST["generateConf"])) { 
+
+                    $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes WHERE HostName=?");
+                    $sqlSelect->bind_param("s", $_POST["generateConf"]);
+                    $sqlSelect->execute();
+                    $result = $sqlSelect->get_result();
+                    $data = $result->fetch_all(MYSQLI_ASSOC);
+    
+                    header("location: configuration.php?HostName=".$data[0]["HostName"]);
+    
+                }
+
+                if(isset($_POST["addSwitches"])){
+                    $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes WHERE HostName=?");
+                    $sqlSelect->bind_param("s", $_POST["addSwitches"]);
+                    $sqlSelect->execute();
+                    $result = $sqlSelect->get_result();
+                    $data = $result->fetch_all(MYSQLI_ASSOC);
+    
+                    header("location: switchExecute.php?HostName=".$data[0]["HostName"]);
+                }
 
                 if(isset($_POST["deleteSB"])) { //this has to be at the beggining so the refresh works 
 
@@ -91,6 +109,20 @@
                                 <td><?= $row["Description"] ?></td>
                                 <td><?= $row["Location"] ?></td>
                                 <td><?= $row["UserNo"] ?></td>
+                                <td>                                
+                                    <form method="POST">
+                                        <input type="hidden" name="generateConf" value="<?= $row["HostName"] ?>">
+                                        <input type="submit" value="Generate configuration">
+                                    </form>
+                                </td>
+                                <td>
+                                    <div class="mb-3">
+                                        <form action="" method="post">
+                                            <input type="hidden" name="addSwitches">
+                                            <input type="submit" class="btn btn-primary" value="Add Switches"></input>
+                                        </form>
+                                    </div>
+                                </td>
                                 <td>                                
                                     <form method="POST">
                                         <input type="hidden" name="editSB" value="<?= $row["HostName"] ?>">
@@ -172,12 +204,6 @@
             <form action="" method="post">
                 <input type="hidden" name="createSB">
                 <input type="submit" class="btn btn-primary" value="Create"></input>
-            </form>
-        </div>
-        <div class="mb-3">
-            <form action="" method="post">
-                <input type="hidden" name="addPins">
-                <input type="submit" class="btn btn-primary" value="Add Switch Pins"></input>
             </form>
         </div>
 <?php

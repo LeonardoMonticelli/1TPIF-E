@@ -1,7 +1,3 @@
-In here I will connect the switches(the pins with input 1) to the smartboxes
-
-open write and close
-
 <?php //head
     $pageTitle ="Switch Pins";
     include_once "htmlHead.php";
@@ -15,15 +11,18 @@ open write and close
                 <input type="submit" class="btn btn-secondary mb-3" value="Go back">
             </form>
         </div>
-        <div>This is where the Groups and the LED Pins are connected</div>
+        <div>This is where the Groups and the Switch Pins are connected</div>
         <?php
 
             if(isset($_POST["goBack"])){
                 header("location: sbManagement.php");
             }
 
-            $result = $connection->query("SELECT * from switchexecute");
-
+            $sqlSelect = $connection->prepare("SELECT * from switchexecute WHERE HostName=?");
+            $sqlSelect->bind_param("i", $_GET["HostName"]);
+            $sqlSelect->execute();
+            $result = $sqlSelect->get_result();
+            
             if ($result) {
 
                 if(isset($_POST["deleteConnection"])) { //delete
@@ -42,23 +41,23 @@ open write and close
     
                 }
 
-                $isItEmptyEdit = !empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])&&!empty($_POST["eventCodeEdit"])&&!empty($_POST["groupNoEdit"])&&!empty($_POST["targetFnCodeEdit"])&&!empty($_POST["descriptionEdit"])&&!empty($_POST["sequenceNoEdit"])&&!empty($_POST["waitingDurCodeEdit"]);
+                $isItEmptyEdit = !empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])&&!empty($_POST["eventCodeEdit"])&&!empty($_POST["groupNoEdit"])&&!empty($_POST["targetFunctionCodeEdit"])&&!empty($_POST["descriptionEdit"])&&!empty($_POST["sequenceNoEdit"])&&!empty($_POST["waitingDurationEdit"]);
                 if($isItEmptyEdit){ //update
-                    //monle399
+                    
                     $sqlUpdate = $connection->prepare("UPDATE switchexecute SET HostName=?, PinNo=?, EventCode=?, GroupNo=?, TargetFunctionCode=?, `Description`=?, SequenceNo=?, WaitingDuration=? where SwitchExecuteId=?");
-        
+                    
                     if(!$sqlUpdate){
                         die("Error: the CONNECTION cannot be updated");
                     }
 
-                    $sqlUpdate->bind_param("sisissiii", $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["eventCodeEdit"], $_POST["groupNoEdit"],$_POST["targetFnCodeEdit"],$_POST["descriptionEdit"], $_POST["sequenceNoEdit"], $_POST["waitingDurCodeEdit"], $_POST["switchExeSearch"]);
+                    $sqlUpdate->bind_param("sisissiii", $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["eventCodeEdit"], $_POST["groupNoEdit"],$_POST["targetFunctionCodeEdit"],$_POST["descriptionEdit"], $_POST["sequenceNoEdit"], $_POST["waitingDurationEdit"], $_POST["switchExecuteIdSearch"]);
                     $sqlUpdate->execute();
 
                     header("refresh: 0");
         
                 }
                 
-                $isItEmptyCreate = !empty($_POST["hostNameCreate"])&&!empty($_POST["pinNoCreate"])&&!empty($_POST["eventCodeCreate"])&&!empty($_POST["groupNoCreate"])&&!empty($_POST["targetFnCodeCreate"])&&!empty($_POST["descriptionCreate"])&&!empty($_POST["sequenceNoCreate"])&&!empty($_POST["waitingDurCodeCreate"]);
+                $isItEmptyCreate = !empty($_POST["hostNameCreate"])&&!empty($_POST["pinNoCreate"])&&!empty($_POST["eventCodeCreate"])&&!empty($_POST["groupNoCreate"])&&!empty($_POST["targetFunctionCodeCreate"])&&!empty($_POST["descriptionCreate"])&&!empty($_POST["sequenceNoCreate"])&&!empty($_POST["waitingDurationCreate"]);
                 if($isItEmptyCreate){ //create 
 
                     $sqlCreate = $connection->prepare("INSERT INTO `switchexecute` (`HostName`, `PinNo`, `EventCode`, `GroupNo`, `TargetFunctionCode`, `Description`, `SequenceNo`, `WaitingDuration`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -67,7 +66,7 @@ open write and close
                         die("Error: the CONNECTION cannot be created");
                     }
 
-                    $sqlCreate->bind_param("sisissiii", $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["eventCodeEdit"], $_POST["groupNoEdit"],$_POST["targetFnCodeEdit"],$_POST["descriptionEdit"], $_POST["sequenceNoEdit"], $_POST["waitingDurCodeEdit"], $_POST["switchExeSearch"]);
+                    $sqlCreate->bind_param("sisissii", $_POST["hostNameCreate"], $_POST["pinNoCreate"], $_POST["eventCodeCreate"], $_POST["groupNoCreate"],$_POST["targetFunctionCodeCreate"],$_POST["descriptionCreate"], $_POST["sequenceNoCreate"], $_POST["waitingDurationCodeCreate"]);
                     $sqlCreate->execute();
 
                     header("refresh: 0");
@@ -84,6 +83,7 @@ open write and close
                             <th scope="col">GroupNo</th>
                             <th scope="col">TargetFunctionCode</th>
                             <th scope="col">Description</th>
+                            <th scope="col">SequenceNo</th>
                             <th scope="col">WaitingDuration</th>
                             <th scope="col"></th>
                             <th scope="col"></th>
@@ -103,10 +103,11 @@ open write and close
                                 <td><?= $row["GroupNo"] ?></td>
                                 <td><?= $row["TargetFunctionCode"] ?></td>
                                 <td><?= $row["Description"] ?></td>
+                                <td><?= $row["SequenceNo"] ?></td>
                                 <td><?= $row["WaitingDuration"] ?></td>
 
                                 <?php if($_SESSION["userIsAdmin"]==1){?>
-                                    <td>                                
+                                    <td>
                                         <form method="POST">
                                             <input type="hidden" name="editConnection" value="<?= $row["SwitchExecuteId"] ?>">
                                             <input type="submit" value="Edit">
@@ -131,7 +132,7 @@ open write and close
     if(isset($_POST["editConnection"])){
 
         $editConVal = intval($_POST["editConnection"]);
-        $sqlSelect = $connection->prepare("SELECT ConcernId, GroupNo, HostName, PinNo FROM concern WHERE ConcernId=?");
+        $sqlSelect = $connection->prepare("SELECT SwitchExecuteId, HostName, PinNo, EventCode, GroupNo, TargetFunctionCode, `Description`, SequenceNo, WaitingDuration FROM switchexecute WHERE SwitchExecuteId=?");
         $sqlSelect->bind_param("i", $editConVal);
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();
@@ -142,32 +143,13 @@ open write and close
 
             <fieldset disabled>
                 <div class="form-group mb-3">
-                    <label for="">ConcernId</label>
-                    <input type="text" class="form-control" name="" value="<?= $data[0]["ConcernId"] ?>">
+                    <label for="">SwitchExecuteId</label>
+                    <input type="text" class="form-control" name="" value="<?= $data[0]["SwitchExecuteId"] ?>">
                 </div>
             </fieldset>
 
-            <input type="hidden" class="form-control" name="concernIdEdit" value="<?= $data[0]["ConcernId"] ?>">
-            <input type="hidden" class="form-control" name="concernIdSearch" value="<?= $data[0]["ConcernId"] ?>">
-
-            <div class="form-group mb-3">
-                <label for="">GroupNo</label>
-
-                <select name="groupNoEdit" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
-
-                        while($row = $result->fetch_assoc()){
-
-                            ?>
-                            <option <?php if($data[0]["GroupNo"]==$row["GroupNo"]){print " selected ";}?>value="<?=$row["GroupNo"]?>"><?= $row["GroupNo"]?></option>
-                            <?php
-                        }
-                    ?>
-                </select>
-            </div>
+            <input type="hidden" class="form-control" name="switchExecuteIdEdit" value="<?= $data[0]["SwitchExecuteId"] ?>">
+            <input type="hidden" class="form-control" name="switchExecuteIdSearch" value="<?= $data[0]["SwitchExecuteId"] ?>">
 
             <div class="form-group mb-3">
                 <label for="">HostName</label>
@@ -193,7 +175,7 @@ open write and close
 
                 <select name="pinNoEdit" class="form-select">
                     <?php
-                        $sqlSelect = $connection->prepare("SELECT PinNo FROM pins WHERE Input=0");
+                        $sqlSelect = $connection->prepare("SELECT PinNo FROM pins WHERE Input=1");
                         $sqlSelect->execute();
                         $result = $sqlSelect->get_result();
 
@@ -207,34 +189,29 @@ open write and close
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-success">Submit</button>
+            <div class="form-group mb-3">
+                <label for="">EventCode</label>
 
-        </form>
-        <?php
-    }    
-        ?>
+                <select name="eventCodeEdit" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT EventCode FROM events");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
 
-    <form action="" method="post">  
-        <input type="hidden" name="createGroup">
-        <input type="submit" class="btn btn-primary" value="Create">
-    </form>
+                        while($row = $result->fetch_assoc()){
 
-<?php
-    if(isset($_POST["createGroup"])){
+                            ?>
+                            <option <?php if($data[0]["EventCode"]==$row["EventCode"]){print " selected ";}?>value="<?=$row["EventCode"]?>"><?= $row["EventCode"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
+            </div>
 
-        $sqlSelect = $connection->prepare("SELECT ConcernId, GroupNo, HostName, PinNo FROM concern");
-
-        $sqlSelect->execute();
-        $result = $sqlSelect->get_result();
-        $data = $result->fetch_all(MYSQLI_ASSOC);
-
-    ?>
-        <form method="post">
-
-        <div class="form-group mb-3">
+            <div class="form-group mb-3">
                 <label for="">GroupNo</label>
 
-                <select name="groupNoCreate" class="form-select">
+                <select name="groupNoEdit" class="form-select">
                     <?php
                         $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups");
                         $sqlSelect->execute();
@@ -249,6 +226,60 @@ open write and close
                     ?>
                 </select>
             </div>
+
+            <div class="form-group mb-3">
+                <label for="">TargetFunctionCode</label>
+                <input type="text" class="form-control" name="targetFunctionCodeEdit" value="<?= $data[0]["TargetFunctionCode"] ?>">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">Description</label>
+                <input type="text" class="form-control" name="descriptionEdit" value="<?= $data[0]["Description"] ?>">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">SequenceNo</label>
+                <input type="text" class="form-control" name="sequenceNoEdit" value="<?= $data[0]["SequenceNo"] ?>">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">WaitingDuration</label>
+                <input type="text" class="form-control" name="waitingDurationEdit" value="<?= $data[0]["WaitingDuration"] ?>">
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+
+        </form>
+        <?php
+    }    
+        ?>
+
+    <form action="" method="post">  
+        <input type="hidden" name="createExecute">
+        <input type="submit" class="btn btn-primary" value="Create">
+    </form>
+
+<?php
+    if(isset($_POST["createExecute"])){
+
+        $sqlSelect = $connection->prepare("SELECT SwitchExecuteId, HostName, PinNo, EventCode, GroupNo FROM switchexecute");
+
+        $sqlSelect->execute();
+        $result = $sqlSelect->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    ?>
+        <form method="post">
+
+        <fieldset disabled>
+                <div class="form-group mb-3">
+                    <label for="">SwitchExecuteId</label>
+                    <input type="text" class="form-control" name="" value="<?= $data[0]["SwitchExecuteId"] ?>">
+                </div>
+            </fieldset>
+
+            <input type="hidden" class="form-control" name="switchExecuteIdCreate" value="<?= $data[0]["SwitchExecuteId"] ?>">
+            <input type="hidden" class="form-control" name="switchExecuteIdSearch" value="<?= $data[0]["SwitchExecuteId"] ?>">
 
             <div class="form-group mb-3">
                 <label for="">HostName</label>
@@ -274,7 +305,7 @@ open write and close
 
                 <select name="pinNoCreate" class="form-select">
                     <?php
-                        $sqlSelect = $connection->prepare("SELECT PinNo FROM pins WHERE Input=0");
+                        $sqlSelect = $connection->prepare("SELECT PinNo FROM pins WHERE Input=1");
                         $sqlSelect->execute();
                         $result = $sqlSelect->get_result();
 
@@ -288,7 +319,65 @@ open write and close
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-success">Create a group</button>
+            <div class="form-group mb-3">
+                <label for="">EventCode</label>
+
+                <select name="eventCodeCreate" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT EventCode FROM events");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+
+                            ?>
+                            <option <?php if($data[0]["EventCode"]==$row["EventCode"]){print " selected ";}?>value="<?=$row["EventCode"]?>"><?= $row["EventCode"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">GroupNo</label>
+
+                <select name="groupNoCreate" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+
+                            ?>
+                            <option <?php if($data[0]["GroupNo"]==$row["GroupNo"]){print " selected ";}?>value="<?=$row["GroupNo"]?>"><?= $row["GroupNo"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">TargetFunctionCode</label>
+                <input type="text" class="form-control" name="targetFunctionCodeCreate" placeholder="A, E, U">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">Description</label>
+                <input type="text" class="form-control" name="descriptionCreate" placeholder="Switch located at...">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">SequenceNo</label>
+                <input type="text" class="form-control" name="sequenceNoCreate" placeholder="1">
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="">WaitingDuration</label>
+                <input type="text" class="form-control" name="waitingDurationCreate" placeholder="1">
+            </div>
+
+            <button type="submit" class="btn btn-success">Create a Switch connection</button>
 
         </form>
     <?php
