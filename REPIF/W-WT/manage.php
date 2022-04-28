@@ -1,5 +1,5 @@
 <?php //head
-    $pageTitle ="permission management";
+    $pageTitle ="Permission Management";
     include_once "htmlHead.php";
     include_once "databaseConnect.php";
     include_once "sessionCheck.php";
@@ -7,13 +7,13 @@
 
     //remove the userno
     //create a page where I give owenership of a smartbox
+    //many users can have permissions to one SB
 ?>
     <body>
         <?php
-            if($_SESSION["userIsAdmin"]==0){
+            if($_SESSION["userIsAdmin"]==1){
                 // SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=1;
-                $sqlStatement = $connection->prepare("SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=?");
-                $sqlStatement->bind_param("s", $_SESSION["currentUser"]); // a string???
+                $sqlStatement = $connection->prepare("SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName"); 
                 $sqlStatement->execute();
 
                 $result = $sqlStatement->get_result();
@@ -24,25 +24,15 @@
              
             if ($result) {
 
-                if(isset($_POST["addSwitches"])){
-                    $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes WHERE HostName=?");
-                    $sqlSelect->bind_param("s", $_POST["addSwitches"]);
-                    $sqlSelect->execute();
-                    $result = $sqlSelect->get_result();
-                    $data = $result->fetch_all(MYSQLI_ASSOC);
-    
-                    header("location: switchExecute.php?HostName=".$data[0]["HostName"]);
-                }
+                if(isset($_POST["deleteManage"])) { //this has to be at the beggining so the refresh works 
 
-                if(isset($_POST["deleteSB"])) { //this has to be at the beggining so the refresh works 
-
-                    $sqlDelete = $connection->prepare("DELETE FROM smartboxes where HostName=?");
+                    $sqlDelete = $connection->prepare("DELETE FROM manage where ManageId=?");
     
                     if(!$sqlDelete){
-                        die("Error: the smartboxes cannot be deleted");
+                        die("Error: the permission cannot be deleted");
                     }
     
-                    $sqlDelete->bind_param("s", $_POST["deleteSB"]);
+                    $sqlDelete->bind_param("i", $_POST["deleteManage"]);
                     $sqlDelete->execute();
     
                     header("refresh: 0");
@@ -51,28 +41,28 @@
 
                 if(!empty($_POST["descriptionEdit"])){ //update
 
-                    $sqlUpdate = $connection->prepare("UPDATE smartboxes SET `Description`=?, `Location`=?, UserNo=? where HostName=?"); //fine
+                    $sqlUpdate = $connection->prepare("UPDATE manage SET `HostName`=?, UserNo=? where ManageId=?"); //fine
         
                     if(!$sqlUpdate){
                         die("Error: the smartboxes cannot be updated");
                     }
                     
-                    $sqlUpdate->bind_param("ssis", $_POST["descriptionEdit"], $_POST["locationEdit"], $_POST["userNoEdit"], $_POST["hostNameSearch"]);
+                    $sqlUpdate->bind_param("ssi", $_POST["hostNameEdit"], $_POST["userNoEdit"], $_POST["manageIdSearch"]);
                     $sqlUpdate->execute();
 
                     header("refresh: 0");
         
                 }
  
-                if(!empty($_POST["hostNameCreate"])&&!empty($_POST["descriptionCreate"])&&!empty($_POST["locationCreate"])&&!empty($_POST["userNoCreate"])){ //create 
+                if(!empty($_POST["hostNameCreate"])&&!empty($_POST["userNoCreate"])){ //create 
 
-                    $sqlCreate = $connection->prepare("INSERT INTO `smartboxes` (`HostName`, `Description`, `Location`, `UserNo`) VALUES (?,    ?,    ?,    ?)");
+                    $sqlCreate = $connection->prepare("INSERT INTO `manage` (`HostName`, `UserNo`) VALUES (?,    ?)");
 
                     if(!$sqlCreate){
                         die("Error: the smartboxes cannot be created");
                     }
 
-                    $sqlCreate->bind_param("sssi", $_POST["hostNameCreate"], $_POST["descriptionCreate"], $_POST["locationCreate"], $_POST["userNoCreate"]);
+                    $sqlCreate->bind_param("ss", $_POST["hostNameCreate"], $_POST["userNoCreate"]);
                     $sqlCreate->execute();
 
                     header("refresh: 0");
@@ -83,9 +73,8 @@
                     <thead>
                         <tr>
 
+                            <th scope="col">ManageId</th>
                             <th scope="col">HostName</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Location</th>
                             <th scope="col">UserNo</th>
                             <th scope="col"></th>
                             <th scope="col"></th>
@@ -96,33 +85,18 @@
                         <?php while ($row = $result->fetch_assoc()) {?>                           
                             <tr>
 
-                                <th scope="row"><?= $row["HostName"] ?></th>
-                                <td><?= $row["Description"] ?></td>
-                                <td><?= $row["Location"] ?></td>
+                                <th scope="row"><?= $row["ManageId"] ?></th>
+                                <td><?= $row["HostName"] ?></td>
                                 <td><?= $row["UserNo"] ?></td>
                                 <td>                                
                                     <form method="POST">
-                                        <input type="hidden" name="generateConf" value="<?= $row["HostName"] ?>">
-                                        <input type="submit" value="Generate configuration">
-                                    </form>
-                                </td>
-                                <td>
-                                    <div class="mb-3">
-                                        <form action="" method="POST">
-                                            <input type="hidden" name="addSwitches" value="<?= $row["HostName"] ?>">
-                                            <input type="submit" class="btn btn-primary" value="Add Switches"></input>
-                                        </form>
-                                    </div>
-                                </td>
-                                <td>                                
-                                    <form method="POST">
-                                        <input type="hidden" name="editSB" value="<?= $row["HostName"] ?>">
+                                        <input type="hidden" name="editManage" value="<?= $row["ManageId"] ?>">
                                         <input type="submit" value="Edit">
                                     </form>
                                 </td>
                                 <td>
                                     <form method="POST">
-                                        <input type="hidden" name="deleteSB" value="<?= $row["HostName"] ?>">
+                                        <input type="hidden" name="deleteManage" value="<?= $row["ManageId"] ?>">
                                         <input type="submit" value="Delete">
                                     </form>
                                 </td>
@@ -135,10 +109,10 @@
                 print "Something went wrong selecting data";
             }
     
-    if(isset($_POST["editSB"])){
+    if(isset($_POST["editManage"])){
 
-        $sqlSelect = $connection->prepare("SELECT HostName, `Description`, `Location`, UserNo FROM smartboxes WHERE HostName=?");
-        $sqlSelect->bind_param("s", $_POST["editSB"]);
+        $sqlSelect = $connection->prepare("SELECT ManageId, HostName, UserNo FROM manage WHERE ManageId=?");
+        $sqlSelect->bind_param("i", $_POST["editManage"]);
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();
         $data = $result->fetch_all(MYSQLI_ASSOC);
@@ -148,21 +122,29 @@
 
             <fieldset disabled>
                 <div class=" mb-3">
-                    <label for="">HostName</label>
-                    <input type="text" id="disabledTextInput" class="form-control" name="hostNameEdit" placeholder="<?= $data[0]["HostName"] ?>">
+                    <label for="">ManageId</label>
+                    <input type="text" id="disabledTextInput" class="form-control" name="" placeholder="<?= $data[0]["ManageId"] ?>">
                 </div>
             </fieldset>
 
-            <input type="hidden" class="form-control" name="hostNameSearch" value="<?= $data[0]["HostName"] ?>">
+            <input type="hidden" class="form-control" name="hostNameSearch" value="<?= $data[0]["ManageId"] ?>">
 
             <div class="form-group mb-3">
-                <label for="">Description</label>
-                <input type="text" class="form-control" name="descriptionEdit" value="<?= $data[0]["Description"] ?>">
-            </div>
+                <label for="">HostName</label>
 
-            <div class="form-group mb-3">
-                <label for="">Location</label>
-                <input type="text" class="form-control" name="locationEdit" value="<?= $data[0]["Location"] ?>">
+                <select name="hostNameEdit" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+                            ?>
+                            <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
             </div>
 
             <div class="form-group mb-3">
@@ -193,30 +175,34 @@
 ?>  
         <div class="mb-3">
             <form action="" method="post">
-                <input type="hidden" name="createSB">
+                <input type="hidden" name="createManage">
                 <input type="submit" class="btn btn-primary" value="Create"></input>
             </form>
         </div>
 <?php
     }
-    if(isset($_POST["createSB"])){
+    if(isset($_POST["createManage"])){
 
         ?>
         <form method="post">
 
-            <div class=" mb-3">
+
+        <div class="form-group mb-3">
                 <label for="">HostName</label>
-                <input type="text" class="form-control" name="hostNameCreate" placeholder="SB_#">
-            </div>
 
-            <div class="form-group mb-3">
-                <label for="">Description</label>
-                <input type="text" class="form-control" name="descriptionCreate" placeholder="box #">
-            </div>
+                <select name="hostNameCreate" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
 
-            <div class="form-group mb-3">
-                <label for="">Location</label>
-                <input type="text" class="form-control" name="locationCreate" placeholder="Country">
+                        while($row = $result->fetch_assoc()){
+                            ?>
+                            <option value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
             </div>
 
             <div class="form-group mb-3">
@@ -237,7 +223,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-success">Create a smartboxes</button>
+            <button type="submit" class="btn btn-success">Create a permission</button>
 
         </form>
         <?php

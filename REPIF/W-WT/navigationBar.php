@@ -23,7 +23,7 @@
                 <?php
             }
         }
-            $navigationLinks=["index.php"=>"Home", "sbManagement.php"=>"SmartBox Management", "manage.php"=>"permission management", "pinManagement.php"=>"Pin Management", "groups.php"=>"Groups", "script.php"=>"Scripts", "userManagement.php"=>"Users", "userConfiguration.php"=>"Configuration"];
+            $navigationLinks=["index.php"=>"Home", "sbManagement.php"=>"SmartBox Management", "manage.php"=>"Permission Management", "pinManagement.php"=>"Pin Management", "groups.php"=>"Groups", "script.php"=>"Scripts", "userManagement.php"=>"Users", "userConfiguration.php"=>"Configuration"];
             foreach ($navigationLinks as $key => $value) {
                     addNavLink($key,$value);
             }

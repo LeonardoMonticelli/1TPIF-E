@@ -39,8 +39,8 @@ CREATE TABLE `manage`(
   CONSTRAINT `manage_ibfk_2` FOREIGN KEY(`UserNo`) REFERENCES `users` (`UserNo`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO `manage` (`HostName`, `UserNo`) VALUES
-('SB_1', 1),
-('SB_3', 1),
-('SB_7', 1),
-('SB_1', 2);
+INSERT INTO `manage` (`ManageId`,`HostName`, `UserNo`) VALUES
+(1, 'SB_1', 1),
+(2, 'SB_3', 1),
+(3, 'SB_7', 1),
+(4, 'SB_1', 2);

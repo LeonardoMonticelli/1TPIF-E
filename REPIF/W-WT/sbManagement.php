@@ -98,7 +98,6 @@
                             <th scope="col">HostName</th>
                             <th scope="col">Description</th>
                             <th scope="col">Location</th>
-                            <th scope="col">UserNo</th>
                             <th scope="col"></th>
                             <th scope="col"></th>
 
@@ -111,7 +110,6 @@
                                 <th scope="row"><?= $row["HostName"] ?></th>
                                 <td><?= $row["Description"] ?></td>
                                 <td><?= $row["Location"] ?></td>
-                                <td><?= $row["UserNo"] ?></td>
                                 <td>                                
                                     <form method="POST">
                                         <input type="hidden" name="generateConf" value="<?= $row["HostName"] ?>">
