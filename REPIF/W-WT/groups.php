@@ -1,4 +1,4 @@
-<?php //head
+ <?php //head
     $pageTitle ="Group management";
     include_once "htmlHead.php";
     include_once "databaseConnect.php";
@@ -82,6 +82,7 @@
                             <th scope="col">HostName</th>
                             <th scope="col"></th>
                             <th scope="col"></th>
+                            <th scope="col"></th>
 
                         </tr>
                     </thead>
@@ -96,6 +97,14 @@
                                 <td><?= $row["Description"] ?></td>
                                 <td><?= $row["HostName"] ?></td>
                                 <?php if($_SESSION["userIsAdmin"]==1){?>
+                                    <td>
+                                        <div class="mb-3">
+                                            <form action="" method="post">
+                                                <input type="hidden" name="addPins">
+                                                <input type="submit" class="btn btn-primary" value="Add LED Pins"></input>
+                                            </form>
+                                        </div>
+                                    </td>
                                     <td>                                
                                         <form method="POST">
                                             <input type="hidden" name="editGroup" value="<?= $row["GroupNo"] ?>">
@@ -176,12 +185,6 @@
             <form action="" method="post">  
                 <input type="hidden" name="createGroup">
                 <input type="submit" class="btn btn-primary" value="Create">
-            </form>
-        </div>
-        <div class="mb-3">
-            <form action="" method="post">
-                <input type="hidden" name="addPins">
-                <input type="submit" class="btn btn-primary" value="Add LED Pins"></input>
             </form>
         </div>
 
