@@ -8,12 +8,6 @@ function createGroupConf($connection, $input) {
         WHERE `groups`.HostName = ?
     ");
 
-    $scripts = $connection->prepare("
-        SELECT `use`.GroupNo, `use`.ScriptName, scripts.Path FROM `use`
-        INNER JOIN scripts ON scripts.ScriptName = `use`.ScriptName
-        INNER JOIN `groups` ON `groups`.HostName = ?
-    ");
-
     $groups->bind_param('s', $input["HostName"]);
 
     $groups->execute();
@@ -21,6 +15,12 @@ function createGroupConf($connection, $input) {
     $groupsresult = $groups->get_result();
 
     $groupsdata = $groupsresult->fetch_all(MYSQLI_ASSOC);
+
+    $scripts = $connection->prepare("
+        SELECT `use`.GroupNo, `use`.ScriptName, scripts.Path FROM `use`
+        INNER JOIN scripts ON scripts.ScriptName = `use`.ScriptName
+        INNER JOIN `groups` ON `groups`.HostName = ?
+    ");
 
     $scripts->bind_param('s', $input["HostName"]);
 
@@ -85,9 +85,9 @@ function sendConf($connection, $input) {
 
     return; // leave this activated when not connected to the rpi
 
-    $sshconnection = ssh2_connect('192.168.6.61', 22); // change the ip address
+    $sshconnection = ssh2_connect('192.168.6.235', 22); // ip address of the rpi
 
-    ssh2_auth_password($sshconnection, 'pi', 'cgo'); //the ip is from the rpi, the password is the last field
+    ssh2_auth_password($sshconnection, 'pi', '123'); // the password is the last field
 
     ssh2_scp_send($sshconnection,"config/gl.txt", '/home/pi/pif2122/data/gl.txt', 0644);
     ssh2_scp_send($sshconnection,"config/tefg.txt", '/home/pi/pif2122/data/tefg.txt', 0644);
