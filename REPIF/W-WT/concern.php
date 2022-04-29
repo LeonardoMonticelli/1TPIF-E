@@ -4,6 +4,7 @@
     include_once "htmlHead.php";
     include_once "databaseConnect.php";
     include_once "sessionCheck.php";
+    //I need to fix this bullshit
 ?>
     <body>
         <div class="">
