@@ -19,7 +19,10 @@
                 header("location: groups.php");
             }
 
-            $result = $connection->query("SELECT * from concern");
+            $sqlSelect  = $connection->prepare("SELECT * from concern where GroupNo=?");
+            $sqlSelect->bind_param("i", $_GET["GroupNo"]);
+            $sqlSelect->execute();
+            $result = $sqlSelect->get_result();
 
             if ($result) {
 

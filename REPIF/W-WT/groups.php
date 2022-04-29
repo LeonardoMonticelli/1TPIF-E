@@ -8,9 +8,18 @@
     <body>
         <?php
         //add a button in general to add pins to each group (concern) redirect to the concern
-            if(isset($_POST["addPins"])){
-                header("location: concern.php");
-            }
+
+        if(isset($_POST["addPins"])) { 
+
+            $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups WHERE GroupNo=?");
+            $sqlSelect->bind_param("i", $_POST["addPins"]);
+            $sqlSelect->execute();
+            $result = $sqlSelect->get_result();
+            $data = $result->fetch_all(MYSQLI_ASSOC);
+
+            header("location: concern.php?GroupNo=".$data[0]["GroupNo"]);
+
+        }
 
             if($_SESSION["userIsAdmin"]==0){
 
@@ -100,7 +109,7 @@
                                     <td>
                                         <div class="mb-3">
                                             <form action="" method="post">
-                                                <input type="hidden" name="addPins">
+                                                <input type="hidden" name="addPins" value="<?= $row["GroupNo"] ?>">
                                                 <input type="submit" class="btn btn-primary" value="Add LED Pins"></input>
                                             </form>
                                         </div>
