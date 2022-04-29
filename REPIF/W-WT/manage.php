@@ -39,7 +39,7 @@
     
                 }
 
-                if(!empty($_POST["descriptionEdit"])){ //update
+                if(!empty($_POST["hostNameEdit"])&&!empty($_POST["userNoEdit"])){ //update
 
                     $sqlUpdate = $connection->prepare("UPDATE manage SET `HostName`=?, UserNo=? where ManageId=?"); //fine
         
@@ -47,7 +47,7 @@
                         die("Error: the smartboxes cannot be updated");
                     }
                     
-                    $sqlUpdate->bind_param("ssi", $_POST["hostNameEdit"], $_POST["userNoEdit"], $_POST["manageIdSearch"]);
+                    $sqlUpdate->bind_param("sii", $_POST["hostNameEdit"], $_POST["userNoEdit"], $_POST["manageIdSearch"]);
                     $sqlUpdate->execute();
 
                     header("refresh: 0");
@@ -119,15 +119,14 @@
 
         ?>
         <form method="post" class="mb-3">
-
-            <fieldset disabled>
-                <div class=" mb-3">
+            <div class=" mb-3">
+                <fieldset disabled>
                     <label for="">ManageId</label>
                     <input type="text" id="disabledTextInput" class="form-control" name="" placeholder="<?= $data[0]["ManageId"] ?>">
-                </div>
-            </fieldset>
+                </fieldset>
+                <input type="hidden" class="form-control" name="manageIdSearch" value="<?= $data[0]["ManageId"] ?>">
+            </div>
 
-            <input type="hidden" class="form-control" name="hostNameSearch" value="<?= $data[0]["ManageId"] ?>">
 
             <div class="form-group mb-3">
                 <label for="">HostName</label>

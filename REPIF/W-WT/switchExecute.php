@@ -43,7 +43,7 @@
 
                 $isItEmptyEdit = !empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])&&!empty($_POST["eventCodeEdit"])&&!empty($_POST["groupNoEdit"])&&!empty($_POST["targetFunctionCodeEdit"])&&!empty($_POST["descriptionEdit"])&&!empty($_POST["sequenceNoEdit"])&&!empty($_POST["waitingDurationEdit"]);
                 if($isItEmptyEdit){ //update
-                    
+
                     $sqlUpdate = $connection->prepare("UPDATE switchexecute SET HostName=?, PinNo=?, EventCode=?, GroupNo=?, TargetFunctionCode=?, `Description`=?, SequenceNo=?, WaitingDuration=? where SwitchExecuteId=?");
                     
                     if(!$sqlUpdate){
@@ -66,7 +66,7 @@
                         die("Error: the CONNECTION cannot be created");
                     }
 
-                    $sqlCreate->bind_param("sisissii", $_POST["hostNameCreate"], $_POST["pinNoCreate"], $_POST["eventCodeCreate"], $_POST["groupNoCreate"],$_POST["targetFunctionCodeCreate"],$_POST["descriptionCreate"], $_POST["sequenceNoCreate"], $_POST["waitingDurationCodeCreate"]);
+                    $sqlCreate->bind_param("sisissii", $_POST["hostNameCreate"], $_POST["pinNoCreate"], $_POST["eventCodeCreate"], $_POST["groupNoCreate"],$_POST["targetFunctionCodeCreate"],$_POST["descriptionCreate"], $_POST["sequenceNoCreate"], $_POST["waitingDurationCreate"]);
                     $sqlCreate->execute();
 
                     header("refresh: 0");
@@ -141,15 +141,17 @@
         ?>
         <form method="post" class="mb-3">
 
-            <fieldset disabled>
-                <div class="form-group mb-3">
+
+            <div class="form-group mb-3">
+
+                <fieldset disabled>
                     <label for="">SwitchExecuteId</label>
                     <input type="text" class="form-control" name="" value="<?= $data[0]["SwitchExecuteId"] ?>">
-                </div>
-            </fieldset>
-
-            <input type="hidden" class="form-control" name="switchExecuteIdEdit" value="<?= $data[0]["SwitchExecuteId"] ?>">
-            <input type="hidden" class="form-control" name="switchExecuteIdSearch" value="<?= $data[0]["SwitchExecuteId"] ?>">
+                </fieldset>
+    
+                <input type="hidden" class="form-control" name="switchExecuteIdEdit" value="<?= $data[0]["SwitchExecuteId"] ?>">
+                <input type="hidden" class="form-control" name="switchExecuteIdSearch" value="<?= $data[0]["SwitchExecuteId"] ?>">  
+            </div>
 
             <div class="form-group mb-3">
                 <label for="">HostName</label>
@@ -193,18 +195,10 @@
                 <label for="">EventCode</label>
 
                 <select name="eventCodeEdit" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT EventCode FROM events");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
 
-                        while($row = $result->fetch_assoc()){
+                    <option value="K">K</option>  <!--short-->
+                    <option value="L">L</option> <!--long, hold down-->
 
-                            ?>
-                            <option <?php if($data[0]["EventCode"]==$row["EventCode"]){print " selected ";}?>value="<?=$row["EventCode"]?>"><?= $row["EventCode"]?></option>
-                            <?php
-                        }
-                    ?>
                 </select>
             </div>
 
@@ -262,7 +256,7 @@
 <?php
     if(isset($_POST["createExecute"])){
 
-        $sqlSelect = $connection->prepare("SELECT SwitchExecuteId, HostName, PinNo, EventCode, GroupNo FROM switchexecute");
+        $sqlSelect = $connection->prepare("SELECT HostName, PinNo, EventCode, GroupNo FROM switchexecute");
 
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();
@@ -271,33 +265,12 @@
     ?>
         <form method="post">
 
-        <fieldset disabled>
-                <div class="form-group mb-3">
-                    <label for="">SwitchExecuteId</label>
-                    <input type="text" class="form-control" name="" value="<?= $data[0]["SwitchExecuteId"] ?>">
-                </div>
-            </fieldset>
-
-            <input type="hidden" class="form-control" name="switchExecuteIdCreate" value="<?= $data[0]["SwitchExecuteId"] ?>">
-            <input type="hidden" class="form-control" name="switchExecuteIdSearch" value="<?= $data[0]["SwitchExecuteId"] ?>">
-
             <div class="form-group mb-3">
-                <label for="">HostName</label>
-
-                <select name="hostNameCreate" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
-
-                        while($row = $result->fetch_assoc()){
-
-                            ?>
-                            <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                            <?php
-                        }
-                    ?>
-                </select>
+                <fieldset disabled>
+                    <label for="">HostName</label>
+                    <input type="text" class="form-control" name="" value="<?= $_GET["HostName"] ?>">
+                </fieldset>
+                <input type="hidden" class="form-control" name="hostNameCreate" value="<?= $_GET["HostName"] ?>">
             </div>
 
             <div class="form-group mb-3">
@@ -312,7 +285,7 @@
                         while($row = $result->fetch_assoc()){
 
                             ?>
-                            <option <?php if($data[0]["PinNo"]==$row["PinNo"]){print " selected ";}?>value="<?=$row["PinNo"]?>"><?= $row["PinNo"]?></option>
+                            <option value="<?=$row["PinNo"]?>"><?= $row["PinNo"]?></option>
                             <?php
                         }
                     ?>
@@ -323,18 +296,10 @@
                 <label for="">EventCode</label>
 
                 <select name="eventCodeCreate" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT EventCode FROM events");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
 
-                        while($row = $result->fetch_assoc()){
+                    <option value="K">K</option>  <!--short-->
+                    <option value="L">L</option> <!--long, hold down-->
 
-                            ?>
-                            <option <?php if($data[0]["EventCode"]==$row["EventCode"]){print " selected ";}?>value="<?=$row["EventCode"]?>"><?= $row["EventCode"]?></option>
-                            <?php
-                        }
-                    ?>
                 </select>
             </div>
 
@@ -350,7 +315,7 @@
                         while($row = $result->fetch_assoc()){
 
                             ?>
-                            <option <?php if($data[0]["GroupNo"]==$row["GroupNo"]){print " selected ";}?>value="<?=$row["GroupNo"]?>"><?= $row["GroupNo"]?></option>
+                            <option value="<?=$row["GroupNo"]?>"><?= $row["GroupNo"]?></option>
                             <?php
                         }
                     ?>
@@ -359,7 +324,13 @@
 
             <div class="form-group mb-3">
                 <label for="">TargetFunctionCode</label>
-                <input type="text" class="form-control" name="targetFunctionCodeCreate" placeholder="A, E, U">
+                <select name="targetFunctionCodeCreate" class="form-select">
+
+                    <option value="A">A</option> <!--switch off-->
+                    <option value="E">E</option> <!--switch on, The second parameter defines the name of the group selected for the target function-->
+                    <option value="U">U</option> <!--The third 'optional' parameter corresponds to the waiting time in seconds before the command is executed. This allows sequences of commands to be executed in the desired order.-->
+
+                </select>
             </div>
 
             <div class="form-group mb-3">
