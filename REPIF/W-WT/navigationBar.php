@@ -3,8 +3,7 @@
         function addNavLink($pageLink,$pageText){
             $explodedLink=explode("/",$_SERVER["REQUEST_URI"]);
             $sizeExpLinkArray = sizeof($explodedLink);
-            if($pageLink == $explodedLink[$sizeExpLinkArray-1])
-            {
+            if($pageLink == $explodedLink[$sizeExpLinkArray-1]){
                 ?>
 
                 <li class="nav-item">
@@ -23,10 +22,19 @@
                 <?php
             }
         }
-            $navigationLinks=["index.php"=>"Home", "sbManagement.php"=>"SmartBox Management", "manage.php"=>"Permission Management", "pinManagement.php"=>"Pin Management", "groups.php"=>"Groups", "script.php"=>"Scripts", "userManagement.php"=>"Users", "userConfiguration.php"=>"Configuration"];
-            foreach ($navigationLinks as $key => $value) {
-                    addNavLink($key,$value);
-            }
+        if($_SESSION["userIsAdmin"]==1){
+
+            $navigationLinks=["sbManagement.php"=>"SmartBox Management", "manage.php"=>"Permission Management", "pinManagement.php"=>"Pin Management", "groups.php"=>"Groups", "script.php"=>"Scripts", "userManagement.php"=>"Users", "userConfiguration.php"=>"Configuration"];
+
+        } else{
+
+            $navigationLinks=["sbManagement.php"=>"SmartBox Management", "pinManagement.php"=>"Pin Management", "groups.php"=>"Groups", "script.php"=>"Scripts", "userManagement.php"=>"Users", "userConfiguration.php"=>"Configuration"];
+
+        }
+        foreach ($navigationLinks as $key => $value) {
+            addNavLink($key,$value);
+        }
+
     ?>
     <div class="float-end">
         <li class="nav-item">

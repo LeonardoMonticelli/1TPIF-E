@@ -19,7 +19,7 @@
                 $result = $sqlStatement->get_result();
 
             }else{
-                header("location: index.php");
+                header("location: sbManagement.php");
             }
              
             if ($result) {

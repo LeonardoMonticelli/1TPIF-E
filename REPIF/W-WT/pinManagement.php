@@ -7,13 +7,21 @@
 ?>
     <body>
         <?php
-            //geroup has leds
-            //switch execute is the one that is gonna execute the group
             // $lednumbers = [7, 8, 12, 13, 16, 19, 26];
             // $switches = [4, 5, 9, 10, 11, 17, 22, 27];
-
-            $result = $connection->query("SELECT * from pins");
  
+            if($_SESSION["userIsAdmin"]==0){
+
+                $sqlStatement = $connection->prepare("SELECT * from pins, manage where pins.HostName=manage.HostName and manage.UserNo=?");
+                $sqlStatement->bind_param("i", $_SESSION["currentUserNo"]);
+                $sqlStatement->execute();
+
+                $result = $sqlStatement->get_result();
+
+            }else{
+                $result = $connection->query("SELECT * from pins");
+            }
+
             if ($result) {
 
                 if(isset($_POST["deletePin"])) { //this has to be at the beggining so the refresh works 
@@ -115,24 +123,35 @@
 
         ?>
         <form method="post">
+            <?php if($_SESSION["userIsAdmin"]==1){ ?>
+                <div class="form-group mb-3">
+                    <label for="">HostName</label>
 
-            <div class="form-group mb-3">
-                <label for="">HostName</label>
+                    <select name="hostNameEdit" class="form-select">
+                        <?php
+                            $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
+                            $sqlSelect->execute();
+                            $result = $sqlSelect->get_result();
 
-                <select name="hostNameEdit" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
+                            while($row = $result->fetch_assoc()){
+                                ?>
+                                <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
+                </div>
+           <?php } else {?>
+            
+                <div class=" mb-3">
+                    <fieldset disabled>
+                        <label for="">HostName</label>
+                        <input type="text" id="disabledTextInput" class="form-control" name="" placeholder="<?= $data[0]["HostName"] ?>">
+                    </fieldset>
+                    <input type="hidden" class="form-control" name="hostNameEdit" value="<?= $data[0]["HostName"] ?>">
+                </div>
 
-                        while($row = $result->fetch_assoc()){
-                            ?>
-                            <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                            <?php
-                        }
-                    ?>
-                </select>
-            </div>
+            <?php } ?>
 
             <div class="form-group mb-3">
                 <label for="">PinNo</label>
@@ -150,7 +169,7 @@
                 <input type="text" class="form-control" name="designationEdit" value="<?= $data[0]["Designation"] ?>">
             </div>
 
-            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="submit" class="btn btn-success mb-3">Submit</button>
 
         </form>
         <?php
@@ -171,24 +190,41 @@
 
     ?>
         <form method="post">
+           <?php if($_SESSION["userIsAdmin"]==1){ ?>
+                <div class="form-group mb-3">
+                    <label for="">HostName</label>
 
-            <div class="form-group mb-3">
-                <label for="">HostName</label>
+                    <select name="hostNameCreate" class="form-select">
+                        <?php
+                            $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
+                            $sqlSelect->execute();
+                            $result = $sqlSelect->get_result();
 
-                <select name="hostNameCreate" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
+                            while($row = $result->fetch_assoc()){
+                                ?>
+                                <option value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
+                </div>
+           <?php } else {
+                    $sqlSelect = $connection->prepare("SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=?");
+                    $sqlSelect->bind_param("i", $_SESSION["currentUserNo"]);
+                    $sqlSelect->execute();
+                    $result = $sqlSelect->get_result();
+                    $data = $result->fetch_all(MYSQLI_ASSOC);
+               ?>
 
-                        while($row = $result->fetch_assoc()){
-                            ?>
-                            <option value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                            <?php
-                        }
-                    ?>
-                </select>
-            </div>
+                <div class=" mb-3">
+                    <fieldset disabled>
+                        <label for="">HostName</label>
+                        <input type="text" id="disabledTextInput" class="form-control" name="" value="<?=$data[0]["HostName"]?>">
+                    </fieldset>
+                    <input type="hidden" class="form-control" name="hostNameCreate" value="<?=$data[0]["HostName"]?>">
+                </div>
+
+            <?php } ?>
             
             <div class="form-group mb-3">
                 <label for="">PinNo</label>
@@ -196,16 +232,16 @@
             </div>
 
             <div class="form-group mb-3">
-                <label for="">Description</label>
+                <label for="">Input</label>
                 <input type="text" class="form-control" name="inputCreate" placeholder="#">
             </div>
 
             <div class="form-group mb-3">
-                <label for="">Location</label>
+                <label for="">Designation</label>
                 <input type="text" class="form-control" name="designationCreate" placeholder="GPIO#">
             </div>
 
-            <button type="submit" class="btn btn-success">Create a pins</button>
+            <button type="submit" class="btn btn-success mb-3">Create a pins</button>
 
         </form>
     <?php

@@ -11,9 +11,9 @@
     <body>
         <?php
             if($_SESSION["userIsAdmin"]==0){
-                // SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=1;
-                $sqlStatement = $connection->prepare("SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=1;");
-                $sqlStatement->bind_param("s", $_SESSION["currentUser"]);
+
+                $sqlStatement = $connection->prepare("SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=?");
+                $sqlStatement->bind_param("i", $_SESSION["currentUserNo"]);
                 $sqlStatement->execute();
 
                 $result = $sqlStatement->get_result();
@@ -126,6 +126,9 @@
                                     </form>
 
                                 </td>
+                                <?php
+                                    if($_SESSION["userIsAdmin"]==1){
+                                ?>
                                 <td>                                
                                     <form method="POST">
                                         <input type="hidden" name="editSB" value="<?= $row["HostName"] ?>">
@@ -138,6 +141,7 @@
                                         <input type="submit" class="btn btn-danger" value="Delete">
                                     </form>
                                 </td>
+                                <?php }?>
                             </tr>
                         <?php }?>
                     </tbody>
