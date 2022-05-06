@@ -4,6 +4,7 @@
     include_once "htmlHead.php";
     include_once "databaseConnect.php";
     include_once "sessionCheck.php";
+    //I need to fix this bullshit
 ?>
     <body>
         <div class="">
@@ -205,12 +206,12 @@
         ?>
 
     <form action="" method="post">  
-        <input type="hidden" name="createGroup">
+        <input type="hidden" name="createConnection">
         <input type="submit" class="btn btn-primary" value="Create">
     </form>
 
 <?php
-    if(isset($_POST["createGroup"])){
+    if(isset($_POST["createConnection"])){
 
         $sqlSelect = $connection->prepare("SELECT ConcernId, GroupNo, HostName, PinNo FROM concern");
 
@@ -240,24 +241,45 @@
                 </select>
             </div>
 
-            <div class="form-group mb-3">
-                <label for="">HostName</label>
+            <?php if($_SESSION["userIsAdmin"]==1){ ?>
+                <div class="form-group mb-3">
+                    <label for="">HostName</label>
 
-                <select name="hostNameCreate" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
+                    <select name="hostNameCreate" class="form-select">
+                        <?php
+                            $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
+                            $sqlSelect->execute();
+                            $result = $sqlSelect->get_result();
+
+                            while($row = $result->fetch_assoc()){
+                                ?>
+                                <option value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
+                </div>
+           <?php } else { ?>
+
+                    <div class="form-group mb-3">
+                    <label for="">HostName</label>
+
+                    <select name="hostNameCreate" class="form-select">
+                        <?php
+                        $sqlSelect = $connection->prepare("SELECT HostName from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=?");
+                        $sqlSelect->bind_param("i", $_SESSION["currentUserNo"]);
                         $sqlSelect->execute();
+
                         $result = $sqlSelect->get_result();
+                        $data = $result->fetch_all(MYSQLI_ASSOC);
 
                         while($row = $result->fetch_assoc()){
-
                             ?>
                             <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
                             <?php
-                        }
-                    ?>
-                </select>
-            </div>
+                        }?>
+                    </select>
+            <?php } ?>
 
             <div class="form-group mb-3">
                 <label for="">PinNo</label>
@@ -267,9 +289,9 @@
                         $sqlSelect = $connection->prepare("SELECT PinNo FROM pins WHERE Input=0");
                         $sqlSelect->execute();
                         $result = $sqlSelect->get_result();
+                        $data = $result->fetch_all(MYSQLI_ASSOC);
 
                         while($row = $result->fetch_assoc()){
-
                             ?>
                             <option <?php if($data[0]["PinNo"]==$row["PinNo"]){print " selected ";}?>value="<?=$row["PinNo"]?>"><?= $row["PinNo"]?></option>
                             <?php

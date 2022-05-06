@@ -9,7 +9,7 @@
         $_SESSION["isUserLoggedIn"] = false;
     }
     if($_SESSION['isUserLoggedIn']==true){
-        include_once "navigationBar.php";
+        header("location: sbManagement.php");
     }
 ?>
 
@@ -69,6 +69,7 @@
                             print "You are now logged in";
                             $_SESSION["isUserLoggedIn"] = true;
                             $_SESSION["currentUser"] = htmlentities($_POST["username"]);
+                            $_SESSION["currentUserNo"] = $row["UserNo"];
                             $_SESSION["userIsAdmin"] = $row["Technician"];
                             header("Location: index.php");
 

@@ -23,8 +23,8 @@
 
             if($_SESSION["userIsAdmin"]==0){
 
-                $sqlStatement = $connection->prepare("SELECT * from groups where HostName=(select HostName from smartboxes where UserNo=(select UserNo from users where UserName=?))");
-                $sqlStatement->bind_param("s", $_SESSION["currentUser"]);
+                $sqlStatement = $connection->prepare("SELECT * from groups, manage where groups.HostName=manage.HostName and UserNo=?");
+                $sqlStatement->bind_param("i", $_SESSION["currentUserNo"]);
                 $sqlStatement->execute();
 
                 $result = $sqlStatement->get_result();
@@ -105,15 +105,13 @@
                                 <td><?= $row["GroupName"] ?></td>
                                 <td><?= $row["Description"] ?></td>
                                 <td><?= $row["HostName"] ?></td>
+                                <td>
+                                    <form action="" method="post">
+                                        <input type="hidden" name="addPins" value="<?= $row["GroupNo"] ?>">
+                                        <input type="submit" class="btn btn-primary" value="Add LED Pins"></input>
+                                    </form>
+                                </td>
                                 <?php if($_SESSION["userIsAdmin"]==1){?>
-                                    <td>
-                                        <div class="mb-3">
-                                            <form action="" method="post">
-                                                <input type="hidden" name="addPins" value="<?= $row["GroupNo"] ?>">
-                                                <input type="submit" class="btn btn-primary" value="Add LED Pins"></input>
-                                            </form>
-                                        </div>
-                                    </td>
                                     <td>                                
                                         <form method="POST">
                                             <input type="hidden" name="editGroup" value="<?= $row["GroupNo"] ?>">
@@ -187,8 +185,6 @@
         </form>
         <?php
     }    
-
-    if($_SESSION["userIsAdmin"]==1){
         ?>
         <div class="mb-3">
             <form action="" method="post">  
@@ -198,7 +194,6 @@
         </div>
 
 <?php
-    }
 
     if(isset($_POST["createGroup"])){
 
@@ -207,36 +202,56 @@
 
             <div class="form-group mb-3">
                 <label for="">GroupNo</label>
-                <input type="number" class="form-control" name="groupNoCreate" placeholder="username">
+                <input type="number" class="form-control" name="groupNoCreate" placeholder="Group Number">
             </div>
 
             <div class="form-group mb-3">
                 <label for="">GroupName</label>
-                <input type="text" class="form-control" name="groupNameCreate" placeholder="first name">
+                <input type="text" class="form-control" name="groupNameCreate" placeholder="Kitchen, First floor...">
             </div>
 
             <div class="form-group mb-3">
                 <label for="">Description</label>
-                <input type="text" class="form-control" name="descriptionCreate" placeholder="last name">
+                <input type="text" class="form-control" name="descriptionCreate" placeholder="Kitchen lights...">
             </div>
 
-            <div class="form-group mb-3">
-                <label for="">HostName</label>
+            <?php if($_SESSION["userIsAdmin"]==1){ ?>
+                <div class="form-group mb-3">
+                    <label for="">HostName</label>
 
-                <select name="hostNameCreate" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
+                    <select name="hostNameCreate" class="form-select">
+                        <?php
+                            $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
+                            $sqlSelect->execute();
+                            $result = $sqlSelect->get_result();
 
-                        while($row = $result->fetch_assoc()){
-                            ?>
-                            <option value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                            <?php
-                        }
-                    ?>
-                </select>
-            </div>
+                            while($row = $result->fetch_assoc()){
+                                ?>
+                                <option value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
+                </div>
+           <?php } else {
+
+                    $sqlSelect = $connection->prepare("SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=?");
+                    $sqlSelect->bind_param("i", $_SESSION["currentUserNo"]);
+                    $sqlSelect->execute();
+
+                    $result = $sqlSelect->get_result();
+                    $data = $result->fetch_all(MYSQLI_ASSOC);
+               ?>
+
+                <div class=" mb-3">
+                    <fieldset disabled>
+                        <label for="">HostName</label>
+                        <input type="text" id="disabledTextInput" class="form-control" name="" value="<?=$data[0]["HostName"]?>">
+                    </fieldset>
+                    <input type="hidden" class="form-control" name="hostNameCreate" value="<?=$data[0]["HostName"]?>">
+                </div>
+
+            <?php } ?>
 
             <button type="submit" class="btn btn-success">Create a group</button>
 
