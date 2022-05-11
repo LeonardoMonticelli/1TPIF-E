@@ -56,27 +56,41 @@ CREATE TABLE `groups` (
 );
 
 INSERT INTO `groups` (`GroupNo`, `GroupName`, `Description`, `HostName`) VALUES
-(1,    'CHIEF',    'Lamps in the kitchen',    'SB_7'),
-(3,    'ALL',    'All lamps',    'SB_3'),
-(11,    'GARAGE',    'Garage door',    'SB_1'),
-(13,    'FLUR',    'Hallway lamps',    'SB_1');
+(1,    'CHIEF',    '',    'SB_7'),
+(2,    'ALL',    'All lamps',    'SB_3'),
+(3,    'GARAGE',    'Garage door',    'SB_1'),
+(4,    'FLUR',    'Corridor lamps',    'SB_1');
 
 CREATE TABLE `pins` (
-  `PinNo` int NOT NULL AUTO_INCREMENT,
+  `PinId` int NOT NULL AUTO_INCREMENT,
+  `PinNo` int NOT NULL,
   `HostName` varchar(16) DEFAULT NULL,
   `Input` int DEFAULT NULL,
   `Designation` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`PinNo`),
+  PRIMARY KEY (`PinId`),
+  KEY `PinNo`(`PinNo`),
   KEY `HostName` (`HostName`),
   CONSTRAINT `pin_ibfk_1` FOREIGN KEY (`HostName`) REFERENCES `smartboxes` (`HostName`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 INSERT INTO `pins` (`HostName`, `PinNo`, `Input`, `Designation`) VALUES 
-('SB_1', 7, 1, 'GPIO4'),
-('SB_1', 11, 1, 'GPIO17'),
-('SB_1', 9, 1, 'GPIO15'),
-('SB_7', 33, 0, 'GPIO13'),
-('SB_3', 35, 0, 'GPIO19');
+('SB_1', 5, 1, 'GPIO05'),
+('SB_1', 11, 1, 'GPIO11'),
+('SB_1', 9, 1, 'GPIO09'),
+('SB_1', 10, 1, 'GPIO10'),
+('SB_1', 4, 1, 'GPIO04'),
+('SB_1', 22, 1, 'GPIO22'),
+('SB_1', 27, 1, 'GPIO27'),
+('SB_1', 7, 0, 'GPIO07'),
+('SB_1', 8, 0, 'GPIO08'),
+('SB_1', 12, 0, 'GPIO12'),
+('SB_1', 16, 0, 'GPIO16'),
+('SB_1', 20, 0, 'GPIO20'),
+('SB_1', 21, 0, 'GPIO21'),
+('SB_3', 5, 1, 'GPIO07'),
+('SB_3', 7, 0, 'GPIO05'),
+('SB_7', 9, 1, 'GPIO11'),
+('SB_7', 11, 0, 'GPIO09');
 
 CREATE TABLE `scripts` (
   `ScriptName` varchar(50) NOT NULL,
@@ -101,8 +115,8 @@ CREATE TABLE `use` (
 
 INSERT INTO `use` (`GroupNo`, `ScriptName`) VALUES
 (1,    'dimmer'),
-(3,    'bell'),
-(11,    'strobo');
+(2,    'bell'),
+(3,    'strobo');
 
 CREATE TABLE `concern`(
   `ConcernId` int NOT NULL AUTO_INCREMENT,
@@ -118,8 +132,9 @@ CREATE TABLE `concern`(
 );
 
 INSERT INTO `concern` (`ConcernId`, `GroupNo`, `HostName`, `PinNo`) VALUES
-(1, 11,    'SB_7',    33),
-(2, 3,    'SB_3',    35);
+(1, 1,    'SB_7',    7),
+(2, 3,    'SB_1',    8);
+-- only leds
 
 CREATE TABLE `events`(
   `HostName` VARCHAR(16) DEFAULT NULL,
@@ -133,8 +148,8 @@ CREATE TABLE `events`(
 
 INSERT INTO `events` (`HostName`, `PinNo`, `EventCode`, `Description`) VALUES
 ('SB_1',    7,    'K', 'Press light switch briefly'),
-('SB_3',    11,    'L', 'Long press touch field'),
-('SB_7',    33,    'K', 'Touch field briefly');
+('SB_3',    7,    'L', 'Long press touch field'),
+('SB_7',    12,    'K', 'Touch field briefly');
 
 CREATE TABLE `switchexecute` (
   `SwitchExecuteId` int NOT NULL AUTO_INCREMENT,
@@ -154,6 +169,7 @@ CREATE TABLE `switchexecute` (
 );
 
 INSERT INTO `switchexecute` (`HostName`, `PinNo`, `EventCode`, `GroupNo`, `TargetFunctionCode`, `Description`, `SequenceNo`, `WaitingDuration`) VALUES
-  ('SB_1',    11,    'K', 13, 'E', 'Switch on alarm', 2, 5),
-  ('SB_1',    9,    'L', 11, 'U', 'Switch light in the bathroom',NULL, NULL),
-  ('SB_1',    7,    'K', 11, 'A', 'Close a window', 1, NULL);
+  ('SB_1',    5,    'K', 3, 'E', 'Switch on alarm', 2, 5),
+  ('SB_1',    11,    'L', 1, 'U', 'Switch light in the bathroom',NULL, NULL),
+  ('SB_1',    9,    'K', 1, 'A', 'Close a window', 1, NULL);
+  -- only switches

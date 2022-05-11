@@ -1,7 +1,7 @@
 8 brown 	corridor light	GPI027	purple
-7 red		room		GPI022	blue	GPIO04	green
-12 orange	other room	GPI05	brown
-16 yellow	not room	GPI010	yellow
-20 green	toilet		GPI09	orange
-21 blue		bathroom	GPI011	red	
-		garage		GPI017	gray
+7 red		room			GPI022	blue	GPIO04	green
+12 orange	other room		GPI05	brown
+16 yellow	not room		GPI010	yellow
+20 green	toilet			GPI09	orange
+21 blue		bathroom		GPI011	red	
+			garage			GPI017	gray

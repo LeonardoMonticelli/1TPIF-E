@@ -7,8 +7,8 @@
 ?>
     <body>
         <?php
-            // $lednumbers = [7, 8, 12, 13, 16, 19, 26];
-            // $switches = [4, 5, 9, 10, 11, 17, 22, 27];
+            $lednumbers = [ 7, 8, 12, 16, 20, 21];
+            $switches = [ 5, 11, 9, 10, 4, 22, 27];
  
             if($_SESSION["userIsAdmin"]==0){
 
@@ -155,8 +155,18 @@
 
             <div class="form-group mb-3">
                 <label for="">PinNo</label>
-                <input type="text" class="form-control" name="pinNoEdit" value="<?= $data[0]["PinNo"] ?>">
                 <input type="hidden" class="form-control" name="pinNoSearch" value="<?= $data[0]["PinNo"] ?>">
+
+                <select name="pinNoEdit" class="form-select">
+                        <?php
+
+                            foreach($lednumbers as $lednumber) {
+                                ?>
+                                <option <?php if($data[0]["PinNo"]==$lednumber){print " selected ";}?> value="<?=$lednumber?>"><?= $lednumber ?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
             </div>
 
             <div class="form-group mb-3">

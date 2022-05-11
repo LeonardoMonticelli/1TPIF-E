@@ -3,9 +3,8 @@ include_once "databaseConnect.php";
 
 function createGroupConf($connection, $input) {
     $groups = $connection->prepare("
-        SELECT `groups`.GroupName, `groups`.GroupNo, concern.PinNo FROM `groups`
-        INNER JOIN concern ON concern.GroupNo = `groups`.GroupNo
-        WHERE `groups`.HostName = ?
+        SELECT `groups`.GroupName, `groups`.GroupNo, concern.PinNo FROM `groups`, concern
+        WHERE concern.GroupNo = `groups`.GroupNo AND `groups`.HostName = ?
     ");
 
     $groups->bind_param('s', $input["HostName"]);
@@ -17,9 +16,12 @@ function createGroupConf($connection, $input) {
     $groupsdata = $groupsresult->fetch_all(MYSQLI_ASSOC);
 
     $scripts = $connection->prepare("
-        SELECT `use`.GroupNo, `use`.ScriptName, scripts.Path FROM `use`
-        INNER JOIN scripts ON scripts.ScriptName = `use`.ScriptName
-        INNER JOIN `groups` ON `groups`.HostName = ?
+        SELECT `use`.GroupNo, `use`.ScriptName, scripts.Path FROM `use`, scripts, groups
+        WHERE scripts.ScriptName = `use`.ScriptName AND `groups`.HostName = ?
+        GROUP BY
+            `use`.GroupNo, `use`.ScriptName
+        HAVING 
+            COUNT(*) > 1
     ");
 
     $scripts->bind_param('s', $input["HostName"]);
@@ -54,10 +56,9 @@ function createGroupConf($connection, $input) {
 
 function createExecConf($connection, $input) {
     $stmt= $connection->prepare("
-        SELECT * FROM switchexecute
-        INNER JOIN pins ON pins.PinNo = switchexecute.PinNo
-        INNER JOIN `groups` ON `groups`.GroupNo = switchexecute.GroupNo
-        WHERE switchexecute.HostName = ? AND pins.HostName = switchexecute.HostName
+        SELECT * FROM switchexecute, pins, groups
+        WHERE pins.PinNo = switchexecute.PinNo AND `groups`.GroupNo = switchexecute.GroupNo 
+        AND switchexecute.HostName = ?
     ");
 
     $stmt->bind_param('s', $input["HostName"]);
