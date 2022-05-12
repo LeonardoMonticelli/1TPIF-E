@@ -3,23 +3,35 @@
     include_once "htmlHead.php";
     include_once "databaseConnect.php";
     include_once "sessionCheck.php";
-    include_once "navigationBar.php";
 ?>
     <body>
+    <div class="">
+            <form action="" method="post">
+                <input type="hidden" name="goBack">
+                <input type="submit" class="btn btn-secondary mb-3" value="Go back">
+            </form>
+        </div>
         <?php
+                    if(isset($_POST["goBack"])){
+                        header("location: pinHome.php");
+                    }
             $lednumbers = [ 7, 8, 12, 16, 20, 21];
             $switches = [ 5, 11, 9, 10, 4, 22, 27];
  
             if($_SESSION["userIsAdmin"]==0){
 
-                $sqlStatement = $connection->prepare("SELECT * from pins, manage where pins.HostName=manage.HostName and manage.UserNo=?");
-                $sqlStatement->bind_param("i", $_SESSION["currentUserNo"]);
+                $sqlStatement = $connection->prepare("SELECT HostName from pins, manage where pins.HostName=manage.HostName and manage.UserNo=? and pins.HostName=?");
+                $sqlStatement->bind_param("is", $_SESSION["currentUserNo"], $_GET["HostName"]);
                 $sqlStatement->execute();
 
                 $result = $sqlStatement->get_result();
 
             }else{
-                $result = $connection->query("SELECT * from pins");
+                $sqlStatement = $connection->prepare("SELECT HostName from pins where HostName=?");
+                $sqlStatement->bind_param("s", $_GET["HostName"]);
+                $sqlStatement->execute();
+
+                $result = $sqlStatement->get_result();
             }
 
             if ($result) {
