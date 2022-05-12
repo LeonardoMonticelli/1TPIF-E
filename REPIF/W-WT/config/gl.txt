@@ -1,4 +1,4 @@
-GARAGE=33
+GARAGE=8
 dimmer="/switch/dimmer.sh"
 bell="/sound/bell.sh"
 strobo="/switch/strobo.sh"

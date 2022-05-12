@@ -20,14 +20,14 @@
  
             if($_SESSION["userIsAdmin"]==0){
 
-                $sqlStatement = $connection->prepare("SELECT HostName from pins, manage where pins.HostName=manage.HostName and manage.UserNo=? and pins.HostName=?");
+                $sqlStatement = $connection->prepare("SELECT * from pins, manage where pins.HostName=manage.HostName and manage.UserNo=? and pins.HostName=?");
                 $sqlStatement->bind_param("is", $_SESSION["currentUserNo"], $_GET["HostName"]);
                 $sqlStatement->execute();
 
                 $result = $sqlStatement->get_result();
 
             }else{
-                $sqlStatement = $connection->prepare("SELECT HostName from pins where HostName=?");
+                $sqlStatement = $connection->prepare("SELECT * from pins where HostName=?");
                 $sqlStatement->bind_param("s", $_GET["HostName"]);
                 $sqlStatement->execute();
 
