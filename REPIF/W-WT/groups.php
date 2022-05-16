@@ -11,13 +11,13 @@
 
         if(isset($_POST["addPins"])) { 
 
-            $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups WHERE GroupNo=?");
+            $sqlSelect = $connection->prepare("SELECT GroupNo, HostName FROM groups WHERE GroupNo=?");
             $sqlSelect->bind_param("i", $_POST["addPins"]);
             $sqlSelect->execute();
             $result = $sqlSelect->get_result();
             $data = $result->fetch_all(MYSQLI_ASSOC);
 
-            header("location: concern.php?GroupNo=".$data[0]["GroupNo"]);
+            header("location: concern.php?GroupNo=".$data[0]["GroupNo"]."&HostName=".$data[0]["HostName"]);
 
         }
 

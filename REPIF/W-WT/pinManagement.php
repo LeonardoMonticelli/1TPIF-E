@@ -15,8 +15,9 @@
                     if(isset($_POST["goBack"])){
                         header("location: pinHome.php");
                     }
-            $lednumbers = [ 7, 8, 12, 16, 20, 21];
-            $switches = [ 5, 11, 9, 10, 4, 22, 27];
+            // $lednumbers = [ 7, 8, 12, 16, 20, 21];
+            // $switches = [ 5, 11, 9, 10, 4, 22, 27];
+            $pins = [ 4, 5, 7, 8, 9, 10, 11, 12, 16, 18, 19, 20, 21, 22, 23, 27];
  
             if($_SESSION["userIsAdmin"]==0){
 
@@ -39,7 +40,7 @@
                 if(isset($_POST["deletePin"])) { //this has to be at the beggining so the refresh works 
 
                     $deletePinVal = intval($_POST["deletePin"]);
-                    $sqlDelete = $connection->prepare("DELETE FROM pins where PinNo=?");
+                    $sqlDelete = $connection->prepare("DELETE FROM pins where PinId=?");
     
                     if(!$sqlDelete){
                         die("Error: the pins cannot be deleted");
@@ -54,13 +55,13 @@
 
                 if(!empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])&&!empty($_POST["inputEdit"])&&!empty($_POST["designationEdit"])){ //update
 
-                    $sqlUpdate = $connection->prepare("UPDATE pins SET HostName=?, PinNo=?, Input=?, Designation=? where PinNo=?");
+                    $sqlUpdate = $connection->prepare("UPDATE pins SET HostName=?, PinNo=?, Input=?, Designation=? where PinId=?");
         
                     if(!$sqlUpdate){
                         die("Error: the pins cannot be updated");
                     }
 
-                    $sqlUpdate->bind_param("siisi", $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["inputEdit"], $_POST["designationEdit"], $_POST["pinNoSearch"]);
+                    $sqlUpdate->bind_param("siisi", $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["inputEdit"], $_POST["designationEdit"], $_POST["pinIdSearch"]);
                     $sqlUpdate->execute();
 
                     header("refresh: 0");
@@ -86,6 +87,7 @@
                     <thead>
                         <tr>
 
+                            <th scope="col">ID</th>
                             <th scope="col">HostName</th>
                             <th scope="col">PinNo</th>
                             <th scope="col">Input</th>
@@ -99,19 +101,20 @@
                         <?php while ($row = $result->fetch_assoc()) {?>                           
                             <tr>
 
-                                <th scope="row"><?= $row["HostName"] ?></th>
+                                <th scope="row"><?= $row["PinId"] ?></th>
+                                <td><?= $row["HostName"] ?></td>
                                 <td><?= $row["PinNo"] ?></td>
                                 <td><?= $row["Input"] ?></td>
                                 <td><?= $row["Designation"] ?></td>
                                 <td>                                
                                     <form method="POST">
-                                        <input type="hidden" name="editPin" value="<?= $row["PinNo"] ?>">
+                                        <input type="hidden" name="editPin" value="<?= $row["PinId"] ?>">
                                         <input type="submit" value="Edit">
                                     </form>
                                 </td>
                                 <td>
                                     <form method="POST">
-                                        <input type="hidden" name="deletePin" value="<?= $row["PinNo"] ?>">
+                                        <input type="hidden" name="deletePin" value="<?= $row["PinId"] ?>">
                                         <input type="submit" value="Delete">
                                     </form>
                                 </td>
@@ -127,7 +130,7 @@
     if(isset($_POST["editPin"])){
 
         $editPinVal = intval($_POST["editPin"]);
-        $sqlSelect = $connection->prepare("SELECT HostName, PinNo, Input, Designation FROM pins WHERE PinNo=?");
+        $sqlSelect = $connection->prepare("SELECT PinId, HostName, PinNo, Input, Designation FROM pins WHERE PinId=?");
         $sqlSelect->bind_param("i", $editPinVal);
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();
@@ -165,25 +168,40 @@
 
             <?php } ?>
 
+            <input type="hidden" class="form-control" name="pinIdSearch" value="<?= $data[0]["PinId"] ?>">
+
             <div class="form-group mb-3">
                 <label for="">PinNo</label>
-                <input type="hidden" class="form-control" name="pinNoSearch" value="<?= $data[0]["PinNo"] ?>">
 
                 <select name="pinNoEdit" class="form-select">
                         <?php
 
-                            foreach($lednumbers as $lednumber) {
+                            foreach($pins as $pin) {
                                 ?>
-                                <option <?php if($data[0]["PinNo"]==$lednumber){print " selected ";}?> value="<?=$lednumber?>"><?= $lednumber ?></option>
+                                <option <?php if($data[0]["PinNo"]==$pin){print " selected ";}?> value="<?=$pin?>"><?= $pin ?></option>
                                 <?php
                             }
                         ?>
-                    </select>
+                </select>
             </div>
 
             <div class="form-group mb-3">
                 <label for="">Input</label>
-                <input type="text" class="form-control" name="inputEdit" value="<?= $data[0]["Input"] ?>">
+
+                <select name="inputEdit" class="form-select">
+                    <?php
+                        $sqlSelect = $connection->prepare("SELECT Input FROM pins GROUP BY Input HAVING COUNT(*) > 1");
+                        $sqlSelect->execute();
+                        $result = $sqlSelect->get_result();
+
+                        while($row = $result->fetch_assoc()){
+                            ?>
+                            <option <?php if($data[0]["Input"]==$row["Input"]){print " selected ";}?>value="<?=$row["Input"]?>"><?= $row["Input"]?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
+
             </div>
 
             <div class="form-group mb-3">
@@ -250,12 +268,26 @@
             
             <div class="form-group mb-3">
                 <label for="">PinNo</label>
-                <input type="text" class="form-control" name="pinNoCreate" placeholder="#">
+                <select name="pinNoCreate" class="form-select">
+                        <?php
+
+                            foreach($pins as $pin) {
+                                ?>
+                                <option value="<?=$pin?>"><?= $pin ?></option>
+                                <?php
+                            }
+                        ?>
+                </select>
             </div>
 
             <div class="form-group mb-3">
                 <label for="">Input</label>
-                <input type="text" class="form-control" name="inputCreate" placeholder="#">
+
+                <select name="inputCreate" class="form-select">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+
             </div>
 
             <div class="form-group mb-3">

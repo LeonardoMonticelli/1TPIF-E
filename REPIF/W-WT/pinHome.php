@@ -17,13 +17,12 @@
                 $result = $sqlSelect->get_result();
                 $data = $result->fetch_all(MYSQLI_ASSOC);
 
-                // var_dump($data[0]["HostName"]);
                 header("location: pinManagement.php?HostName=".$data[0]["HostName"]);
             }
 
             if($_SESSION["userIsAdmin"]==0){
 
-                $sqlStatement = $connection->prepare("SELECT HostName from pins, manage where pins.HostName=manage.HostName and manage.UserNo=? GROUP BY HostName HAVING COUNT(*) > 1");
+                $sqlStatement = $connection->prepare("SELECT pins.HostName from pins, manage where pins.HostName=manage.HostName and manage.UserNo=? GROUP BY HostName HAVING COUNT(*) > 1");
                 $sqlStatement->bind_param("i", $_SESSION["currentUserNo"]);
                 $sqlStatement->execute();
 

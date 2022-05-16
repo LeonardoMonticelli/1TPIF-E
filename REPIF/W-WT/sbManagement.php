@@ -214,7 +214,7 @@
 
             <div class="form-group mb-3">
                 <label for="">Location</label>
-                <input type="text" class="form-control" name="locationCreate" placeholder="Country">
+                <input type="text" class="form-control" name="locationCreate" placeholder="Building #, example">
             </div>
 
             <button type="submit" class="btn btn-success">Create a smartboxes</button>

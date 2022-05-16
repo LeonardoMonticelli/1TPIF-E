@@ -96,7 +96,6 @@
                                 <td><?= $row["GroupNo"] ?></td>
                                 <td><?= $row["HostName"] ?></td>
                                 <td><?= $row["PinNo"] ?></td>
-                                <?php if($_SESSION["userIsAdmin"]==1){?>
                                     <td>                                
                                         <form method="POST">
                                             <input type="hidden" name="editConnection" value="<?= $row["ConcernId"] ?>">
@@ -109,7 +108,6 @@
                                             <input type="submit" value="Delete">
                                         </form>
                                     </td>
-                                <?php }?>
                             </tr>
                         <?php }?>
                     </tbody>
@@ -137,46 +135,25 @@
                     <input type="text" class="form-control" name="" value="<?= $data[0]["ConcernId"] ?>">
                 </div>
             </fieldset>
-
-            <input type="hidden" class="form-control" name="concernIdEdit" value="<?= $data[0]["ConcernId"] ?>">
+            
             <input type="hidden" class="form-control" name="concernIdSearch" value="<?= $data[0]["ConcernId"] ?>">
 
             <div class="form-group mb-3">
-                <label for="">GroupNo</label>
-
-                <select name="groupNoEdit" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
-
-                        while($row = $result->fetch_assoc()){
-
-                            ?>
-                            <option <?php if($data[0]["GroupNo"]==$row["GroupNo"]){print " selected ";}?>value="<?=$row["GroupNo"]?>"><?= $row["GroupNo"]?></option>
-                            <?php
-                        }
-                    ?>
-                </select>
+                <div class=" mb-3">
+                    <fieldset disabled>
+                        <label for="">GroupNo</label>
+                        <input type="text" id="disabledTextInput" class="form-control" name="" value="<?=$_GET["GroupNo"]?>">
+                    </fieldset>
+                    <input type="hidden" class="form-control" name="groupNoEdit" value="<?=$_GET["GroupNo"]?>">
+                </div>
             </div>
 
-            <div class="form-group mb-3">
-                <label for="">HostName</label>
-
-                <select name="hostNameEdit" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
-
-                        while($row = $result->fetch_assoc()){
-
-                            ?>
-                            <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                            <?php
-                        }
-                    ?>
-                </select>
+            <div class=" mb-3">
+                <fieldset disabled>
+                    <label for="">HostName</label>
+                    <input type="text" id="disabledTextInput" class="form-control" name="" value="<?=$_GET["HostName"]?>">
+                </fieldset>
+                <input type="hidden" class="form-control" name="hostNameEdit" value="<?=$_GET["HostName"]?>">
             </div>
 
             <div class="form-group mb-3">
@@ -222,64 +199,24 @@
     ?>
         <form method="post">
 
-        <div class="form-group mb-3">
-                <label for="">GroupNo</label>
-
-                <select name="groupNoCreate" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
-
-                        while($row = $result->fetch_assoc()){
-
-                            ?>
-                            <option <?php if($data[0]["GroupNo"]==$row["GroupNo"]){print " selected ";}?>value="<?=$row["GroupNo"]?>"><?= $row["GroupNo"]?></option>
-                            <?php
-                        }
-                    ?>
-                </select>
+            <div class="form-group mb-3">
+                <div class=" mb-3">
+                    <fieldset disabled>
+                        <label for="">GroupNo</label>
+                        <input type="text" id="disabledTextInput" class="form-control" name="" value="<?=$_GET["GroupNo"]?>">
+                    </fieldset>
+                    <input type="hidden" class="form-control" name="groupNoCreate" value="<?=$_GET["GroupNo"]?>">
+                </div>
             </div>
 
-            <?php if($_SESSION["userIsAdmin"]==1){ ?>
-                <div class="form-group mb-3">
+            <div class=" mb-3">
+                <fieldset disabled>
                     <label for="">HostName</label>
+                    <input type="text" id="disabledTextInput" class="form-control" name="" value="<?=$_GET["HostName"]?>">
+                </fieldset>
+                <input type="hidden" class="form-control" name="hostNameCreate" value="<?=$_GET["HostName"]?>">
+            </div>
 
-                    <select name="hostNameCreate" class="form-select">
-                        <?php
-                            $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
-                            $sqlSelect->execute();
-                            $result = $sqlSelect->get_result();
-
-                            while($row = $result->fetch_assoc()){
-                                ?>
-                                <option value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                                <?php
-                            }
-                        ?>
-                    </select>
-                </div>
-           <?php } else { ?>
-
-                    <div class="form-group mb-3">
-                    <label for="">HostName</label>
-
-                    <select name="hostNameCreate" class="form-select">
-                        <?php
-                        $sqlSelect = $connection->prepare("SELECT HostName from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=?");
-                        $sqlSelect->bind_param("i", $_SESSION["currentUserNo"]);
-                        $sqlSelect->execute();
-
-                        $result = $sqlSelect->get_result();
-                        $data = $result->fetch_all(MYSQLI_ASSOC);
-
-                        while($row = $result->fetch_assoc()){
-                            ?>
-                            <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                            <?php
-                        }?>
-                    </select>
-            <?php } ?>
 
             <div class="form-group mb-3">
                 <label for="">PinNo</label>
@@ -289,7 +226,6 @@
                         $sqlSelect = $connection->prepare("SELECT PinNo FROM pins WHERE Input=0");
                         $sqlSelect->execute();
                         $result = $sqlSelect->get_result();
-                        $data = $result->fetch_all(MYSQLI_ASSOC);
 
                         while($row = $result->fetch_assoc()){
                             ?>
