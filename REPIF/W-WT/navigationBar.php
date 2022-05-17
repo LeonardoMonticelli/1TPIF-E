@@ -24,11 +24,11 @@
         }
         if($_SESSION["userIsAdmin"]==1){
 
-            $navigationLinks=["sbManagement.php"=>"SmartBox Management", "manage.php"=>"Permission Management", "pinHome.php"=>"Pin Management", "eventsHome.php"=>"Events", "groups.php"=>"Groups", "script.php"=>"Scripts", "userManagement.php"=>"Users", "userConfiguration.php"=>"Configuration"];
+            $navigationLinks=["sbManagement.php"=>"SmartBox Management", "manage.php"=>"Permission Management", "groups.php"=>"Groups", "userManagement.php"=>"Users", "userConfiguration.php"=>"Configuration"];
 
         } else{
 
-            $navigationLinks=["sbManagement.php"=>"SmartBox Management", "pinHome.php"=>"Pin Management", "eventsHome.php"=>"Events", "groups.php"=>"Groups", "script.php"=>"Scripts", "userManagement.php"=>"Users", "userConfiguration.php"=>"Configuration"];
+            $navigationLinks=["sbManagement.php"=>"SmartBox Management", "groups.php"=>"Groups", "userManagement.php"=>"Users", "userConfiguration.php"=>"Configuration"];
 
         }
         foreach ($navigationLinks as $key => $value) {

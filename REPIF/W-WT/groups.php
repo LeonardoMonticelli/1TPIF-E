@@ -21,6 +21,18 @@
 
         }
 
+        if(isset($_POST["viewScripts"])) { 
+
+            $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups WHERE GroupNo=?");
+            $sqlSelect->bind_param("i", $_POST["viewScripts"]);
+            $sqlSelect->execute();
+            $result = $sqlSelect->get_result();
+            $data = $result->fetch_all(MYSQLI_ASSOC);
+
+            header("location: script.php?GroupNo=".$data[0]["GroupNo"]);
+
+        }
+
             if($_SESSION["userIsAdmin"]==0){
 
                 $sqlStatement = $connection->prepare("SELECT * from groups, manage where groups.HostName=manage.HostName and UserNo=?");
@@ -109,6 +121,12 @@
                                     <form action="" method="post">
                                         <input type="hidden" name="addPins" value="<?= $row["GroupNo"] ?>">
                                         <input type="submit" class="btn btn-primary" value="Add LED Pins"></input>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form action="" method="post">
+                                        <input type="hidden" name="viewScripts" value="<?= $row["GroupNo"] ?>">
+                                        <input type="submit" class="btn btn-secondary" value="View Scripts"></input>
                                     </form>
                                 </td>
                                 <?php if($_SESSION["userIsAdmin"]==1){?>

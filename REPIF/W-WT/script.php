@@ -3,13 +3,24 @@
     include_once "htmlHead.php";
     include_once "databaseConnect.php";
     include_once "sessionCheck.php";
-    include_once "navigationBar.php";
 ?>
     <body>
+        <div class="">
+            <form action="" method="post">
+                <input type="hidden" name="goBack">
+                <input type="submit" class="btn btn-secondary mb-3" value="Go back">
+            </form>
+        </div>
         <?php
+            if(isset($_POST["goBack"])){
+                header("location: groups.php");
+            }
 
-            $result = $connection->query("SELECT * from scripts");
- 
+            $sqlSelect = $connection->prepare("SELECT * from scripts, `use` where scripts.Scriptname=`use`.ScriptName and GroupNo=?");
+            $sqlSelect->bind_param("i", $_GET["GroupNo"]);
+            $sqlSelect->execute();
+            $result = $sqlSelect->get_result();
+
             if ($result) {
 
                 if(isset($_POST["deleteScript"])) { //this has to be at the beggining so the refresh works 

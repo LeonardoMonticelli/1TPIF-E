@@ -5,7 +5,7 @@
     include_once "sessionCheck.php";
 ?>
     <body>
-    <div class="">
+        <div class="">
             <form action="" method="post">
                 <input type="hidden" name="goBack">
                 <input type="submit" class="btn btn-secondary mb-3" value="Go back">
@@ -13,7 +13,7 @@
         </div>
         <?php
                     if(isset($_POST["goBack"])){
-                        header("location: pinHome.php");
+                        header("location: sbManagement.php");
                     }
             // $lednumbers = [ 7, 8, 12, 16, 20, 21];
             // $switches = [ 5, 11, 9, 10, 4, 22, 27];
@@ -140,7 +140,6 @@
         <form method="post">
 
             <input type="hidden" class="form-control" name="pinIdSearch" value="<?= $data[0]["PinId"] ?>">
-            <?php //var_dump($data[0]["PinId"]);?>
             <div class=" mb-3">
 
                 <fieldset disabled>

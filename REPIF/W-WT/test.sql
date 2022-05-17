@@ -1,2 +1,2 @@
 use wt;
-SELECT ScriptName, `Path`, `Description` FROM scripts WHERE ScriptId=2
+SELECT * from scripts, `use` where scripts.Scriptname=`use`.ScriptName and GroupNo=1

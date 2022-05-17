@@ -4,12 +4,33 @@
     include_once "databaseConnect.php";
     include_once "sessionCheck.php";
     include_once "navigationBar.php";
-
-    //remove the userno
-    //create a page where I give owenership of a smartbox
 ?>
     <body>
         <?php
+            if(isset($_POST["viewPins"])){ //redirect to the pin Management 
+
+                $sqlSelect = $connection->prepare("SELECT HostName FROM pins WHERE HostName=?");
+                $sqlSelect->bind_param("s", $_POST["viewPins"]);
+                $sqlSelect->execute();
+                $result = $sqlSelect->get_result();
+                $data = $result->fetch_all(MYSQLI_ASSOC);
+
+                header("location: pinManagement.php?HostName=".$data[0]["HostName"]);
+            }
+
+
+            if(isset($_POST["viewEvents"])){ //redirect to the pin Management 
+
+                $sqlSelect = $connection->prepare("SELECT HostName FROM events WHERE HostName=?");
+                $sqlSelect->bind_param("s", $_POST["viewEvents"]);
+                $sqlSelect->execute();
+                $result = $sqlSelect->get_result();
+                $data = $result->fetch_all(MYSQLI_ASSOC);
+
+                header("location: eventManagement.php?HostName=".$data[0]["HostName"]);
+            }
+
+            
             if($_SESSION["userIsAdmin"]==0){
 
                 $sqlStatement = $connection->prepare("SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=?");
@@ -100,6 +121,10 @@
                             <th scope="col">Location</th>
                             <th scope="col"></th>
                             <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
 
                         </tr>
                     </thead>
@@ -110,21 +135,29 @@
                                 <th scope="row"><?= $row["HostName"] ?></th>
                                 <td><?= $row["Description"] ?></td>
                                 <td><?= $row["Location"] ?></td>
+                                <td>                                
+                                    <form method="POST">
+                                        <input type="hidden" name="viewEvents" value="<?= $row["HostName"] ?>">
+                                        <input type="submit" class="btn btn-secondary" value="View events">
+                                    </form>
+                                </td>
+                                <td>                                
+                                    <form method="POST">
+                                        <input type="hidden" name="viewPins" value="<?= $row["HostName"] ?>">
+                                        <input type="submit" class="btn btn-dark" value="View Pins">
+                                    </form>
+                                </td>
                                 <td>          
-                
                                     <form method="POST">
                                         <input type="hidden" name="generateConf" value="<?= $row["HostName"] ?>">
                                         <input type="submit" class="btn btn-success" value="Generate configuration">
                                     </form>
-
                                 </td>
                                 <td>
-
                                     <form action="" method="POST">
                                         <input type="hidden" name="addSwitches" value="<?= $row["HostName"] ?>">
-                                        <input type="submit" class="btn btn-primary" value="Add Switches"></input>
+                                        <input type="submit" class="btn btn-primary" value="Add Switches">
                                     </form>
-
                                 </td>
                                 <?php
                                     if($_SESSION["userIsAdmin"]==1){
