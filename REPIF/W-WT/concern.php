@@ -190,7 +190,7 @@
 <?php
     if(isset($_POST["createConnection"])){
 
-        $sqlSelect = $connection->prepare("SELECT ConcernId, GroupNo, HostName, PinNo FROM concern");
+        $sqlSelect = $connection->prepare("SELECT * FROM concern");
 
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();

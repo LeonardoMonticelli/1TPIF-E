@@ -53,22 +53,22 @@
     
                 }
 
-                if(!empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])&&!empty($_POST["inputEdit"])&&!empty($_POST["designationEdit"])){ //update
+                if(!empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])&&!empty($_POST["designationEdit"])){ //update
 
                     $sqlUpdate = $connection->prepare("UPDATE pins SET HostName=?, PinNo=?, Input=?, Designation=? where PinId=?");
-        
+
                     if(!$sqlUpdate){
                         die("Error: the pins cannot be updated");
                     }
 
                     $sqlUpdate->bind_param("siisi", $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["inputEdit"], $_POST["designationEdit"], $_POST["pinIdSearch"]);
                     $sqlUpdate->execute();
-
+                    // var_dump($_POST["inputEdit"]) ;
                     header("refresh: 0");
         
                 }
 
-                if(!empty($_POST["pinNoCreate"])&&!empty($_POST["hostNameCreate"])&&!empty($_POST["inputCreate"])&&!empty($_POST["designationCreate"])){ //create 
+                if(!empty($_POST["pinNoCreate"])&&!empty($_POST["hostNameCreate"])&&!empty($_POST["designationCreate"])){ //create 
 
                     $sqlCreate = $connection->prepare("INSERT INTO `pins` (`PinNo`, `HostName`, `Input`, `Designation`) VALUES (?,    ?,    ?,    ?)");
 
@@ -130,7 +130,7 @@
     if(isset($_POST["editPin"])){
 
         $editPinVal = intval($_POST["editPin"]);
-        $sqlSelect = $connection->prepare("SELECT PinId, HostName, PinNo, Input, Designation FROM pins WHERE PinId=?");
+        $sqlSelect = $connection->prepare("SELECT * FROM pins WHERE PinId=?");
         $sqlSelect->bind_param("i", $editPinVal);
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();
@@ -138,50 +138,33 @@
 
         ?>
         <form method="post">
-            <?php if($_SESSION["userIsAdmin"]==1){ ?>
-                <div class="form-group mb-3">
-                    <label for="">HostName</label>
-
-                    <select name="hostNameEdit" class="form-select">
-                        <?php
-                            $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
-                            $sqlSelect->execute();
-                            $result = $sqlSelect->get_result();
-
-                            while($row = $result->fetch_assoc()){
-                                ?>
-                                <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                                <?php
-                            }
-                        ?>
-                    </select>
-                </div>
-           <?php } else {?>
-            
-                <div class=" mb-3">
-                    <fieldset disabled>
-                        <label for="">HostName</label>
-                        <input type="text" id="disabledTextInput" class="form-control" name="" placeholder="<?= $data[0]["HostName"] ?>">
-                    </fieldset>
-                    <input type="hidden" class="form-control" name="hostNameEdit" value="<?= $data[0]["HostName"] ?>">
-                </div>
-
-            <?php } ?>
 
             <input type="hidden" class="form-control" name="pinIdSearch" value="<?= $data[0]["PinId"] ?>">
+            <?php //var_dump($data[0]["PinId"]);?>
+            <div class=" mb-3">
+
+                <fieldset disabled>
+                    <label for="">HostName</label>
+                    <input type="text" id="disabledTextInput" class="form-control" name="" placeholder="<?= $data[0]["HostName"] ?>">
+                </fieldset>
+
+                <input type="hidden" class="form-control" name="hostNameEdit" value="<?= $data[0]["HostName"] ?>">
+
+            </div>
 
             <div class="form-group mb-3">
                 <label for="">PinNo</label>
 
                 <select name="pinNoEdit" class="form-select">
-                        <?php
+                    <?php
 
-                            foreach($pins as $pin) {
-                                ?>
-                                <option <?php if($data[0]["PinNo"]==$pin){print " selected ";}?> value="<?=$pin?>"><?= $pin ?></option>
-                                <?php
-                            }
-                        ?>
+                        foreach($pins as $pin) {
+                            ?>
+                            <option <?php if($data[0]["PinNo"]==$pin){print " selected ";}?> value="<?=$pin?>"><?= $pin ?></option>
+                            <?php
+                        }
+
+                    ?>
                 </select>
             </div>
 
@@ -189,17 +172,10 @@
                 <label for="">Input</label>
 
                 <select name="inputEdit" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT Input FROM pins GROUP BY Input HAVING COUNT(*) > 1");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
 
-                        while($row = $result->fetch_assoc()){
-                            ?>
-                            <option <?php if($data[0]["Input"]==$row["Input"]){print " selected ";}?>value="<?=$row["Input"]?>"><?= $row["Input"]?></option>
-                            <?php
-                        }
-                    ?>
+                    <option <?php if($data[0]["Input"]==0){print " selected ";}?> value="0">0</option>
+                    <option <?php if($data[0]["Input"]==1){print " selected ";}?> value="1">1</option>
+
                 </select>
 
             </div>
@@ -230,41 +206,21 @@
 
     ?>
         <form method="post">
-           <?php if($_SESSION["userIsAdmin"]==1){ ?>
-                <div class="form-group mb-3">
-                    <label for="">HostName</label>
-
-                    <select name="hostNameCreate" class="form-select">
-                        <?php
-                            $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
-                            $sqlSelect->execute();
-                            $result = $sqlSelect->get_result();
-
-                            while($row = $result->fetch_assoc()){
-                                ?>
-                                <option value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                                <?php
-                            }
-                        ?>
-                    </select>
-                </div>
-           <?php } else {
-                    $sqlSelect = $connection->prepare("SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=?");
-                    $sqlSelect->bind_param("i", $_SESSION["currentUserNo"]);
-                    $sqlSelect->execute();
-                    $result = $sqlSelect->get_result();
-                    $data = $result->fetch_all(MYSQLI_ASSOC);
-               ?>
+           <?php 
+                $sqlSelect = $connection->prepare("SELECT * from smartboxes, manage where smartboxes.HostName=manage.HostName and manage.UserNo=?");
+                $sqlSelect->bind_param("i", $_SESSION["currentUserNo"]);
+                $sqlSelect->execute();
+                $result = $sqlSelect->get_result();
+                $data = $result->fetch_all(MYSQLI_ASSOC);
+            ?>
 
                 <div class=" mb-3">
                     <fieldset disabled>
                         <label for="">HostName</label>
-                        <input type="text" id="disabledTextInput" class="form-control" name="" value="<?=$data[0]["HostName"]?>">
+                        <input type="text" id="disabledTextInput" class="form-control" name="" value="<?=$_GET["HostName"]?>">
                     </fieldset>
-                    <input type="hidden" class="form-control" name="hostNameCreate" value="<?=$data[0]["HostName"]?>">
+                    <input type="hidden" class="form-control" name="hostNameCreate" value="<?=$_GET["HostName"]?>">
                 </div>
-
-            <?php } ?>
             
             <div class="form-group mb-3">
                 <label for="">PinNo</label>
@@ -295,7 +251,7 @@
                 <input type="text" class="form-control" name="designationCreate" placeholder="GPIO#">
             </div>
 
-            <button type="submit" class="btn btn-success mb-3">Create a pins</button>
+            <button type="submit" class="btn btn-success mb-3">Create a pin</button>
 
         </form>
     <?php

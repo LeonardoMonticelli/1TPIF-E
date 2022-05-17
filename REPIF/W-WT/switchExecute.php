@@ -41,7 +41,7 @@
     
                 }
 
-                $isItEmptyEdit = !empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])&&!empty($_POST["eventCodeEdit"])&&!empty($_POST["groupNoEdit"])&&!empty($_POST["targetFunctionCodeEdit"])&&!empty($_POST["descriptionEdit"])&&!empty($_POST["sequenceNoEdit"])&&!empty($_POST["waitingDurationEdit"]);
+                $isItEmptyEdit = !empty($_POST["hostNameEdit"])&&!empty($_POST["pinNoEdit"])&&!empty($_POST["eventCodeEdit"])&&!empty($_POST["groupNoEdit"])&&!empty($_POST["targetFunctionCodeEdit"])&&!empty($_POST["descriptionEdit"]);
                 if($isItEmptyEdit){ //update
 
                     $sqlUpdate = $connection->prepare("UPDATE switchexecute SET HostName=?, PinNo=?, EventCode=?, GroupNo=?, TargetFunctionCode=?, `Description`=?, SequenceNo=?, WaitingDuration=? where SwitchExecuteId=?");
@@ -57,7 +57,7 @@
         
                 }
                 
-                $isItEmptyCreate = !empty($_POST["hostNameCreate"])&&!empty($_POST["pinNoCreate"])&&!empty($_POST["eventCodeCreate"])&&!empty($_POST["groupNoCreate"])&&!empty($_POST["targetFunctionCodeCreate"])&&!empty($_POST["descriptionCreate"])&&!empty($_POST["sequenceNoCreate"])&&!empty($_POST["waitingDurationCreate"]);
+                $isItEmptyCreate = !empty($_POST["hostNameCreate"])&&!empty($_POST["pinNoCreate"])&&!empty($_POST["eventCodeCreate"])&&!empty($_POST["groupNoCreate"])&&!empty($_POST["targetFunctionCodeCreate"])&&!empty($_POST["descriptionCreate"]);
                 if($isItEmptyCreate){ //create 
 
                     $sqlCreate = $connection->prepare("INSERT INTO `switchexecute` (`HostName`, `PinNo`, `EventCode`, `GroupNo`, `TargetFunctionCode`, `Description`, `SequenceNo`, `WaitingDuration`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -76,15 +76,15 @@
                 <table class="table">
                     <thead>
                         <tr>
-
+                            <th scope="col">Switch Execute ID</th>
                             <th scope="col">HostName</th>
                             <th scope="col">PinNo</th>
-                            <th scope="col">EventCode</th>
+                            <th scope="col">Event Code</th>
                             <th scope="col">GroupNo</th>
-                            <th scope="col">TargetFunctionCode</th>
+                            <th scope="col">Target Function Code</th>
                             <th scope="col">Description</th>
                             <th scope="col">SequenceNo</th>
-                            <th scope="col">WaitingDuration</th>
+                            <th scope="col">Waiting Duration</th>
                             <th scope="col"></th>
                             <th scope="col"></th>
                             <th scope="col"></th>
@@ -97,7 +97,8 @@
                         while ($row = $result->fetch_assoc()) {?>                           
                             <tr>
 
-                                <th scope="row"><?= $row["HostName"] ?></th>
+                                <th scope="row"><?= $row["SwitchExecuteId"] ?></th>
+                                <td><?= $row["HostName"] ?></td>
                                 <td><?= $row["PinNo"] ?></td>
                                 <td><?= $row["EventCode"] ?></td>
                                 <td><?= $row["GroupNo"] ?></td>
@@ -149,28 +150,18 @@
                     <input type="text" class="form-control" name="" value="<?= $data[0]["SwitchExecuteId"] ?>">
                 </fieldset>
     
-                <input type="hidden" class="form-control" name="switchExecuteIdEdit" value="<?= $data[0]["SwitchExecuteId"] ?>">
                 <input type="hidden" class="form-control" name="switchExecuteIdSearch" value="<?= $data[0]["SwitchExecuteId"] ?>">  
             </div>
 
-            <div class="form-group mb-3">
-                <label for="">HostName</label>
-
-                <select name="hostNameEdit" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
-
-                        while($row = $result->fetch_assoc()){
-
-                            ?>
-                            <option <?php if($data[0]["HostName"]==$row["HostName"]){print " selected ";}?>value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                            <?php
-                        }
-                    ?>
-                </select>
+            <div class=" mb-3">
+                <fieldset disabled>
+                    <label for="">HostName</label>
+                    <input type="text" id="disabledTextInput" class="form-control" name="" value="<?=$_GET["HostName"]?>">
+                </fieldset>
+                
+                <input type="hidden" class="form-control" name="hostNameEdit" value="<?=$_GET["HostName"]?>">
             </div>
+
 
             <div class="form-group mb-3">
                 <label for="">PinNo</label>

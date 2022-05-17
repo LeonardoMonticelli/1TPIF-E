@@ -137,7 +137,7 @@
     if(isset($_POST["editGroup"])){
 
         $editGroupVal = intval($_POST["editGroup"]);
-        $sqlSelect = $connection->prepare("SELECT GroupNo, GroupName, `Description`, HostName FROM groups WHERE GroupNo=?");
+        $sqlSelect = $connection->prepare("SELECT * FROM groups WHERE GroupNo=?");
         $sqlSelect->bind_param("i", $editGroupVal);
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();

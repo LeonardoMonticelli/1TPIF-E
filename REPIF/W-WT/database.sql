@@ -93,16 +93,18 @@ INSERT INTO `pins` (`HostName`, `PinNo`, `Input`, `Designation`) VALUES
 ('SB_7', 11, 0, 'GPIO09');
 
 CREATE TABLE `scripts` (
-  `ScriptName` varchar(50) NOT NULL,
+  `ScriptId` int NOT NULL AUTO_INCREMENT,
+  `ScriptName` varchar(50) DEFAULT NULL,
   `Path` varchar(50) DEFAULT NULL,
   `Description` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`ScriptName`)
+  KEY (`ScriptName`),
+  PRIMARY KEY (`ScriptId`)
 );
 
-INSERT INTO `scripts` (`ScriptName`, `Path`, `Description`) VALUES
-('dimmer',    '/switch/dimmer.sh',    'Dim lamp'),
-('bell',    '/sound/bell.sh',    'Play ringtone'),
-('strobo',    '/switch/strobo.sh',    'Make lamp flash quickly');
+INSERT INTO `scripts` (`ScriptId`,`ScriptName`, `Path`, `Description`) VALUES
+(1, 'dimmer',    '/switch/dimmer.sh',    'Dim lamp'),
+(2, 'bell',    '/sound/bell.sh',    'Play ringtone'),
+(3, 'strobo',    '/switch/strobo.sh',    'Make lamp flash quickly');
 
 CREATE TABLE `use` (
   `GroupNo` int(11) DEFAULT NULL,

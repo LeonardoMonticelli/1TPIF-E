@@ -29,13 +29,13 @@
 
                 if(!empty($_POST["scriptNameEdit"])&&!empty($_POST["pathEdit"])&&!empty($_POST["descriptionEdit"])){ //update
 
-                    $sqlUpdate = $connection->prepare("UPDATE scripts SET ScriptName=?, `Path`=?, `Description`=? where ScriptName=?");
+                    $sqlUpdate = $connection->prepare("UPDATE scripts SET ScriptName=?, `Path`=?, `Description`=? where ScriptId=?");
         
                     if(!$sqlUpdate){
                         die("Error: the scripts cannot be updated");
                     }
 
-                    $sqlUpdate->bind_param("sss", $_POST["scriptNameEdit"], $_POST["pathEdit"], $_POST["descriptionEdit"], $_POST["scriptNameSearch"]);
+                    $sqlUpdate->bind_param("sssi", $_POST["scriptNameEdit"], $_POST["pathEdit"], $_POST["descriptionEdit"], $_POST["scriptIdSearch"]);
                     $sqlUpdate->execute();
 
                     header("refresh: 0");
@@ -61,7 +61,8 @@
                     <thead>
                         <tr>
 
-                            <th scope="col">ScriptName</th>
+                            <th scope="col">Script ID</th>
+                            <th scope="col">Script Name</th>
                             <th scope="col">Path</th>
                             <th scope="col">Description</th>
                             <th scope="col"></th>
@@ -73,18 +74,19 @@
                         <?php while ($row = $result->fetch_assoc()) {?>                           
                             <tr>
 
-                                <th scope="row"><?= $row["ScriptName"] ?></th>
+                                <th scope="row"><?= $row["ScriptId"] ?></th>
+                                <th><?= $row["ScriptName"] ?></th>
                                 <td><?= $row["Path"] ?></td>
                                 <td><?= $row["Description"] ?></td>
                                 <td>                                
                                     <form method="POST">
-                                        <input type="hidden" name="editScript" value="<?= $row["ScriptName"] ?>">
+                                        <input type="hidden" name="editScript" value="<?= $row["ScriptId"] ?>">
                                         <input type="submit" value="Edit">
                                     </form>
                                 </td>
                                 <td>
                                     <form method="POST">
-                                        <input type="hidden" name="deleteScript" value="<?= $row["ScriptName"] ?>">
+                                        <input type="hidden" name="deleteScript" value="<?= $row["ScriptId"] ?>">
                                         <input type="submit" value="Delete">
                                     </form>
                                 </td>
@@ -99,7 +101,7 @@
     
     if(isset($_POST["editScript"])){
 
-        $sqlSelect = $connection->prepare("SELECT ScriptName, `Path`, `Description` FROM scripts WHERE ScriptName=?");
+        $sqlSelect = $connection->prepare("SELECT * FROM scripts WHERE ScriptId=?");
         $sqlSelect->bind_param("s", $_POST["editScript"]);
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();
@@ -108,10 +110,11 @@
         ?>
         <form method="post" class="mb-3">
 
+            <input type="hidden" class="form-control" name="scriptIdSearch" value="<?= $data[0]["ScriptId"] ?>">
+
             <div class="form-group mb-3">
                 <label for="">ScriptName</label>
                 <input type="text" class="form-control" name="scriptNameEdit" value="<?= $data[0]["ScriptName"] ?>">
-                <input type="hidden" class="form-control" name="scriptNameSearch" value="<?= $data[0]["ScriptName"] ?>">
             </div>
 
             <div class="form-group mb-3">
@@ -146,7 +149,7 @@
 
             <div class="form-group mb-3">
                 <label for="">ScriptName</label>
-                <input type="text" class="form-control" name="scriptNameCreate" placeholder="script0">
+                <input type="text" class="form-control" name="scriptNameCreate" placeholder="script">
             </div>
 
             <div class="form-group mb-3">
@@ -159,7 +162,7 @@
                 <input type="text" class="form-control" name="descriptionCreate" placeholder="describe what the scripts does">
             </div>
 
-            <button type="submit" class="btn btn-success">Create an users</button>
+            <button type="submit" class="btn btn-success">Create an user</button>
 
         </form>
     <?php

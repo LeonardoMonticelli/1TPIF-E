@@ -38,15 +38,15 @@
     
                 }
 
-                if(!empty($_POST["userNoEdit"])&&!empty($_POST["userNameEdit"])&&!empty($_POST["firstNameEdit"])&&!empty($_POST["lastNameEdit"])&&!empty($_POST["technicianEdit"])&&!empty($_POST["emailEdit"])){ //update
+                if(!empty($_POST["userNameEdit"])&&!empty($_POST["firstNameEdit"])&&!empty($_POST["lastNameEdit"])&&!empty($_POST["emailEdit"])){ //update
 
-                    $sqlUpdate = $connection->prepare("UPDATE users SET UserNo=?, UserName=?, FirstName=?, LastName=?, `Technician`=?, Email=? where UserNo=?");
+                    $sqlUpdate = $connection->prepare("UPDATE users SET UserName=?, FirstName=?, LastName=?, `Technician`=?, Email=? where UserNo=?");
         
                     if(!$sqlUpdate){
                         die("Error: the users cannot be updated");
                     }
 
-                    $sqlUpdate->bind_param("isssisi", $_POST["userNoEdit"], $_POST["userNameEdit"], $_POST["firstNameEdit"], $_POST["lastNameEdit"], $_POST["technicianEdit"], $_POST["emailEdit"], $_POST["userNoSearch"]);
+                    $sqlUpdate->bind_param("sssisi", $_POST["userNameEdit"], $_POST["firstNameEdit"], $_POST["lastNameEdit"], $_POST["technicianEdit"], $_POST["emailEdit"], $_POST["userNoSearch"]);
                     $sqlUpdate->execute();
 
                     header("refresh: 0");
@@ -140,8 +140,7 @@
                     <input type="text" class="form-control" name="" value="<?= $data[0]["UserNo"] ?>">
                 </div>
             </fieldset>
-
-            <input type="hidden" class="form-control" name="userNoEdit" value="<?= $data[0]["UserNo"] ?>">
+            
             <input type="hidden" class="form-control" name="userNoSearch" value="<?= $data[0]["UserNo"] ?>">
 
             <div class="form-group mb-3">
@@ -227,15 +226,15 @@
 
             <div class="form-group mb-3">
                 <label for="">Email</label>
-                <input type="text" class="form-control" name="emailCreate" placeholder="example@example.com">
+                <input type="email" class="form-control" name="emailCreate" placeholder="example@example.com">
             </div>
 
             <div class="form-group mb-3">
                 <label for="">Password</label>
-                <input type="text" class="form-control" name="passwordCreate" placeholder="please type a password">
+                <input type="password" class="form-control" name="passwordCreate" placeholder="please type a password">
             </div>
 
-            <button type="submit" class="btn btn-success">Create an users</button>
+            <button type="submit" class="btn btn-success">Create an user</button>
 
         </form>
     <?php

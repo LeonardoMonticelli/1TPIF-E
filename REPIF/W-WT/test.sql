@@ -1,2 +1,2 @@
 use wt;
-SELECT PinNo FROM pins WHERE Input=0
+SELECT ScriptName, `Path`, `Description` FROM scripts WHERE ScriptId=2
