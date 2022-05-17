@@ -85,8 +85,10 @@ INSERT INTO `pins` (`HostName`, `PinNo`, `Input`, `Designation`) VALUES
 ('SB_1', 8, 0, 'GPIO08'),
 ('SB_1', 12, 0, 'GPIO12'),
 ('SB_1', 16, 0, 'GPIO16'),
+('SB_1', 19, 0, 'GPIO19'),
 ('SB_1', 20, 0, 'GPIO20'),
 ('SB_1', 21, 0, 'GPIO21'),
+('SB_1', 23, 0, 'GPIO23'),
 ('SB_3', 5, 1, 'GPIO07'),
 ('SB_3', 7, 0, 'GPIO05'),
 ('SB_7', 9, 1, 'GPIO11'),
@@ -135,21 +137,23 @@ CREATE TABLE `concern`(
 
 INSERT INTO `concern` (`ConcernId`, `GroupNo`, `HostName`, `PinNo`) VALUES
 (1, 1,    'SB_7',    7),
-(2, 3,    'SB_1',    8);
+(2, 3,    'SB_1',    19);
 -- only leds
 
 CREATE TABLE `events`(
+  `EventId` int NOT NULL AUTO_INCREMENT,
   `HostName` VARCHAR(16) DEFAULT NULL,
   `PinNo` int DEFAULT NULL,
   `EventCode` VARCHAR(1) NOT NULL,
   `Description` VARCHAR(50) NOT NULL,
+  PRIMARY KEY(`EventId`),
   KEY `EventCode`(`EventCode`),
   CONSTRAINT `events_ibfk_1` FOREIGN KEY(`HostName`) REFERENCES `smartboxes` (`HostName`) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT `events_ibfk_2` FOREIGN KEY(`PinNo`) REFERENCES `pins` (`PinNo`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 INSERT INTO `events` (`HostName`, `PinNo`, `EventCode`, `Description`) VALUES
-('SB_1',    7,    'K', 'Press light switch briefly'),
+('SB_1',    7,    'K', 'Press switch briefly'),
 ('SB_3',    7,    'L', 'Long press touch field'),
 ('SB_7',    12,    'K', 'Touch field briefly');
 

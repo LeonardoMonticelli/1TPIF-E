@@ -14,7 +14,7 @@
 
                 if(isset($_POST["deleteScript"])) { //this has to be at the beggining so the refresh works 
 
-                    $sqlDelete = $connection->prepare("DELETE FROM scripts where ScriptName=?");
+                    $sqlDelete = $connection->prepare("DELETE FROM scripts where ScriptId=?");
     
                     if(!$sqlDelete){
                         die("Error: the scripts cannot be deleted");

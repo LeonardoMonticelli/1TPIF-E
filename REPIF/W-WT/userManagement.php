@@ -24,18 +24,26 @@
 
                 if(isset($_POST["deleteUser"])) { //this has to be at the beggining so the refresh works 
 
-                    $deleteUserVal = intval($_POST["deleteUser"]);
-                    $sqlDelete = $connection->prepare("DELETE FROM users where UserNo=?");
-    
-                    if(!$sqlDelete){
-                        die("Error: the users cannot be deleted");
+                    if($_SESSION["currentUserNo"]==$_POST["deleteUser"]){
+                        ?>
+                        <script>alert("you can't delete your own user!");</script>
+                        <?php
+                    } else {
+
+                        $deleteUserVal = intval($_POST["deleteUser"]);
+                        $sqlDelete = $connection->prepare("DELETE FROM users where UserNo=?");
+        
+                        if(!$sqlDelete){
+                            die("Error: the users cannot be deleted");
+                        }
+        
+                        $sqlDelete->bind_param("i", $deleteUserVal);
+                        $sqlDelete->execute();
+        
+                        header("refresh: 0");
+
                     }
-    
-                    $sqlDelete->bind_param("i", $deleteUserVal);
-                    $sqlDelete->execute();
-    
-                    header("refresh: 0");
-    
+
                 }
 
                 if(!empty($_POST["userNameEdit"])&&!empty($_POST["firstNameEdit"])&&!empty($_POST["lastNameEdit"])&&!empty($_POST["emailEdit"])){ //update
