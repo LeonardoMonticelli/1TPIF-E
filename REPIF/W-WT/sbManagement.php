@@ -194,15 +194,15 @@
 
         ?>
         <form method="post" class="mb-3">
+            <div class=" mb-3">
 
-            <fieldset disabled>
-                <div class=" mb-3">
+                <fieldset disabled>
                     <label for="">HostName</label>
-                    <input type="text" id="disabledTextInput" class="form-control" name="hostNameEdit" placeholder="<?= $data[0]["HostName"] ?>">
-                </div>
-            </fieldset>
+                    <input type="text" id="disabledTextInput" class="form-control" name="" placeholder="<?= $data[0]["HostName"] ?>">
+                </fieldset>
 
-            <input type="hidden" class="form-control" name="hostNameSearch" value="<?= $data[0]["HostName"] ?>">
+                <input type="hidden" class="form-control" name="hostNameSearch" value="<?= $data[0]["HostName"] ?>">
+            </div>
 
             <div class="form-group mb-3">
                 <label for="">Description</label>

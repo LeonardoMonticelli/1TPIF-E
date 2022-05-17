@@ -42,30 +42,30 @@
     
                 }
 
-                if(!empty($_POST["hostNameEdit"])&&!empty($_POST["userNoEdit"])){ //update
+                if(!empty($_POST["descriptionEdit"])){ //update
 
-                    $sqlUpdate = $connection->prepare("UPDATE events SET `HostName`=?, UserNo=? where EventId=?"); //fine
+                    $sqlUpdate = $connection->prepare("UPDATE events SET `HostName`=?, PinNo=?, EventCode=?, `Description`=? where EventId=?"); //fine
         
                     if(!$sqlUpdate){
                         die("Error: the smartboxes cannot be updated");
                     }
                     
-                    $sqlUpdate->bind_param("sii", $_POST["hostNameEdit"], $_POST["userNoEdit"], $_POST["manageIdSearch"]);
+                    $sqlUpdate->bind_param("sissi", $_POST["hostNameEdit"], $_POST["pinNoEdit"], $_POST["eventCodeEdit"], $_POST["descriptionEdit"], $_POST["eventIdSearch"]);
                     $sqlUpdate->execute();
 
                     header("refresh: 0");
         
                 }
  
-                if(!empty($_POST["hostNameCreate"])&&!empty($_POST["userNoCreate"])){ //create 
+                if(!empty($_POST["descriptionCreate"])){ //create 
 
-                    $sqlCreate = $connection->prepare("INSERT INTO `events` (`HostName`, `UserNo`) VALUES (?,    ?)");
+                    $sqlCreate = $connection->prepare("INSERT INTO `events` (`HostName`, `PinNo`, `EventCode`, `Description`) VALUES (?, ?, ?, ?)");
 
                     if(!$sqlCreate){
                         die("Error: the smartboxes cannot be created");
                     }
 
-                    $sqlCreate->bind_param("ss", $_POST["hostNameCreate"], $_POST["userNoCreate"]);
+                    $sqlCreate->bind_param("siss", $_POST["hostNameCreate"], $_POST["pinNoCreate"], $_POST["eventCodeCreate"], $_POST["descriptionCreate"],);
                     $sqlCreate->execute();
 
                     header("refresh: 0");
@@ -131,7 +131,7 @@
                     <label for="">EventId</label>
                     <input type="text" id="disabledTextInput" class="form-control" name="" placeholder="<?= $data[0]["EventId"] ?>">
                 </fieldset>
-                <input type="hidden" class="form-control" name="manageIdSearch" value="<?= $data[0]["EventId"] ?>">
+                <input type="hidden" class="form-control" name="eventIdSearch" value="<?= $data[0]["EventId"] ?>">
             </div>
 
             <div class="form-group mb-3">
@@ -155,14 +155,14 @@
             <div class=" mb-3">
 
                 <label for="">PinNo</label>
-                <input type="number" class="form-control" name="pinNoCreate" value="<?= $data[0]["PinNo"] ?>">
+                <input type="number" class="form-control" name="pinNoEdit" value="<?= $data[0]["PinNo"] ?>">
 
             </div>
 
             <div class=" mb-3">
 
                 <label for="">EventCode</label>
-                <select name="eventCodeCreate" class="form-select">
+                <select name="eventCodeEdit" class="form-select">
                     <option value="K">K</option>
                     <option value="L">L</option>
                 </select>
@@ -171,15 +171,8 @@
 
             <div class=" mb-3">
 
-                <label for="">PinNo</label>
-                <input type="number" class="form-control" name="pinNoCreate" value="<?= $data[0]["PinNo"] ?>">
-
-            </div>
-
-            <div class=" mb-3">
-
                 <label for="">Description</label>
-                <input type="text" class="form-control" name="pinNoCreate" value="<?= $data[0]["Description"] ?>">
+                <input type="text" class="form-control" name="descriptionEdit" value="<?= $data[0]["Description"] ?>">
 
             </div>
 
@@ -189,17 +182,15 @@
 
         <?php
     }    
-    if($_SESSION["userIsAdmin"]==1){
 ?>  
         <div class="mb-3">
             <form action="" method="post">
-                <input type="hidden" name="createManage">
+                <input type="hidden" name="createEvent">
                 <input type="submit" class="btn btn-primary" value="Create"></input>
             </form>
         </div>
 <?php
-    }
-    if(isset($_POST["createManage"])){
+    if(isset($_POST["createEvent"])){
 
 
         $sqlSelect = $connection->prepare("SELECT * FROM events");
@@ -211,23 +202,15 @@
         ?>
         <form method="post">
 
-            <div class="form-group mb-3">
+        <div class=" mb-3">
+
+            <fieldset disabled>
                 <label for="">HostName</label>
+                <input type="text" id="disabledTextInput" class="form-control" name="" placeholder="<?= $_GET["HostName"] ?>">
+            </fieldset>
 
-                <select name="hostNameCreate" class="form-select">
-                    <?php
-                        $sqlSelect = $connection->prepare("SELECT HostName FROM smartboxes");
-                        $sqlSelect->execute();
-                        $result = $sqlSelect->get_result();
-
-                        while($row = $result->fetch_assoc()){
-                            ?>
-                            <option value="<?=$row["HostName"]?>"><?= $row["HostName"]?></option>
-                            <?php
-                        }
-                    ?>
-                </select>
-            </div>
+            <input type="hidden" class="form-control" name="hostNameCreate" value="<?= $_GET["HostName"] ?>">
+        </div>
 
             <div class="form-group mb-3">
                 <label for="">PinNo</label>
@@ -247,9 +230,25 @@
                 </select>
             </div>
 
-            <input type="text" id="" class="form-control" name="eventCodeCreate" placeholder="K or L">
+            <div class="form-group mb-3">
 
-            <input type="text" id="" class="form-control" name="descriptionCreate" placeholder="How to activate it">
+                <label for="">Event Code</label>
+                <select name="eventCodeCreate" id="" class="form-select">
+
+                    <option value="K">K</option>
+                    <option value="L">L</option>
+
+                </select>
+
+
+            </div>
+
+            <div class="form-group mb-3">
+
+                <label for="">Description</label>
+                <input type="text" id="" class="form-control" name="descriptionCreate" placeholder="How to activate it">
+
+            </div>
 
             <button type="submit" class="btn btn-success">Create a Event</button>
 

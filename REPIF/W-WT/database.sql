@@ -153,8 +153,9 @@ CREATE TABLE `events`(
 );
 
 INSERT INTO `events` (`HostName`, `PinNo`, `EventCode`, `Description`) VALUES
-('SB_1',    7,    'K', 'Press switch briefly'),
-('SB_3',    7,    'L', 'Long press touch field'),
+('SB_1',    5,    'K', 'Press switch briefly'),
+('SB_1',    7,    'L', 'Long press touch field'),
+('SB_3',    9,    'L', 'Long press touch field'),
 ('SB_7',    12,    'K', 'Touch field briefly');
 
 CREATE TABLE `switchexecute` (
