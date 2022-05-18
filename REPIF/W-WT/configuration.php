@@ -72,7 +72,7 @@ function createExecConf($connection, $input) {
     $fp = fopen("config/tefg.txt", "wb");
 
     foreach($data as $exec) {
-        // $duration = $exec["WaitingDuration"] ? ", ".$exec["WaitingDuration"] : '';
+        $duration = $exec["WaitingDuration"] ? ", ".$exec["WaitingDuration"] : '';
         $line = "".$exec["Designation"].", ".$exec["EventCode"]."=".$exec["TargetFunctionCode"].", ".$exec["GroupName"]."".$duration."\n";
         fwrite($fp, $line);
     }
