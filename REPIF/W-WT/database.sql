@@ -110,22 +110,22 @@ INSERT INTO `scripts` (`ScriptId`,`ScriptName`, `Path`, `Description`) VALUES
 
 CREATE TABLE `use` (
   `UseId` int NOT NULL AUTO_INCREMENT,
-  `ScriptId` int NOT NULL,
-  `ScriptName` varchar(50) DEFAULT NULL,
-  `GroupNo` int(11) DEFAULT NULL,
+  `ScriptId` int,
+  `ScriptName` varchar(50),
+  `GroupNo` int(11),
   PRIMARY KEY (`UseId`),
   KEY `ScriptId` (`ScriptId`),
   KEY `ScriptName` (`ScriptName`),
   KEY `GroupNo` (`GroupNo`),
-  CONSTRAINT `use_ibfk_1` FOREIGN KEY (`ScriptId`) REFERENCES `scripts` (`ScriptId`) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT `use_ibfk_2` FOREIGN KEY (`ScriptName`) REFERENCES `scripts` (`ScriptName`) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT `use_ibfk_3` FOREIGN KEY (`GroupNo`) REFERENCES `groups` (`GroupNo`) ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT `use_ibfk_1` FOREIGN KEY (`ScriptName`) REFERENCES `scripts` (`ScriptName`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `use_ibfk_2` FOREIGN KEY (`GroupNo`) REFERENCES `groups` (`GroupNo`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `use_ibfk_3` FOREIGN KEY (`ScriptId`) REFERENCES `scripts` (`ScriptId`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO `use` (`GroupNo`, `ScriptName`) VALUES
-(1,    'dimmer'),
-(2,    'bell'),
-(3,    'strobo');
+INSERT INTO `use` (`ScriptId`, `ScriptName`, `GroupNo`) VALUES
+(1,    'dimmer', 1),
+(2,    'bell', 2),
+(3,    'strobo', 3);
 
 CREATE TABLE `concern`(
   `ConcernId` int NOT NULL AUTO_INCREMENT,
