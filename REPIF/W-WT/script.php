@@ -16,7 +16,7 @@
                 header("location: groups.php");
             }
 
-            $sqlSelect = $connection->prepare("SELECT * from scripts, `use` where scripts.Scriptname=`use`.ScriptName and GroupNo=?");
+            $sqlSelect = $connection->prepare("SELECT * from scripts, `use` where scripts.ScriptId=`use`.UseId and GroupNo=?");
             $sqlSelect->bind_param("i", $_GET["GroupNo"]);
             $sqlSelect->execute();
             $result = $sqlSelect->get_result();
@@ -25,14 +25,23 @@
 
                 if(isset($_POST["deleteScript"])) { //this has to be at the beggining so the refresh works 
 
-                    $sqlDelete = $connection->prepare("DELETE FROM scripts where ScriptId=?");
+                    $sqlDeleteScript = $connection->prepare("DELETE FROM scripts where ScriptId=?");
     
-                    if(!$sqlDelete){
+                    if(!$sqlDeleteScript){
                         die("Error: the scripts cannot be deleted");
                     }
     
-                    $sqlDelete->bind_param("s", $_POST["deleteScript"]);
-                    $sqlDelete->execute();
+                    $sqlDeleteScript->bind_param("i", $_POST["deleteScript"]);
+                    $sqlDeleteScript->execute();
+
+                    $sqlDeleteUse = $connection->prepare("DELETE FROM `use` where UseId=?");
+    
+                    if(!$sqlDeleteUse){
+                        die("Error: the use cannot be deleted");
+                    }
+    
+                    $sqlDeleteUse->bind_param("i", $_POST["deleteScript"]);
+                    $sqlDeleteUse->execute();
     
                     header("refresh: 0");
     
@@ -130,7 +139,7 @@
     
     if(isset($_POST["editScript"])){
 
-        $sqlSelect = $connection->prepare("SELECT * FROM scripts, `use` WHERE use.scriptName and scripts.ScriptId=?");
+        $sqlSelect = $connection->prepare("SELECT * FROM scripts, `use` WHERE scripts.ScriptId=`use`.UseId and scripts.ScriptId=?");
         $sqlSelect->bind_param("s", $_POST["editScript"]);
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();
