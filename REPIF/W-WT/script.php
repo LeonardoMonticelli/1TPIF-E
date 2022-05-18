@@ -40,14 +40,23 @@
 
                 if(!empty($_POST["scriptNameEdit"])&&!empty($_POST["pathEdit"])&&!empty($_POST["descriptionEdit"])){ //update
 
-                    $sqlUpdate = $connection->prepare("UPDATE scripts SET ScriptName=?, `Path`=?, `Description`=? where ScriptId=?");
+                    $sqlUpdateScript = $connection->prepare("UPDATE scripts SET ScriptName=?, `Path`=?, `Description`=? where ScriptId=?");
         
-                    if(!$sqlUpdate){
+                    if(!$sqlUpdateScript){
                         die("Error: the scripts cannot be updated");
                     }
 
-                    $sqlUpdate->bind_param("sssi", $_POST["scriptNameEdit"], $_POST["pathEdit"], $_POST["descriptionEdit"], $_POST["scriptIdSearch"]);
-                    $sqlUpdate->execute();
+                    $sqlUpdateScript->bind_param("sssi", $_POST["scriptNameEdit"], $_POST["pathEdit"], $_POST["descriptionEdit"], $_POST["scriptIdSearch"]);
+                    $sqlUpdateScript->execute();
+
+                    $sqlUpdateUse = $connection->prepare("UPDATE `use` SET  ScriptName=? where UseId=?");
+        
+                    if(!$sqlUpdateUse){
+                        die("Error: the scripts cannot be updated");
+                    }
+
+                    $sqlUpdateUse->bind_param("si", $_POST["scriptNameEdit"], $_POST["UseId"],);
+                    $sqlUpdateUse->execute();
 
                     header("refresh: 0");
         
@@ -55,14 +64,23 @@
                    
                 if(!empty($_POST["scriptNameCreate"])&&!empty($_POST["pathCreate"])&&!empty($_POST["descriptionCreate"])){ //create 
 
-                    $sqlCreate = $connection->prepare("INSERT INTO `scripts` (`ScriptName`, `Path`, `Description`) VALUES (?, ?, ?)");
+                    $sqlCreateScript = $connection->prepare("INSERT INTO `scripts` (`ScriptName`, `Path`, `Description`) VALUES (?, ?, ?)");
 
-                    if(!$sqlCreate){
+                    if(!$sqlCreateScript){
                         die("Error: the scripts cannot be created");
                     }
 
-                    $sqlCreate->bind_param("sss",  $_POST["scriptNameCreate"], $_POST["pathCreate"], $_POST["descriptionCreate"]);
-                    $sqlCreate->execute();
+                    $sqlCreateScript->bind_param("sss",  $_POST["scriptNameCreate"], $_POST["pathCreate"], $_POST["descriptionCreate"]);
+                    $sqlCreateScript->execute();
+
+                    $sqlCreateUse = $connection->prepare("INSERT INTO `use` (`GroupNo`,`ScriptName`) VALUES (?, ?)");
+
+                    if(!$sqlCreateUse){
+                        die("Error: the use cannot be created");
+                    }
+
+                    $sqlCreateUse->bind_param("is", $_GET["GroupNo"], $_POST["scriptNameCreate"]);
+                    $sqlCreateUse->execute();
 
                     header("refresh: 0");
                 }
@@ -112,7 +130,7 @@
     
     if(isset($_POST["editScript"])){
 
-        $sqlSelect = $connection->prepare("SELECT * FROM scripts WHERE ScriptId=?");
+        $sqlSelect = $connection->prepare("SELECT * FROM scripts, `use` WHERE use.scriptName and scripts.ScriptId=?");
         $sqlSelect->bind_param("s", $_POST["editScript"]);
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();
@@ -158,6 +176,13 @@
     ?>
         <form method="post">
 
+            <div class=" mb-3">
+                <fieldset disabled>
+                    <label for="">GroupNo</label>
+                    <input type="text" id="disabledTextInput" class="form-control" name="" placeholder="<?= $_GET["GroupNo"] ?>">
+                </fieldset>
+            </div>
+
             <div class="form-group mb-3">
                 <label for="">ScriptName</label>
                 <input type="text" class="form-control" name="scriptNameCreate" placeholder="script">
@@ -173,7 +198,7 @@
                 <input type="text" class="form-control" name="descriptionCreate" placeholder="describe what the scripts does">
             </div>
 
-            <button type="submit" class="btn btn-success">Create an user</button>
+            <button type="submit" class="btn btn-success">Create</button>
 
         </form>
     <?php

@@ -109,12 +109,17 @@ INSERT INTO `scripts` (`ScriptId`,`ScriptName`, `Path`, `Description`) VALUES
 (3, 'strobo',    '/switch/strobo.sh',    'Make lamp flash quickly');
 
 CREATE TABLE `use` (
-  `GroupNo` int(11) DEFAULT NULL,
+  `UseId` int NOT NULL AUTO_INCREMENT,
+  `ScriptId` int NOT NULL,
   `ScriptName` varchar(50) DEFAULT NULL,
+  `GroupNo` int(11) DEFAULT NULL,
+  PRIMARY KEY (`UseId`),
+  KEY `ScriptId` (`ScriptId`),
   KEY `ScriptName` (`ScriptName`),
   KEY `GroupNo` (`GroupNo`),
-  CONSTRAINT `use_ibfk_1` FOREIGN KEY (`ScriptName`) REFERENCES `scripts` (`ScriptName`) ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT `use_ibfk_2` FOREIGN KEY (`GroupNo`) REFERENCES `groups` (`GroupNo`) ON UPDATE CASCADE ON DELETE CASCADE
+  CONSTRAINT `use_ibfk_1` FOREIGN KEY (`ScriptId`) REFERENCES `scripts` (`ScriptId`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `use_ibfk_2` FOREIGN KEY (`ScriptName`) REFERENCES `scripts` (`ScriptName`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `use_ibfk_3` FOREIGN KEY (`GroupNo`) REFERENCES `groups` (`GroupNo`) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 INSERT INTO `use` (`GroupNo`, `ScriptName`) VALUES
