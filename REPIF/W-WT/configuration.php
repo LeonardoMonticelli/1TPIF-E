@@ -84,7 +84,7 @@ function sendConf($connection, $input) {
     createGroupConf($connection, $input);
     createExecConf($connection, $input);
 
-    return; // leave this activated when not connected to the rpi
+    // return; // leave this activated when not connected to the rpi
 
     $sshconnection = ssh2_connect('192.168.6.235', 22); // ip address of the rpi
 

@@ -107,13 +107,13 @@
                                 <td><?= $row["LastName"] ?></td>
                                 <td><?= $row["Technician"] ?></td>
                                 <td><?= $row["Email"] ?></td>
+                                <td>                                
+                                    <form method="POST">
+                                        <input type="hidden" name="editUser" value="<?= $row["UserNo"] ?>">
+                                        <input type="submit" value="Edit">
+                                    </form>
+                                </td>
                                 <?php if($_SESSION["userIsAdmin"]==1){?>
-                                    <td>                                
-                                        <form method="POST">
-                                            <input type="hidden" name="editUser" value="<?= $row["UserNo"] ?>">
-                                            <input type="submit" value="Edit">
-                                        </form>
-                                    </td>
                                     <td>
                                         <form method="POST">
                                             <input type="hidden" name="deleteUser" value="<?= $row["UserNo"] ?>">
