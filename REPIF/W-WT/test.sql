@@ -1,2 +1,4 @@
 use wt;
-SELECT * from scripts, `use` where scripts.ScriptId=`use`.UseId and GroupNo=1
+        SELECT `use`.GroupNo, `use`.ScriptName, scripts.Path FROM `use`, scripts, groups
+        WHERE scripts.ScriptName = `use`.ScriptName AND groups.HostName = "SB_1"
+        GROUP BY `use`.GroupNo, `use`.ScriptName

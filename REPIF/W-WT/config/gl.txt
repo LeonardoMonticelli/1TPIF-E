@@ -1,4 +1,10 @@
-GARAGE=19
-dimmer="/switch/dimmer.sh"
-bell="/sound/bell.sh"
+ROOM2=12
+TOILET=20
+AREA=16
+BATHROOM=21
+MOTOR=23
+ALARM=26
+CORRIDOR=8
 strobo="/switch/strobo.sh"
+DINGDONG="/home/pi/pif2122/data/esklingelt.sh"
+ALL=7, 8, 12, 13, 16, 19, 20, 21, 26

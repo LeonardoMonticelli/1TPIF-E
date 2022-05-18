@@ -58,8 +58,17 @@ CREATE TABLE `groups` (
 INSERT INTO `groups` (`GroupNo`, `GroupName`, `Description`, `HostName`) VALUES
 (1,    'CHIEF',    '',    'SB_7'),
 (2,    'ALL',    'All lamps',    'SB_3'),
-(3,    'GARAGE',    'Garage door',    'SB_1'),
-(4,    'FLUR',    'Corridor lamps',    'SB_1');
+(3,    'ALL',    'All lamps',    'SB_1'),
+(4,    'ROOM',    'Room light',    'SB_1'),
+(5,    'CORRIDOR',    'Corridor light',    'SB_1'),
+(6,    'ROOM2',    'Room light',    'SB_1'),
+(7,    'AREA',    'Area light',    'SB_1'),
+(8,    'TOILET',    'Toilet light',    'SB_1'),
+(9,    'BATHROOM',    'bathroom light',    'SB_1'),
+(10,    'ALARM',    'alarm bell',    'SB_1'),
+(11,    'MOTOR',    'motor',    'SB_1'),
+(12,    'ALL',    'All pins',    'SB_1')
+;
 
 CREATE TABLE `pins` (
   `PinId` int NOT NULL AUTO_INCREMENT,
@@ -74,25 +83,27 @@ CREATE TABLE `pins` (
 );
 
 INSERT INTO `pins` (`HostName`, `PinNo`, `Input`, `Designation`) VALUES 
-('SB_1', 5, 1, 'GPIO05'),
-('SB_1', 11, 1, 'GPIO11'),
-('SB_1', 9, 1, 'GPIO09'),
+('SB_1', 4, 1, 'GPIO4'),
+('SB_1', 5, 1, 'GPIO5'),
+('SB_1', 9, 1, 'GPIO9'),
 ('SB_1', 10, 1, 'GPIO10'),
-('SB_1', 4, 1, 'GPIO04'),
+('SB_1', 11, 1, 'GPIO11'),
+('SB_1', 17, 1, 'GPIO17'),
 ('SB_1', 22, 1, 'GPIO22'),
 ('SB_1', 27, 1, 'GPIO27'),
-('SB_1', 7, 0, 'GPIO07'),
-('SB_1', 8, 0, 'GPIO08'),
+('SB_1', 7, 0, 'GPIO7'),
+('SB_1', 8, 0, 'GPIO8'),
 ('SB_1', 12, 0, 'GPIO12'),
 ('SB_1', 16, 0, 'GPIO16'),
 ('SB_1', 19, 0, 'GPIO19'),
 ('SB_1', 20, 0, 'GPIO20'),
 ('SB_1', 21, 0, 'GPIO21'),
 ('SB_1', 23, 0, 'GPIO23'),
-('SB_3', 5, 1, 'GPIO07'),
-('SB_3', 7, 0, 'GPIO05'),
+('SB_1', 26, 0, 'GPIO26'),
+('SB_3', 5, 1, 'GPIO7'),
+('SB_3', 7, 0, 'GPIO5'),
 ('SB_7', 9, 1, 'GPIO11'),
-('SB_7', 11, 0, 'GPIO09');
+('SB_7', 11, 0, 'GPIO9');
 
 CREATE TABLE `scripts` (
   `ScriptId` int NOT NULL AUTO_INCREMENT,
@@ -104,8 +115,7 @@ CREATE TABLE `scripts` (
 );
 
 INSERT INTO `scripts` (`ScriptId`,`ScriptName`, `Path`, `Description`) VALUES
-(1, 'dimmer',    '/switch/dimmer.sh',    'Dim lamp'),
-(2, 'bell',    '/sound/bell.sh',    'Play ringtone'),
+(1, 'DINGDONG',    '/home/pi/pif2122/data/esklingelt.sh',    'play bell'),
 (3, 'strobo',    '/switch/strobo.sh',    'Make lamp flash quickly');
 
 CREATE TABLE `use` (
@@ -120,8 +130,7 @@ CREATE TABLE `use` (
 );
 
 INSERT INTO `use` (`ScriptName`, `GroupNo`) VALUES
-('dimmer', 1),
-('bell', 1),
+('DINGDONG', 10),
 ('strobo', 1);
 
 CREATE TABLE `concern`(
@@ -137,9 +146,15 @@ CREATE TABLE `concern`(
   CONSTRAINT `concern_ibfk_3` FOREIGN KEY (`PinNo`) REFERENCES `pins` (`PinNo`)ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO `concern` (`ConcernId`, `GroupNo`, `HostName`, `PinNo`) VALUES
-(1, 1,    'SB_7',    7),
-(2, 3,    'SB_1',    19);
+INSERT INTO `concern` (`GroupNo`, `HostName`, `PinNo`) VALUES
+(3,    'SB_1',    7),
+(6,    'SB_1',    12),
+(8,    'SB_1',    20),
+(7,    'SB_1',    16),
+(9,    'SB_1',    21),
+(11,    'SB_1',    23),
+(10,    'SB_1',    26),
+(5,    'SB_1',    8);
 -- only leds
 
 CREATE TABLE `events`(
@@ -166,7 +181,7 @@ CREATE TABLE `switchexecute` (
   `PinNo` int DEFAULT NULL,
   `EventCode` VARCHAR(1) NOT NULL,
   `GroupNo` int(11) DEFAULT NULL,
-  `TargetFunctionCode` VARCHAR(1) NOT NULL,
+  `TargetFunctionCode` VARCHAR(1) DEFAULT NULL,
   `Description` VARCHAR(50) NOT NULL,
   `SequenceNo` INT DEFAULT NULL,
   `WaitingDuration` INT DEFAULT NULL,
@@ -178,7 +193,13 @@ CREATE TABLE `switchexecute` (
 );
 
 INSERT INTO `switchexecute` (`HostName`, `PinNo`, `EventCode`, `GroupNo`, `TargetFunctionCode`, `Description`, `SequenceNo`, `WaitingDuration`) VALUES
-  ('SB_1',    5,    'K', 3, 'E', 'Switch on alarm', 2, 5),
-  ('SB_1',    11,    'L', 1, 'U', 'Switch light in the bathroom',NULL, NULL),
-  ('SB_1',    9,    'K', 1, 'A', 'Close a window', 1, NULL);
+  ('SB_1',    5,    'K', 6, 'U', 'Room2', NULL, NULL),
+  ('SB_1',    9,    'K', 8, 'U', 'toilet', NULL, NULL),
+  ('SB_1',    10,    'K', 7, 'U', 'area', NULL, NULL),
+  ('SB_1',    11,    'K', 9, 'U', 'bathroom', NULL, NULL),
+  ('SB_1',    17,    'K', 11, 'U', 'all', NULL, NULL),
+  ('SB_1',    22,    'K', 4, 'U', 'room', NULL, NULL),
+  ('SB_1',    22,    'L', 10, 'S', 'alarm', NULL, NULL),
+  ('SB_1',    27,    'K', 5, 'U', 'corridor', NULL, NULL)
+  ;
   -- only switches

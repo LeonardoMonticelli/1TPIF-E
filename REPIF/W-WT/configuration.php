@@ -18,10 +18,7 @@ function createGroupConf($connection, $input) {
     $scripts = $connection->prepare("
         SELECT `use`.GroupNo, `use`.ScriptName, scripts.Path FROM `use`, scripts, groups
         WHERE scripts.ScriptName = `use`.ScriptName AND `groups`.HostName = ?
-        GROUP BY
-            `use`.GroupNo, `use`.ScriptName
-        HAVING 
-            COUNT(*) > 1
+        GROUP BY `use`.GroupNo, `use`.ScriptName
     ");
 
     $scripts->bind_param('s', $input["HostName"]);
@@ -50,6 +47,8 @@ function createGroupConf($connection, $input) {
         $line = "".$script["ScriptName"]."=\"".$script["Path"]."\"\n";
         fwrite($fp, $line);
     }
+        
+    fwrite($fp, "ALL=7, 8, 12, 13, 16, 19, 20, 21, 26");
 
     fclose($fp);
 }
@@ -59,6 +58,7 @@ function createExecConf($connection, $input) {
         SELECT * FROM switchexecute, pins, groups
         WHERE pins.PinNo = switchexecute.PinNo AND `groups`.GroupNo = switchexecute.GroupNo 
         AND switchexecute.HostName = ?
+        GROUP BY switchexecute.SwitchExecuteId
     ");
 
     $stmt->bind_param('s', $input["HostName"]);
@@ -72,8 +72,8 @@ function createExecConf($connection, $input) {
     $fp = fopen("config/tefg.txt", "wb");
 
     foreach($data as $exec) {
-        $duration = $exec["WaitingDuration"] ? ", ".$exec["WaitingDuration"] : '';
-        $line = "".$exec["Designation"].", ".$exec["EventCode"]."=".$exec["TargetFunctionCode"].", ".$exec["GroupName"].":".$exec["TargetFunctionCode"]."".$duration."\n";
+        // $duration = $exec["WaitingDuration"] ? ", ".$exec["WaitingDuration"] : '';
+        $line = "".$exec["Designation"].", ".$exec["EventCode"]."=".$exec["TargetFunctionCode"].", ".$exec["GroupName"]."".$duration."\n";
         fwrite($fp, $line);
     }
 
@@ -84,7 +84,7 @@ function sendConf($connection, $input) {
     createGroupConf($connection, $input);
     createExecConf($connection, $input);
 
-    // return; // leave this activated when not connected to the rpi
+    return; // leave this activated when not connected to the rpi
 
     $sshconnection = ssh2_connect('192.168.6.235', 22); // ip address of the rpi
 
