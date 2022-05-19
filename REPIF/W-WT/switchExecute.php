@@ -11,7 +11,7 @@
                 <input type="submit" class="btn btn-secondary mb-3" value="Go back">
             </form>
         </div>
-        <div>This is where the Groups and the Switch Pins are connected</div>
+        <div>This is where the `groups` and the Switch Pins are connected</div>
         <?php
 
             if(isset($_POST["goBack"])){
@@ -198,7 +198,7 @@
 
                 <select name="groupNoEdit" class="form-select">
                     <?php
-                        $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups");
+                        $sqlSelect = $connection->prepare("SELECT GroupNo FROM `groups`");
                         $sqlSelect->execute();
                         $result = $sqlSelect->get_result();
 
@@ -299,7 +299,7 @@
 
                 <select name="groupNoCreate" class="form-select">
                     <?php
-                        $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups");
+                        $sqlSelect = $connection->prepare("SELECT GroupNo FROM `groups`");
                         $sqlSelect->execute();
                         $result = $sqlSelect->get_result();
 

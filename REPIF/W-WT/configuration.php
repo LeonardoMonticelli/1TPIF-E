@@ -16,7 +16,7 @@ function createGroupConf($connection, $input) {
     $groupsdata = $groupsresult->fetch_all(MYSQLI_ASSOC);
 
     $scripts = $connection->prepare("
-        SELECT `use`.GroupNo, `use`.ScriptName, scripts.Path FROM `use`, scripts, groups
+        SELECT `use`.GroupNo, `use`.ScriptName, scripts.Path FROM `use`, scripts, `groups`
         WHERE scripts.ScriptName = `use`.ScriptName AND `groups`.HostName = ?
         GROUP BY `use`.GroupNo, `use`.ScriptName
     ");
@@ -55,7 +55,7 @@ function createGroupConf($connection, $input) {
 
 function createExecConf($connection, $input) {
     $stmt= $connection->prepare("
-        SELECT * FROM switchexecute, pins, groups
+        SELECT * FROM switchexecute, pins, `groups`
         WHERE pins.PinNo = switchexecute.PinNo AND `groups`.GroupNo = switchexecute.GroupNo 
         AND switchexecute.HostName = ?
         GROUP BY switchexecute.SwitchExecuteId

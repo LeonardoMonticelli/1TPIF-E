@@ -11,7 +11,7 @@
 
         if(isset($_POST["addPins"])) { 
 
-            $sqlSelect = $connection->prepare("SELECT GroupNo, HostName FROM groups WHERE GroupNo=?");
+            $sqlSelect = $connection->prepare("SELECT GroupNo, HostName FROM `groups` WHERE GroupNo=?");
             $sqlSelect->bind_param("i", $_POST["addPins"]);
             $sqlSelect->execute();
             $result = $sqlSelect->get_result();
@@ -23,7 +23,7 @@
 
         if(isset($_POST["viewScripts"])) { 
 
-            $sqlSelect = $connection->prepare("SELECT GroupNo FROM groups WHERE GroupNo=?");
+            $sqlSelect = $connection->prepare("SELECT GroupNo FROM `groups` WHERE GroupNo=?");
             $sqlSelect->bind_param("i", $_POST["viewScripts"]);
             $sqlSelect->execute();
             $result = $sqlSelect->get_result();
@@ -35,14 +35,14 @@
 
             if($_SESSION["userIsAdmin"]==0){
 
-                $sqlStatement = $connection->prepare("SELECT * from groups, manage where groups.HostName=manage.HostName and UserNo=?");
+                $sqlStatement = $connection->prepare("SELECT * from `groups`, manage where `groups`.HostName=manage.HostName and UserNo=?");
                 $sqlStatement->bind_param("i", $_SESSION["currentUserNo"]);
                 $sqlStatement->execute();
 
                 $result = $sqlStatement->get_result();
 
             }else{
-                $result = $connection->query("SELECT * from groups");
+                $result = $connection->query("SELECT * from `groups`");
             }
  
             if ($result) {
@@ -50,7 +50,7 @@
                 if(isset($_POST["deleteGroup"])) { //this has to be at the beggining so the refresh works 
 
                     $deleteGroupVal = intval($_POST["deleteGroup"]);
-                    $sqlDelete = $connection->prepare("DELETE FROM groups where GroupNo=?");
+                    $sqlDelete = $connection->prepare("DELETE FROM `groups` where GroupNo=?");
     
                     if(!$sqlDelete){
                         die("Error: the GROUP cannot be deleted");
@@ -65,7 +65,7 @@
 
                 if(!empty($_POST["groupNoEdit"])&&!empty($_POST["groupNameEdit"])&&!empty($_POST["descriptionEdit"])&&!empty($_POST["hostNameEdit"])){ //update
                     //monle399
-                    $sqlUpdate = $connection->prepare("UPDATE groups SET GroupNo=?, GroupName=?, `Description`=?, HostName=? where GroupNo=?");
+                    $sqlUpdate = $connection->prepare("UPDATE `groups` SET GroupNo=?, GroupName=?, `Description`=?, HostName=? where GroupNo=?");
         
                     if(!$sqlUpdate){
                         die("Error: the users cannot be updated");
@@ -155,7 +155,7 @@
     if(isset($_POST["editGroup"])){
 
         $editGroupVal = intval($_POST["editGroup"]);
-        $sqlSelect = $connection->prepare("SELECT * FROM groups WHERE GroupNo=?");
+        $sqlSelect = $connection->prepare("SELECT * FROM `groups` WHERE GroupNo=?");
         $sqlSelect->bind_param("i", $editGroupVal);
         $sqlSelect->execute();
         $result = $sqlSelect->get_result();
