@@ -1,10 +1,2 @@
-ROOM2=12
-TOILET=20
-AREA=16
-BATHROOM=21
-MOTOR=23
-ALARM=26
-CORRIDOR=8
-strobo="/switch/strobo.sh"
-DINGDONG="/home/pi/pif2122/data/esklingelt.sh"
+GARAGE=19
 ALL=7, 8, 12, 13, 16, 19, 20, 21, 26

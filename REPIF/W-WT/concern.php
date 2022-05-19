@@ -17,7 +17,7 @@
         <?php
 
             if(isset($_POST["goBack"])){
-                header("location: `groups`.php");
+                header("location: groups.php");
             }
 
             $sqlSelect  = $connection->prepare("SELECT * from concern where GroupNo=?");

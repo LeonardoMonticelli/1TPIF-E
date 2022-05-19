@@ -15,11 +15,7 @@ function createGroupConf($connection, $input) {
 
     $groupsdata = $groupsresult->fetch_all(MYSQLI_ASSOC);
 
-    $scripts = $connection->prepare("
-        SELECT `use`.GroupNo, `use`.ScriptName, scripts.Path FROM `use`, scripts, `groups`
-        WHERE scripts.ScriptName = `use`.ScriptName AND `groups`.HostName = ?
-        GROUP BY `use`.GroupNo, `use`.ScriptName
-    ");
+    $scripts = $connection->prepare("SELECT * FROM `use` JOIN scripts ON scripts.ScriptName = `use`.`ScriptName` JOIN `groups` ON `use`.GroupNo = `groups`.`GroupNo` WHERE `groups`.HostName = ?");
 
     $scripts->bind_param('s', $input["HostName"]);
 
@@ -54,12 +50,7 @@ function createGroupConf($connection, $input) {
 }
 
 function createExecConf($connection, $input) {
-    $stmt= $connection->prepare("
-        SELECT * FROM switchexecute, pins, `groups`
-        WHERE pins.PinNo = switchexecute.PinNo AND `groups`.GroupNo = switchexecute.GroupNo 
-        AND switchexecute.HostName = ?
-        GROUP BY switchexecute.SwitchExecuteId
-    ");
+    $stmt= $connection->prepare("SELECT * FROM `pins` JOIN `switchexecute` ON pins.PinNo = switchexecute.PinNo JOIN `groups` ON switchexecute.GroupNo = `groups`.GroupNo WHERE switchexecute.HostName = ?");
 
     $stmt->bind_param('s', $input["HostName"]);
 
@@ -84,7 +75,7 @@ function sendConf($connection, $input) {
     createGroupConf($connection, $input);
     createExecConf($connection, $input);
 
-    return; // leave this activated when not connected to the rpi
+    // return; // leave this activated when not connected to the rpi
 
     $sshconnection = ssh2_connect('192.168.6.235', 22); // ip address of the rpi
 
